@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+      <!--PROBANDO NUEVA LOGICA-->
+      <record model="ir.actions.server" id="action_view_vc_hr_employee"> <!-- Menu + python -->
+        <field name="name">Cuenta de Empleado Vacaciones</field>
+        <field name="model_id" ref="model_hr_employee"/>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('vacation_control.res_groups_aprobador'))]"/>
+        <field name="code">
+            action = model._action_vacation()
+        </field>
+    </record>
+    </data>
+</odoo>

@@ -24,12 +24,21 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
+        'security/ir.model.access.csv',
+        'views/liquidaciones.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+    'application': True,
+    'assets': {
+        'web.assets_backend': [
+            'gastos_tqc/static/src/js/liquidacion_header.js',
+        ],
+        'web.assets_qweb': [
+            'gastos_tqc/static/src/xml/liquidacion_header.xml',
+        ],
+    },
 }
