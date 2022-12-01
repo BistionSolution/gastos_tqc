@@ -1,34 +1,10 @@
 <odoo>
-  <data>
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="gastos_tqc.list">
-      <field name="name">gastos_tqc list</field>
-      <field name="model">gastos_tqc.gastos_tqc</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
--->
-
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="gastos_tqc.action_window">
-      <field name="name">gastos_tqc window</field>
-      <field name="res_model">gastos_tqc.gastos_tqc</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-          <!--VISTA  TREE-->
-      <record id="view_tree_tqc_liquidaciones" model="ir.ui.view">
+    <data>
+        <record id="view_tree_registro_gasto" model="ir.ui.view">
         <field name="name">view.tree.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <tree js_class="gastos_tqc_tree_selections" class="gastos_tqc">
+                <tree create="0" delete="0">
                     <field name="num_solicitud"/>
                     <field name="empleado_name"/>
                     <field name="centro_costo"/>
@@ -43,14 +19,13 @@
                     <field name="glosa_entrega"/>
                     <field name="state"/>
                     <field name="tipoliquidacion_id"/>
-
 <!--                    <field name="id_current" invisible="1"/>-->
                 </tree>
             </field>
         </record>
 
                 <!--VISTA ATORIZACION TREE-->
-      <record id="view_form_tqc_liquidaciones" model="ir.ui.view">
+      <record id="view_form_registro_gasto" model="ir.ui.view">
         <field name="name">view.form.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
@@ -126,83 +101,54 @@
                     <filter name="draft" string="Sin visto jefe" domain="[('state', '=', 'draft')]"/>
                     <filter name="jefatura" string="Jefatura" domain="[('state', '=', 'jefatura')]"/>
                     <filter name="contable" string="Contable" domain="[('state', '=', 'contable')]"/>
+                    <filter name="tipoliquidacion_id" string="A rendir" domain="[('tipoliquidacion_id', '=', 1)]"/>
+                    <filter name="tipoliquidacion_id" string="Tarjeta credito" domain="[('tipoliquidacion_id', '=', 2)]"/>
                 </search>
             </field>
         </record>
 
-  <!--Actiones-->
-    <record id="action_view_tree_liquidaciones" model="ir.actions.act_window">
-            <field name="name">Flujo de aprobaciones</field>
+      <!--Actiones-->
+        <record id="action_view_tree_liquidaciones" model="ir.actions.act_window">
+                <field name="name">Flujo de aprobaciones</field>
+                <field name="res_model">tqc.liquidaciones</field>
+                <field name="view_mode">tree,form</field>
+                <field name="search_view_id" ref="gastos_tqc.view_gastos_tqc_filter"/>
+                <field name="context">{'search_default_draft':1}</field>
+                <field name="target">main</field>
+                <field name="help" type="html">
+                    <p class="o_view_nocontent_empty_folder">
+                        No RFQs to display
+                    </p>
+                </field>
+        </record>
+
+          <record id="action_view_filter_gastos" model="ir.actions.act_window">
+            <field name="name">Liquidaciones</field>
             <field name="res_model">tqc.liquidaciones</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="gastos_tqc.view_tree_tqc_liquidaciones"/>
             <field name="search_view_id" ref="gastos_tqc.view_gastos_tqc_filter"/>
-            <field name="context">{'search_default_draft':1}</field>
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
                     No RFQs to display
                 </p>
             </field>
-    </record>
+        </record>
 
-      <record id="action_view_filter_gastos" model="ir.actions.act_window">
-        <field name="name">Liquidaciones</field>
-        <field name="res_model">tqc.liquidaciones</field>
-        <field name="view_mode">form,tree</field>
-        <field name="view_id" ref="gastos_tqc.view_tree_tqc_liquidaciones"/>
-        <field name="search_view_id" ref="gastos_tqc.view_gastos_tqc_filter"/>
-        <field name="target">main</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_empty_folder">
-                No RFQs to display
-            </p>
-        </field>
-    </record>
+          <!-- Action Liquidaciones -->
+          <record model="ir.actions.server" id="action_registro_gastos">
+            <field name="name">Action registrar gastos</field>
+            <field name="model_id" ref="model_tqc_liquidaciones"/>
+            <field name="state">code</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="code">
+                action = model._action_registro_gasto()
+            </field>
+        </record>
 
-      <!-- Action Liquidaciones -->
-      <record model="ir.actions.server" id="action_view_import_gastos">
-        <field name="name">Action import exactus</field>
-        <field name="model_id" ref="model_tqc_liquidaciones"/>
-        <field name="state">code</field>
-        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
-        <field name="code">
-            action = model._action_import_gastos()
-        </field>
-    </record>
-
-    <!-- Top menu item -->
-<!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
-    <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_view_import_gastos"/>
-    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>
-    <menuitem name="Menu 2" id="gastos_tqc.menu_2" parent="gastos_tqc.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="gastos_tqc.menu_1_list" parent="gastos_tqc.menu_1"
-              action="gastos_tqc.action_window"/>
-    <menuitem name="Server to list" id="gastos_tqc" parent="gastos_tqc.menu_2"
-              action="gastos_tqc.action_server"/>
--->
-<!--      Message delete-->
-<!--      <record id="wizard_message_detalles_form_view" model="ir.ui.view">-->
-<!--          <field name="name">Message sure</field>-->
-<!--          <field name="model">tqc.detalle.liquidaciones</field>-->
-<!--          <field name="type">form</field>-->
-<!--          <field name="arch" type="xml">-->
-<!--              <form string="Message">-->
-<!--                  <separator string="Message" colspan="6"/>-->
-<!--                      <p>Hi</p>-->
-<!--                  <newline/>-->
-<!--                  <separator colspan="6"/>-->
-<!--                  <footer>-->
-<!--                      <button name="btn_approve_oric" type="object" string="OK" class="oe_highlight"/>-->
-<!--                      <button special="cancel" string="No"/>-->
-<!--                  </footer>-->
-<!--              </form>-->
-<!--          </field>-->
-<!--      </record>-->
-  </data>
+        <!-- Top menu item -->
+    <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
+        <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1" name="Registro gasto" action="gastos_tqc.action_registro_gastos"/>
+    </data>
 </odoo>

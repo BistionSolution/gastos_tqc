@@ -27,6 +27,9 @@
         'security/ir.model.access.csv',
         'views/liquidaciones.xml',
         'views/templates.xml',
+        'views/cuenta_contable.xml',
+        'views/tipo_liquidaciones.xml',
+        'views/registrar_gasto.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
@@ -36,6 +39,7 @@
     'assets': {
         'web.assets_backend': [
             'gastos_tqc/static/src/js/liquidacion_header.js',
+            'gastos_tqc/static/src/scss/gastos_tqc.scss',
         ],
         'web.assets_qweb': [
             'gastos_tqc/static/src/xml/liquidacion_header.xml',
