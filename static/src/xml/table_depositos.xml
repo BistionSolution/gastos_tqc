@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template">
+    <t t-name="gastos_tqc.table_depositos">
+        <h1>Hola</h1>
+    </t>
+
+
+</templates>
