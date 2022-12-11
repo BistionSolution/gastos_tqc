@@ -25,24 +25,30 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/res_group.xml',
         'views/liquidaciones.xml',
         'views/templates.xml',
         'views/cuenta_contable.xml',
         'views/tipo_liquidaciones.xml',
         'views/registrar_gasto.xml',
+        'assets.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+    'qweb': [
+        'static/src/xml/liquidacion_header.xml',
+        'static/src/xml/table_depositos.xml'
+    ],
     'application': True,
-    'assets': {
-        'web.assets_backend': [
-            'gastos_tqc/static/src/js/liquidacion_header.js',
-            'gastos_tqc/static/src/scss/gastos_tqc.scss',
-        ],
-        'web.assets_qweb': [
-            'gastos_tqc/static/src/xml/liquidacion_header.xml',
-        ],
-    },
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'gastos_tqc/static/src/js/liquidacion_header.js',
+    #         'gastos_tqc/static/src/scss/gastos_tqc.scss',
+    #     ],
+    #     'web.assets_qweb': [
+    #         'gastos_tqc/static/src/xml/liquidacion_header.xml',
+    #     ],
+    # },
 }

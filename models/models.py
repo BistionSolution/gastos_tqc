@@ -59,6 +59,8 @@ class Liquidaciones(models.Model):
     saldo = fields.Monetary(currency_field='currency_id')
     moneda = fields.Char()
 
+    table_depositos = fields.Html()
+
     @api.model
     def get_expense_dashboard(self):
         v_draf = len(self.env['tqc.liquidaciones'].search([('state','=','draft')]))
@@ -373,6 +375,7 @@ class Liquidaciones(models.Model):
                 "res_model": "tqc.liquidaciones",
                 "view_type": "form",
                 "view_mode": "tree,form",
+                "search_view_id": self.env.ref("gastos_tqc.search_register_filter").id,
                 "target": "current",
                 "context": {'search_default_draft': True,
                             'create': False,
@@ -391,28 +394,29 @@ class Liquidaciones(models.Model):
             }
         except Exception as e:
             res = {
-            "name": "Flujo de aprobaciones",
-            "type": "ir.actions.act_window",
-            "res_model": "tqc.liquidaciones",
-            "view_type": "form",
-            "view_mode": "tree,form",
-            "target": "current",
-            "context": {'search_default_draft': True,
-                        'create': False,
-                        'delete':False
-                        },
-            # "domain": [('warehouse_id.id', 'in', warehose_ids)],
-            'help': """
-                        <p class="o_view_nocontent_smiling_face">
-                            Create a new operation type
-                          </p><p>
-                            The operation type system allows you to assign each stock
-                            operation a specific type which will alter its views accordingly.
-                            On the operation type you could e.g. specify if packing is needed by default,
-                            if it should show the customer.
-                          </p>
-                        """
-            }
+                "name": "Flujo de aprobaciones",
+                "type": "ir.actions.act_window",
+                "res_model": "tqc.liquidaciones",
+                "view_type": "form",
+                "view_mode": "tree,form",
+                "search_view_id": self.env.ref("gastos_tqc.search_register_filter").id,
+                "target": "current",
+                "context": {'search_default_draft': True,
+                            'create': False,
+                            'delete':False
+                            },
+                # "domain": [('warehouse_id.id', 'in', warehose_ids)],
+                'help': """
+                            <p class="o_view_nocontent_smiling_face">
+                                Create a new operation type
+                              </p><p>
+                                The operation type system allows you to assign each stock
+                                operation a specific type which will alter its views accordingly.
+                                On the operation type you could e.g. specify if packing is needed by default,
+                                if it should show the customer.
+                              </p>
+                            """
+                }
 
         return res
 
@@ -462,30 +466,35 @@ class Liquidaciones(models.Model):
         try:
             form_view_id = self.env.ref("gastos_tqc.view_form_registro_gasto").id
             tree_view_id = self.env.ref("gastos_tqc.view_tree_registro_gasto").id
+            search_view_id = self.env.ref("gastos_tqc.search_register_filter").id
         except Exception as e:
             form_view_id = False
             tree_view_id = False
+            search_view_id = False
+
+        name_employee = "Registro gasto"
+        if (self.env.user.employee_id):
+            name_employee = name_employee + " : " + self.env.user.employee_id.name + " | Centro de costo: " +self.env.user.employee_id.department_id.id_integrador+" - " +self.env.user.employee_id.department_id.name
+        # employee_id
 
         res = {
-            "name": "Flujo de aprobaciones",
+            "name": name_employee,
             "type": "ir.actions.act_window",
             "res_model": "tqc.liquidaciones",
             "view_type": "form",
             "view_mode": "tree,form",
+            "search_view_id": (self.env.ref("gastos_tqc.search_register_filter").id,),
             'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             "target": "current",
-            "context": {'search_default_draft': True,
+            "context": {'search_default_filtro_rendir': True,
                         'create': False,
                         'delete': False},
             # "domain": [('warehouse_id.id', 'in', warehose_ids)],
             'help': """
                                 <p class="o_view_nocontent_smiling_face">
-                                    Create a new operation type
+                                    No hay registros para mostrar
                                   </p><p>
-                                    The operation type system allows you to assign each stock
-                                    operation a specific type which will alter its views accordingly.
-                                    On the operation type you could e.g. specify if packing is needed by default,
-                                    if it should show the customer.
+                                    
                                   </p>
                                 """
         }

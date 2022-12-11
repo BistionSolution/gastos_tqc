@@ -24,7 +24,7 @@ odoo.define('gastos_tqc.registro_gasto', function (require) {
             });
 
             self.$el.parent().find('.o_expense_container').remove();
-            const elem = QWeb.render('gastos_tqc.dashboard_liquid_tqc', {
+            const elem = QWeb.render('gastos_tqc.dashboard_registro_gasto', {
                 expenses: result,
                 // render_monetary_field: self.render_monetary_field,
             });
@@ -55,7 +55,7 @@ odoo.define('gastos_tqc.registro_gasto', function (require) {
     }
     );
 
-    var tqcGastosDashboardController = ListController.extend({
+    var tqcRegistroDashboardController = ListController.extend({
         custom_events: _.extend({}, ListController.prototype.custom_events, {
             dashboard_open_action: '_onDashboardOpenAction',
         }),
@@ -76,9 +76,9 @@ odoo.define('gastos_tqc.registro_gasto', function (require) {
     var tqcExpensesListViewDashboardHeader = ListView.extend({
         config: _.extend({}, ListView.prototype.config, {
             Renderer: tqcResgistroRender,
-            Controller: tqcGastosDashboardController
+            Controller: tqcRegistroDashboardController
         })
     });
 
-    viewRegistry.add('gastos_tqc_tree_selections', tqcExpensesListViewDashboardHeader);
+    viewRegistry.add('registro_tqc_tree_selections', tqcExpensesListViewDashboardHeader);
 });

@@ -3,23 +3,77 @@
 <templates id="template">
     <t t-name="gastos_tqc.dashboard_liquid_tqc">
         <div class="o_expense_container d-flex o_form_statusbar gastos_tqc o_context_one" context='{"search_default_draft": true}'>
-            <t t-foreach="expenses" t-as="expense">
-                <div t-attf-class="o_expense_card o_arrow_button flex-grow-1 d-flex flex-column border-right-0 btn btn-primary">
-                    <div class="content_center gastos_tqc">
-                        <div>
-<!--                            <span t-esc="render_monetary_field(expenses[expense]['amount'], expenses[expense]['currency'])" class="h2 o_expense_purple"/>-->
-                            <span t-esc="expenses[expense]['description']"/>
-                        </div>
-                        <b class="m-2">(<span t-esc="expenses[expense]['amount']"/>)</b>
-                    </div>
-                </div>
-                <div t-if="expense !== 'approved'" t-attf-class="">
-                    <div class="content_center">
-                        <span class="fa fa-angle-right fa-3x"/>
-                    </div>
-                </div>
-            </t>
-        </div>
+<!--            <t t-foreach="expenses" t-as="expense">-->
+<!--                <div t-attf-class="o_expense_card o_arrow_button flex-grow-1 d-flex flex-column border-right-0 btn btn-primary">-->
+<!--                    <div class="content_center gastos_tqc">-->
+<!--                        <div>-->
+<!--&lt;!&ndash;                            <span t-esc="render_monetary_field(expenses[expense]['amount'], expenses[expense]['currency'])" class="h2 o_expense_purple"/>&ndash;&gt;-->
+<!--                            <span t-esc="expenses[expense]['description']"/>-->
+<!--                        </div>-->
+<!--                        <b class="m-2">(<span t-esc="expenses[expense]['amount']"/>)</b>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div t-if="expense !== 'approved'" t-attf-class="">-->
+<!--                    <div class="content_center">-->
+<!--                        <span class="fa fa-angle-right fa-3x"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </t>-->
 
+            <div class="o_gastos_button" name="state" data-original-title="" title="">
+                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn btn-primary"
+                        aria-current="step">
+                    Sin visto contable
+                </button>
+                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
+                        aria-current="step">
+                    Sin visto jefatura
+                </button>
+                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
+                        aria-current="step">
+                    Sin visto jefe
+                </button>
+            </div>
+
+        </div>
+    </t>
+
+    <t t-name="gastos_tqc.dashboard_registro_gasto">
+<!--        <select name="select">-->
+<!--          <option value="value1">A rendir</option>-->
+<!--          <option value="value2">Tarjeta credito</option>-->
+<!--        </select>-->
+        <div class="o_expense_container d-flex o_form_statusbar gastos_tqc o_context_one" context='{"search_default_draft": true}'>
+            <div t-attf-class="o_expense_card o_arrow_button flex-grow-1 d-flex flex-column border-right-0 btn btn-primary">
+                <div class="content_center gastos_tqc">
+                    <div>
+<!--                            <span t-esc="render_monetary_field(expenses[expense]['amount'], expenses[expense]['currency'])" class="h2 o_expense_purple"/>-->
+                        <span>A rendir</span>
+                    </div>
+
+                </div>
+            </div>
+            <div>
+                <div class="content_center">
+                    <span class="fa fa-angle-right fa-3x"/>
+                </div>
+            </div>
+
+            <div t-attf-class="o_expense_card o_arrow_button flex-grow-1 d-flex flex-column border-right-0 btn btn-primary">
+                <div class="content_center gastos_tqc">
+                    <div>
+<!--                            <span t-esc="render_monetary_field(expenses[expense]['amount'], expenses[expense]['currency'])" class="h2 o_expense_purple"/>-->
+                        <span>Tarjeta crédito</span>
+                    </div>
+
+                </div>
+            </div>
+<!--            <div t-if="expense !== 'approved'" t-attf-class="">-->
+<!--                <div class="content_center">-->
+<!--                    <span class="fa fa-angle-right fa-3x"/>-->
+<!--                </div>-->
+<!--            </div>-->
+
+        </div>
     </t>
 </templates>

@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+        <!--REGLA PARA EMPLEADOS CUENTA VACAIONES-->
+        <record id="ir_rule_employee_vc_ctavacation" model="ir.rule">
+            <field name="name">Mostrar cuenta vacaciones propia</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="domain_force">[('id_trabajador.user_id','=',user.id)]</field>
+            <field name="groups" eval="[(4,ref('vacation_control.res_groups_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+    </data>
+</odoo>
