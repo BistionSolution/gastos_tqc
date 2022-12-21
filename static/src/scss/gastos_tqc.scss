@@ -55,3 +55,8 @@
 .o_gastos_button > .o_arrow_button:hover + o_arrow_button:after,.o_gastos_button > .o_arrow_button:hover + o_arrow_button:before{
     border-left-color: #5D8DA8;
 }
+
+/*Oculta filas en registro de documentos (registro gastos)*/
+.hide_row_gasto{
+    display: none;
+}

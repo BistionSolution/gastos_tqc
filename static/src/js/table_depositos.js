@@ -13,11 +13,11 @@ odoo.define("gastos_tqc.js_table_depositos",function(require){
         supportedFieldTypes:['html'],
         init:function (parent, name, record, options) {
             this._super(parent, name, record, options)
-            console.log('Este es el valor : ',this.value)
-            console.log('Este el modo : ',this.mode)
-            console.log(this.model)
-            console.log(this.res_id)
-            console.log(this.recordData.treatment_id)
+            // console.log('Este es el valor : ',this.value)
+            // console.log('Este el modo : ',this.mode)
+            // console.log(this.model)
+            // console.log(this.res_id)
+            // console.log(this.recordData.treatment_id)
             this.vali = "jajajaa";
         },
         start:function () {

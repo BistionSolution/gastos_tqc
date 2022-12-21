@@ -21,13 +21,13 @@
 <!--            </t>-->
 
             <div class="o_gastos_button" name="state" data-original-title="" title="">
-                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn btn-primary"
-                        aria-current="step">
-                    Sin visto contable
-                </button>
+<!--                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn btn-primary"-->
+<!--                        aria-current="step">-->
+<!--                    Sin visto contable-->
+<!--                </button>-->
                 <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
                         aria-current="step">
-                    Sin visto jefatura
+                    Sin visto contable
                 </button>
                 <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
                         aria-current="step">

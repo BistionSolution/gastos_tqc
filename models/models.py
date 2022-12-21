@@ -159,7 +159,6 @@ class Liquidaciones(models.Model):
                 idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
                 for user in idusers:
-                    print("DATO NUMERO", str(user[6]))
                     variJson = {}
                     work_email = False  # comprueba si tiene Correo, sino no llena
                     existId = True
