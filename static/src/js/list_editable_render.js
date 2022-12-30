@@ -62,6 +62,7 @@ odoo.define("gastos_tqc.restrict_editable_view",function(require){
 
             // Toggle selected class here so that style is applied at the end
             $row.toggleClass('o_selected_row', editMode);
+            // Cambios agregado para quitar clase
             this.$('.o_selected_row').removeClass('hide_row_gasto');
             if (editMode) {
                 this._disableRecordSelectors();
@@ -78,5 +79,4 @@ odoo.define("gastos_tqc.restrict_editable_view",function(require){
             });
         },
     })
-    return  ListEditableRender;
 })

@@ -34,6 +34,7 @@
                     <field name="centro_costo"/>
                     <field name="fecha_entrega"/>
                     <field name="fecha_contable"/>
+
                     <field name="moneda"/>
                     <field name="currency_id" string="Moneda"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -140,9 +141,9 @@
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
                 <search string="Search Tqc">
-                    <field name="tipoliquidacion_id" invisible="1"/>
-                    <filter name="filtro_rendir" string="A rendir" domain="[('tipoliquidacion_id.name', '=', 'a rendir')]"/>
-                    <filter name="filtro_tarjeta" string="Tarjeta credito" domain="[('tipoliquidacion_id.name', '=', 'tarjeta credito')]"/>
+                    <field name="tipo_documento" invisible="1"/>
+                    <filter name="filtro_rendir" string="A rendir" domain="[('tipo_documento', '=', 'a_rendir')]"/>
+                    <filter name="filtro_tarjeta" string="Tarjeta credito" domain="[('tipo_documento', '=', 'tarjeta_credito')]"/>
                 </search>
             </field>
         </record>

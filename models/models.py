@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
+
 import re, pyodbc
+
 
 class Liquidaciones(models.Model):
     _name = 'tqc.liquidaciones'
     _description = 'Liquidaciones'
 
     num_solicitud = fields.Char()
-    empleado_id = fields.Many2one('hr.employee')
-    empleado_name = fields.Char()
-    centro_costo = fields.Char()
+    empleado_name = fields.Many2one('hr.employee')
+    centro_costo = fields.Many2one('hr.department')
     observacionenvio = fields.Text()
     numeroplaca = fields.Char()
 
@@ -59,7 +60,28 @@ class Liquidaciones(models.Model):
     saldo = fields.Monetary(currency_field='currency_id')
     moneda = fields.Char()
 
+    tipo_documento = fields.Selection([('a_rendir', 'A rendir'),
+                                       ('tarjeta_credito', 'Tarjeta Crédito')],
+                                      default='a_rendir', string='Tipo documento')
+
     table_depositos = fields.Html()
+
+    def conbuton(self):
+        pass
+    @api.model
+    def create(self, vals):
+        if "TARJETA" in vals.get("glosa_entrega"):
+            vals['tipo_documento'] = 'tarjeta_credito'
+        res = super().create(vals)
+        return res
+
+    @api.depends('glosa_entrega')
+    def _compute_tipo_documento(self):
+        for rec in self:
+            if "TARJETA" in rec.glosa_entrega:
+                rec.tipo_documento = 'tarjeta_credito'
+            else:
+                rec.tipo_documento = 'a_rendir'
 
     @api.model
     def get_expense_dashboard(self):
@@ -113,7 +135,8 @@ class Liquidaciones(models.Model):
         user_bd = "vacaciones"
         pass_bd = "exvacaciones"
         table_bd = "tqc.liquidaciones"
-        table_relations = ""
+        table_relations = """empleado_name OF hr.employee"""
+
         sql_prime = """SELECT
                   ENTREGA_A_RENDIR AS external_id,
                   ENTREGA_A_RENDIR AS num_solicitud,
@@ -486,8 +509,7 @@ class Liquidaciones(models.Model):
             'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             "target": "current",
             "context": {'search_default_filtro_rendir': True,
-                        'create': False,
-                        'delete': False},
+                        },
             # "domain": [('warehouse_id.id', 'in', warehose_ids)],
             'help': """
                                 <p class="o_view_nocontent_smiling_face">
@@ -519,6 +541,7 @@ class detalleLiquidaciones(models.Model):
     totaldocumento = fields.Monetary(currency_field='currency_id')
 
     cuenta_contable = fields.Many2one('cuenta.contable.gastos')
+    tipodocumento = fields.Many2one('tqc.tipo.documentos')
     observacionrepresentacion = fields.Text()
     nocliente = fields.Char()
 
@@ -560,6 +583,23 @@ class detalleLiquidaciones(models.Model):
             if rec.moneda == 'USD':
                 rec.currency_id = 2
 
+    @api.constrains('base_afecta')
+    def check_saldo(self):
+        for rec in self:
+            saldo_liqudacion = rec.liquidacion_id.saldo
+            sum_total = sum(rec.liquidacion_id.detalleliquidaciones_id.mapped('totaldocumento'))
+            # print("Saldo : ",saldo_liqudacion)
+            # print("Saldo 2 : ",sum_total)
+            if sum_total > saldo_liqudacion:
+                raise UserError(_('Se paso del saldo'))
+
+    @api.onchange('base_afecta','base_inafecta')
+    def _compute_igv_total(self):
+        for rec in self:
+            monto_igv = (rec.base_afecta*18)/100
+            rec.montoigv = monto_igv
+            rec.totaldocumento = monto_igv + rec.base_afecta + rec.base_inafecta
+
     def action_approve(self):
         pass
 
@@ -586,6 +626,12 @@ class depositos(models.Model):
 class tipoLiquidaciones(models.Model):
     _name = 'tqc.tipo.liquidaciones'
     _description = 'Tipo de Liquidaciones'
+
+    name = fields.Char()
+
+class tipoDocumento(models.Model):
+    _name = 'tqc.tipo.documentos'
+    _description = 'Tipo de Documentos'
 
     name = fields.Char()
 

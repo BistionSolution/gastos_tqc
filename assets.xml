@@ -7,14 +7,17 @@
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/gastos_tqc/static/src/js/liquidacion_header.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/registro_gasto.js"/>
+
+            <script type="text/javascript" src="/gastos_tqc/static/src/js/list_renderer.js"/>
+
         </xpath>
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/gastos_tqc/static/src/scss/gastos_tqc.scss"/>
         </xpath>
         <xpath expr="//script[last()]" position="after">
             <script type="text/javascript" src="/gastos_tqc/static/src/js/table_depositos.js"/>
-            <script type="text/javascript" src="/gastos_tqc/static/src/js/list_renderer.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/list_editable_render.js"/>
+
         </xpath>
     </template>
 <!--        <template id="assets_tests" name="HR Expense Assets Tests" inherit_id="web.assets_tests">-->

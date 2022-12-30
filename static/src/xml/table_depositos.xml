@@ -3,22 +3,6 @@
     <t t-name="table_depositos">
         <div class="o_list_view">
             <div class="table-responsive">
-
-                <div class="o_gastos_button" name="state" data-original-title="" title="">
-                    <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn btn-primary"
-                            aria-current="step">
-                        Sin visto contable
-                    </button>
-                    <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
-                            aria-current="step">
-                        Sin visto jefatura
-                    </button>
-                    <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
-                            aria-current="step">
-                        Sin visto jefe
-                    </button>
-                </div>
-
                 <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped o_section_and_note_list_view table-borderless"
                        style="table-layout: fixed; display: revert;">
             <thead style="width:100% !important;">

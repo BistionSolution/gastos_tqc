@@ -5,17 +5,22 @@
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
-                <tree create="0" delete="0" >
+<!--                create="0" delete="0" -->
+                <tree>
                     <field name="num_solicitud"/>
+<!--                    <field name="empleado_name"/>-->
+
+<!--                    <field name="tipo_documento"/>-->
+
                     <field name="fecha_entrega" string="Fecha de solicitud"/>
-                    <field name="fecha_contable"/>
+<!--                    <field name="fecha_contable"/>-->
                     <field name="moneda"/>
                     <field name="currency_id"/>
                     <field name="glosa_entrega" string="Glosa de solicitud"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 <!--                    <field name="observacionenvio"/>-->
-                    <field name="numeroplaca"/>
+<!--                    <field name="numeroplaca"/>-->
 <!--                    <field name="glosa_entrega"/>-->
                     <field name="state"/>
 <!--                    <field name="tipoliquidacion_id"/>-->
@@ -41,6 +46,7 @@
                                 <field name="centro_costo" string="Centro de Costo" readonly="1"/>
                                 <field name="glosa_entrega" string="Glosa de solicitud" readonly="1"/>
 <!--                                <field name="moneda" readonly="1"/>-->
+                                <button name="conbuton" string="Generar Liquidacion"/>
                             </group>
                             <group>
                                 <field name="monto_entrega"/>
@@ -54,29 +60,26 @@
 
                          <notebook>
 
-                             <page string="Detalle Liquidaciones">
+                             <page string="Documentos">
 
                                  <field name="detalleliquidaciones_id" class="custom-control custom-checkbox" widget="section_and_note_one2many" mode="tree">
                                     <tree editable="bottom">
-                                        <field name="tipo"/>
+                                        <field name="tipodocumento"/>
 
                                         <field name="ruc"/>
                                         <field name="subtipo"/>
                                         <field name="serie"/>
                                         <field name="fechaemision"/>
-
+                                         <field name="moneda"/>
                                         <field name="base_afecta" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
                                         <field name="base_inafecta" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                         <field name="montoigv" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field name="moneda"/>
-
-                                        <field name="totaldocumento"/>
+                                        <field name="totaldocumento" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                         <field name="numero"/>
                                         <field name="ruc"/>
                                         <field name="cuenta_contable"/>
-
-                                        <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up" />
-                                        <button string="Rechazar" name="action_refuse" type="object" icon="fa-times" />
+<!--                                        <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up" />-->
+<!--                                        <button string="Rechazar" name="action_refuse" type="object" icon="fa-times" />-->
 <!--                                        attrs="{'invisible':['|',('current_user_uid','!=',1),('state','!=','aprobado1')]}"-->
 
                                     </tree>
@@ -91,7 +94,7 @@
                                     </form>
                             </field>
                              </page>
-                             <page string="Depósito">
+                             <page string="Historial ERC">
                                  <field name="table_depositos" widget="widget_depositos"/>
                              </page>
                          </notebook>

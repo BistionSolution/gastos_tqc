@@ -25,11 +25,14 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/ir_rules.xml',
         'security/res_group.xml',
+
         'views/liquidaciones.xml',
         'views/templates.xml',
         'views/cuenta_contable.xml',
         'views/tipo_liquidaciones.xml',
+        'views/tipo_documentos.xml',
         'views/registrar_gasto.xml',
         'assets.xml',
     ],
