@@ -1,130 +1,134 @@
 <odoo>
     <data>
         <record id="view_tree_registro_gasto" model="ir.ui.view">
-        <field name="name">view.tree.tqc.liquidaciones</field>
+            <field name="name">view.tree.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-<!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
-<!--                create="0" delete="0" -->
+                <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
+                <!--                create="0" delete="0" -->
                 <tree>
                     <field name="num_solicitud"/>
-<!--                    <field name="empleado_name"/>-->
-
-<!--                    <field name="tipo_documento"/>-->
+                    <!--                    <field name="empleado_name"/>-->
+                    <field name="state"/>
+                    <field name="tipo_documento"/>
 
                     <field name="fecha_entrega" string="Fecha de solicitud"/>
-<!--                    <field name="fecha_contable"/>-->
+                    <!--                    <field name="fecha_contable"/>-->
                     <field name="moneda"/>
                     <field name="currency_id"/>
                     <field name="glosa_entrega" string="Glosa de solicitud"/>
-                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
+                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"
+                           sum="Total Of Ages"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-<!--                    <field name="observacionenvio"/>-->
-<!--                    <field name="numeroplaca"/>-->
-<!--                    <field name="glosa_entrega"/>-->
-                    <field name="state"/>
-<!--                    <field name="tipoliquidacion_id"/>-->
-<!--                    <field name="id_current" invisible="1"/>-->
+                    <!--                    <field name="observacionenvio"/>-->
+                    <!--                    <field name="numeroplaca"/>-->
+                    <!--                    <field name="glosa_entrega"/>-->
+                    <field name="habilitado_state"/>
+
+                    <!--                    <field name="tipoliquidacion_id"/>-->
+                    <!--                    <field name="id_current" invisible="1"/>-->
                 </tree>
             </field>
         </record>
 
-                <!--VISTA ATORIZACION TREE-->
-      <record id="view_form_registro_gasto" model="ir.ui.view">
-        <field name="name">view.form.tqc.liquidaciones</field>
+        <!--VISTA from TREE-->
+        <record id="view_form_registro_gasto" model="ir.ui.view">
+            <field name="name">view.form.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
+            <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <form string="Liquidacion">
-<!--                    <header>-->
-<!--&lt;!&ndash;                        <button string="Enviar a aprobacion" name="action_confirm" states="a_enviar" type="object" class="oe_highlight"/>&ndash;&gt;-->
-<!--                        <field name="state" widget="statusbar" statusbar_visible="draft,jefatura,contable"/>-->
-<!--                    </header>-->
-                        <group string="Detalle Liquidaciones">
-                            <group>
-                                <field name="num_solicitud" readonly="1"/>
-                                <field name="fecha_entrega" readonly="1"/>
-                                <field name="centro_costo" string="Centro de Costo" readonly="1"/>
-                                <field name="glosa_entrega" string="Glosa de solicitud" readonly="1"/>
-<!--                                <field name="moneda" readonly="1"/>-->
-                                <button name="conbuton" string="Generar Liquidacion"/>
-                            </group>
-                            <group>
-                                <field name="monto_entrega"/>
-                                <field name="saldo"/>
-<!--                                <field name="observacionenvio" readonly="1"/>-->
-                                <field name="currency_id" readonly="1" string="Moneda"/>
-                                <field name="numeroplaca" readonly="1"/>
-                                <field name="tipoliquidacion_id" readonly="1"/>
-                            </group>
+                    <field name="habilitado_state" invisible="1"/>
+                    <!--                    <header>-->
+                    <!--&lt;!&ndash;                        <button string="Enviar a aprobacion" name="action_confirm" states="a_enviar" type="object" class="oe_highlight"/>&ndash;&gt;-->
+                    <!--                        <field name="state" widget="statusbar" statusbar_visible="draft,jefatura,contable"/>-->
+                    <!--                    </header>-->
+                    <group string="Detalle Liquidaciones">
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="num_solicitud" readonly="1"/>
+                            <field name="fecha_entrega" readonly="1"/>
+                            <field name="centro_costo" string="Centro de Costo" readonly="1"/>
+                            <field name="glosa_entrega" string="Glosa de solicitud" readonly="1"/>
+                            <!--                                <field name="moneda" readonly="1"/>-->
+
                         </group>
+                        <group>
+                            <field name="monto_entrega"/>
+                            <field name="saldo"/>
+                            <!--                                <field name="observacionenvio" readonly="1"/>-->
+                            <field name="currency_id" readonly="1" string="Moneda"/>
+                            <field name="numeroplaca" readonly="1"/>
+                            <field name="tipoliquidacion_id" readonly="1"/>
+                            <div class="oe_read_only">
+                                <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
+                                        class="oe_highlight" attrs="{'readonly': [('habilitado_state','!=','habilitado')]}"/>
+                            </div>
 
-                         <notebook>
+                        </group>
+                    </group>
 
-                             <page string="Documentos">
+                    <notebook>
 
-                                 <field name="detalleliquidaciones_id" class="custom-control custom-checkbox" widget="section_and_note_one2many" mode="tree">
-                                    <tree editable="bottom">
-                                        <field name="tipodocumento"/>
+                        <page string="Documentos">
 
-                                        <field name="ruc"/>
+                            <field name="detalleliquidaciones_id" class="custom-control custom-checkbox"
+                                   widget="section_and_note_one2many" mode="tree">
+                                <tree editable="bottom">
+                                    <field name="tipodocumento"/>
+                                    <field name="state"/>
+
+                                    <field name="ruc"/>
+                                    <field name="subtipo"/>
+                                    <field name="serie"/>
+                                    <field name="fechaemision"/>
+                                    <field name="moneda"/>
+                                    <field name="base_afecta" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
+                                    <field name="base_inafecta" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="montoigv" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="totaldocumento" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="numero"/>
+                                    <field name="ruc"/>
+                                    <field name="cuenta_contable"/>
+                                    <!--                                        <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up" />-->
+                                    <!--                                        <button string="Rechazar" name="action_refuse" type="object" icon="fa-times" />-->
+                                    <!--                                        attrs="{'invisible':['|',('current_user_uid','!=',1),('state','!=','aprobado1')]}"-->
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="tipo"/>
                                         <field name="subtipo"/>
                                         <field name="serie"/>
-                                        <field name="fechaemision"/>
-                                         <field name="moneda"/>
-                                        <field name="base_afecta" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
-                                        <field name="base_inafecta" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field name="montoigv" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field name="totaldocumento" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                         <field name="numero"/>
                                         <field name="ruc"/>
-                                        <field name="cuenta_contable"/>
-<!--                                        <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up" />-->
-<!--                                        <button string="Rechazar" name="action_refuse" type="object" icon="fa-times" />-->
-<!--                                        attrs="{'invisible':['|',('current_user_uid','!=',1),('state','!=','aprobado1')]}"-->
-
-                                    </tree>
-                                    <form>
-                                        <group>
-                                            <field name="tipo"/>
-                                            <field name="subtipo"/>
-                                            <field name="serie"/>
-                                            <field name="numero"/>
-                                            <field name="ruc"/>
-                                        </group>
-                                    </form>
+                                    </group>
+                                </form>
                             </field>
-                             </page>
-                             <page string="Historial ERC">
-                                 <field name="table_depositos" widget="widget_depositos"/>
-                             </page>
-                         </notebook>
+                        </page>
+                        <page string="Historial ERC">
+                            <field name="table_depositos" widget="widget_depositos"/>
+                        </page>
+                    </notebook>
+
                 </form>
 
             </field>
         </record>
 
-
-      <!--Actiones-->
+        <!--Actiones-->
 <!--        <record id="action_view_tree_liquidaciones" model="ir.actions.act_window">-->
-<!--                <field name="name">Tree registro gastos</field>-->
-<!--                <field name="res_model">tqc.liquidaciones</field>-->
-<!--                <field name="view_mode">tree,form</field>-->
-<!--                <field name="search_view_id" ref="gastos_tqc.search_register_filter"/>-->
-<!--&lt;!&ndash;                <field name="context">{'search_default_draft':1}</field>&ndash;&gt;-->
-<!--                <field name="target">main</field>-->
-<!--                <field name="help" type="html">-->
-<!--                    <p class="o_view_nocontent_empty_folder">-->
-<!--                        No RFQs to display-->
-<!--                    </p>-->
-<!--                </field>-->
-<!--        </record>-->
-
-<!--          <record id="action_view_filter_gastos" model="ir.actions.act_window">-->
-<!--            <field name="name">Liquidaciones</field>-->
+<!--            <field name="name">Flujo de aprobaciones</field>-->
 <!--            <field name="res_model">tqc.liquidaciones</field>-->
-<!--            <field name="view_mode">form,tree</field>-->
-<!--            <field name="view_id" ref="gastos_tqc.view_tree_tqc_liquidaciones"/>-->
-<!--            <field name="search_view_id" ref="gastos_tqc.view_gastos_tqc_filterview_gastos_tqc_filter"/>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--            <field name="search_view_id" ref="gastos_tqc.search_view_gastos_tqc_filter"/>-->
+<!--            <field name="view_ids" eval="[(5, 0, 0),-->
+<!--        (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),-->
+<!--        (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>-->
+<!--            <field name="context">{'search_default_draft':1}</field>-->
 <!--            <field name="target">main</field>-->
 <!--            <field name="help" type="html">-->
 <!--                <p class="o_view_nocontent_empty_folder">-->
@@ -133,8 +137,54 @@
 <!--            </field>-->
 <!--        </record>-->
 
-          <!-- Action Liquidaciones -->
-          <record model="ir.actions.server" id="action_registro_gastos">
+        <!--      SEARCH VIEW-->
+        <record id="search_register_filter" model="ir.ui.view">
+            <field name="name">filter.registro.gastos.tqc</field>
+            <field name="model">tqc.liquidaciones</field>
+            <field name="arch" type="xml">
+                <search string="Search Tqc">
+                    <field name="tipo_documento" invisible="1"/>
+                    <filter name="filtro_rendir" string="A rendir" domain="[('tipo_documento', '=', 'a_rendir')]"/>
+                    <filter name="filtro_tarjeta" string="Tarjeta credito"
+                            domain="[('tipo_documento', '=', 'tarjeta_credito')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_view_registro_liquidaciones" model="ir.actions.act_window">
+            <field name="name">Registro de gasto</field>
+            <field name="res_model">tqc.liquidaciones</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>
+            <field name="search_view_id" ref="gastos_tqc.search_register_filter"/>
+            <!--                <field name="context">{'search_default_draft':1}</field>-->
+            <field name="target">main</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No RFQs to display
+                </p>
+            </field>
+        </record>
+
+        <!--          <record id="action_view_filter_gastos" model="ir.actions.act_window">-->
+        <!--            <field name="name">Liquidaciones</field>-->
+        <!--            <field name="res_model">tqc.liquidaciones</field>-->
+        <!--            <field name="view_mode">form,tree</field>-->
+        <!--            <field name="view_id" ref="gastos_tqc.view_tree_tqc_liquidaciones"/>-->
+        <!--            <field name="search_view_id" ref="gastos_tqc.view_gastos_tqc_filterview_gastos_tqc_filter"/>-->
+        <!--            <field name="target">main</field>-->
+        <!--            <field name="help" type="html">-->
+        <!--                <p class="o_view_nocontent_empty_folder">-->
+        <!--                    No RFQs to display-->
+        <!--                </p>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+
+        <!-- Action Liquidaciones -->
+        <record model="ir.actions.server" id="action_registro_gastos">
             <field name="name">Action registrar gastos</field>
             <field name="model_id" ref="model_tqc_liquidaciones"/>
             <field name="state">code</field>
@@ -145,8 +195,9 @@
         </record>
 
         <!-- Top menu item -->
-    <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
-<!--        <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1" name="Registro gasto" action="gastos_tqc.action_registro_gastos"/>-->
-        <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1" name="Registro gasto" action="gastos_tqc.action_registro_gastos"/>
+        <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
+        <!--        <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1" name="Registro gasto" action="gastos_tqc.action_registro_gastos"/>-->
+        <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1"
+                  name="Registro gasto" action="gastos_tqc.action_registro_gastos"/>
     </data>
 </odoo>

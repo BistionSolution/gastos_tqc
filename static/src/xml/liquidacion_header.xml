@@ -2,7 +2,7 @@
 
 <templates id="template">
     <t t-name="gastos_tqc.dashboard_liquid_tqc">
-        <div class="o_expense_container d-flex o_form_statusbar gastos_tqc o_context_one" context='{"search_default_draft": true}'>
+        <div class="o_expense_container d-flex o_form_statusbar gastos_tqc " context='{"search_default_draft": true}'>
 <!--            <t t-foreach="expenses" t-as="expense">-->
 <!--                <div t-attf-class="o_expense_card o_arrow_button flex-grow-1 d-flex flex-column border-right-0 btn btn-primary">-->
 <!--                    <div class="content_center gastos_tqc">-->
@@ -25,11 +25,13 @@
 <!--                        aria-current="step">-->
 <!--                    Sin visto contable-->
 <!--                </button>-->
-                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
+                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button o_context_two btn-primary"
+                        context='{"search_default_draft": false,"search_default_contable": true}'
                         aria-current="step">
                     Sin visto contable
                 </button>
-                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button btn-primary"
+                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button o_context_one btn-primary"
+                        context='{"search_default_draft": true,"search_default_contable": false}'
                         aria-current="step">
                     Sin visto jefe
                 </button>

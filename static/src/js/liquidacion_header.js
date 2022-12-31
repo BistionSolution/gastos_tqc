@@ -1,5 +1,5 @@
 odoo.define('gastos_tqc.liquidacion_tree', function (require) {
-"use strict";
+    "use strict";
     // var DocumentUploadMixin = require('hr_expense.documents.upload.mixin');
     var ListController = require('web.ListController');
     var ListView = require('web.ListView');
@@ -28,49 +28,56 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
 
     // Expense List Renderer
     var tqcExpenseListRendererHeader = ListRenderer.extend({
-        events:_.extend({}, ListRenderer.prototype.events, {
-            'click .o_context_one': '_context_register',
-        }),
-        _renderView: async function () {
-            var self = this;
-            await this._super(...arguments);
-            console.log("ENTRO CORECTO ");
-            const result = await this._rpc({
-                model: 'tqc.liquidaciones',
-                method: 'get_expense_dashboard',
-                context: this.context,
-            });
+            events: _.extend({}, ListRenderer.prototype.events, {
+                'click .o_context_one': '_context_jefe',
+                'click .o_context_two': '_context_contable',
+            }),
+            _renderView: async function () {
+                var self = this;
+                await this._super(...arguments);
+                console.log("ENTRO CORECTO ");
+                const result = await this._rpc({
+                    model: 'tqc.liquidaciones',
+                    method: 'get_expense_dashboard',
+                    context: this.context,
+                });
 
-            self.$el.parent().find('.o_expense_container').remove();
-            const elem = QWeb.render('gastos_tqc.dashboard_liquid_tqc', {
-                expenses: result,
-                // render_monetary_field: self.render_monetary_field,
-            });
-            self.$el.prepend(elem);
-        },
-        _context_register: function (e) {
-            console.log("PRIMERO  ESTA")
-            e.preventDefault();
-            var $action = $(e.currentTarget);
-            this.trigger_up('dashboard_open_action', {
-                action_name: "gastos_tqc.action_view_filter_gastos",
-                action_context: $action.attr('context'),
-            });
-            console.log("ESTE ES KA ACCUIBa sdfasd ; ", $action.attr('context'))
+                self.$el.parent().find('.o_expense_container').remove();
+                const elem = QWeb.render('gastos_tqc.dashboard_liquid_tqc', {
+                    expenses: result,
+                    // render_monetary_field: self.render_monetary_field,
+                });
+                self.$el.prepend(elem);
+            },
+            _context_jefe: function (e) {
+                e.preventDefault();
+                var $action = $(e.currentTarget);
+                this.trigger_up('dashboard_open_action', {
+                    action_name: "gastos_tqc.action_view_tree_liquidaciones",
+                    action_context: $action.attr('context'),
+                });
+            },
+            _context_contable: function (e) {
+                e.preventDefault();
+                var $action = $(e.currentTarget);
+                this.trigger_up('dashboard_open_action', {
+                    action_name: "gastos_tqc.action_view_contable_liquidaciones",
+                    action_context: $action.attr('context'),
+                });
+            },
+            // render_monetary_field: function (value, currency_id) {
+            //     value = value.toFixed(2);
+            //     var currency = session.get_currency(currency_id);
+            //     if (currency) {
+            //         if (currency.position === "after") {
+            //             value += currency.symbol;
+            //         } else {
+            //             value = currency.symbol + value;
+            //         }
+            //     }
+            //     return value;
+            // }
         }
-                // render_monetary_field: function (value, currency_id) {
-        //     value = value.toFixed(2);
-        //     var currency = session.get_currency(currency_id);
-        //     if (currency) {
-        //         if (currency.position === "after") {
-        //             value += currency.symbol;
-        //         } else {
-        //             value = currency.symbol + value;
-        //         }
-        //     }
-        //     return value;
-        // }
-    }
     );
 
     var tqcGastosDashboardController = ListController.extend({
@@ -84,7 +91,7 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
          */
         _onDashboardOpenAction: function (e) {
             console.log("ESEGUNDO ESTA")
-            console.log("esta es : ",e.data.action_name)
+            console.log("esta es : ", e.data.action_name)
             return this.do_action(e.data.action_name,
                 {additional_context: JSON.parse(e.data.action_context)});
         },
