@@ -7,7 +7,6 @@
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/gastos_tqc/static/src/js/liquidacion_header.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/registro_gasto.js"/>
-
         </xpath>
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/gastos_tqc/static/src/scss/gastos_tqc.scss"/>
@@ -18,6 +17,8 @@
             <script type="text/javascript" src="/gastos_tqc/static/src/js/list_renderer.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/list_editable_render.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/web_client.js"/>
+
+            <script type="text/javascript" src="/gastos_tqc/static/src/js/onemany_selectable.js"/>
 
         </xpath>
     </template>

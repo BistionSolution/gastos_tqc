@@ -8,7 +8,7 @@ class Liquidaciones(models.Model):
     _name = 'tqc.liquidaciones'
     _description = 'Liquidaciones'
 
-    name = fields.Char(default="HOLA")
+    name = fields.Char(compute='_get_name_soli')
 
     num_solicitud = fields.Char()
     empleado_name = fields.Many2one('hr.employee')
@@ -26,11 +26,11 @@ class Liquidaciones(models.Model):
     # fechaaprobacioncontabilidad = fields.Datetime()
 
     state = fields.Selection([
-        ('habilitado','habilitado'),
+        ('habilitado', 'habilitado'),
         ('jefatura', 'Sin visto jefe'),
         ('contable', 'Visto Contable'),
         ('pendiente', 'Pediente a procesar')],
-        default='draft', string='Estado Solicitud')
+        default='habilitado', string='Estado Solicitud')
 
     aprobacioncontabilidad = fields.Boolean()
     ingresocompletado = fields.Boolean()
@@ -40,7 +40,6 @@ class Liquidaciones(models.Model):
                                          default=lambda self: self.env['tqc.tipo.liquidaciones'].search(
                                              [('name', '=', 'A rendir')]))
     detalleliquidaciones_id = fields.One2many('tqc.detalle.liquidaciones', 'liquidacion_id')
-    # transitdetalle_id = fields.One2many('tqc.transit.detalle', 'liquidacion_id')
 
     entrega_a_rendir = fields.Char()
     fecha_entrega = fields.Date()
@@ -70,30 +69,23 @@ class Liquidaciones(models.Model):
                                       default='a_rendir', string='Tipo documento')
 
     habilitado_state = fields.Selection([('habilitado', 'Habilitado para liquidar'),
-                                       ('proceso', 'Progreso de liquidacion')],
+                                       ('proceso', 'Proceso de liquidacion'),
+                                       ('corregir', 'Corregir y seguir')],
                                       default='habilitado', string='Tipo documento')
 
     table_depositos = fields.Html()
-    def init(self):
-        print("INCIO TODO LIQUIDACINES")
+
+    @api.depends('num_solicitud')
+    def _get_name_soli(self):
+        for rec in self:
+            if rec.num_solicitud:
+                rec.name = rec.num_solicitud
+            else:
+                rec.name = False
     @api.model
     def default_get(self, default_fields):
         print("DEFAUL GET FUNTION IS : ",default_fields)
         return super(Liquidaciones, self).default_get(default_fields)
-
-    def generate_liquidacion(self):
-        ids = self.detalleliquidaciones_id.mapped('id')
-        print("VAMOSSS es :", ids)
-        self.habilitado_state = 'proceso'
-        for id in ids:
-            self.env["tqc.detalle.liquidaciones"].browse(id).write(
-                {
-                    'state': 'historial'
-                })
-        # self.env["tqc.detalle.liquidaciones"].browse(self.id).write(
-        #     {
-        #         'state': 'historial'
-        #     })
 
     @api.model
     def importar_exactus(self):
@@ -132,7 +124,7 @@ class Liquidaciones(models.Model):
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
-
+            print("QUE PASOOO")
             if "SELECT" in sql:
                 campList = self.convert_sql(sql)  # lista de campos odoo
                 company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
@@ -364,18 +356,20 @@ class Liquidaciones(models.Model):
         return "HOLAAA"
     @api.model
     def create(self, vals):
-        if "TARJETA" in vals.get("glosa_entrega"):
+        if "TARJETA" in str(vals.get("glosa_entrega")):
             vals['tipo_documento'] = 'tarjeta_credito'
-        res = super().create(vals)
+        else:
+            vals['tipo_documento'] = 'a_rendir'
+        res = super(Liquidaciones, self).create(vals)
         return res
 
     @api.model
     def get_expense_dashboard(self):
-        v_draf = len(self.env['tqc.liquidaciones'].search([('state', '=', 'draft')]))
+        v_draf = len(self.env['tqc.liquidaciones'].search([('state', '=', 'habilitado')]))
         v_jefatura = len(self.env['tqc.liquidaciones'].search([('state', '=', 'jefatura')]))
         v_contable = len(self.env['tqc.liquidaciones'].search([('state', '=', 'contable')]))
         expense_state = {
-            'draft': {
+            'habilitado': {
                 'description': _('Sin visto Jefe'),
                 'amount': v_draf,
                 'currency': self.env.company.currency_id.id,
@@ -526,8 +520,42 @@ class Liquidaciones(models.Model):
         }
         return res
 
+    def generate_liquidacion(self):
+        ids = self.detalleliquidaciones_id.mapped('id')
+        print("VAMOSSS es :", ids)
+        self.write({
+            'habilitado_state':'proceso',
+            'state':'jefatura'
+        })
+
+        for id in ids:
+            self.env["tqc.detalle.liquidaciones"].browse(id).write(
+                {
+                    'state': 'historial'
+                })
+        # self.env["tqc.detalle.liquidaciones"].browse(self.id).write(
+        #     {
+        #         'state': 'historial'
+        #     })
     def button_jefatura(self):
-        self.write({'state':'contable'})
+        if self.state == 'jefatura':
+            self.write({'state':'contable'})
 
     def button_contable(self):
-        pass
+        if self.state == 'contable':
+            self.write({'state':'pendiente'})
+
+    def volver_enviar(self):
+        self.env['tqc.detalle.liquidaciones'].search([('liquidacion_id', '=', self.id)]).write({
+            'revisado_state':'corregido',
+            'state':'historial'
+        })
+        self.write({
+            'habilitado_state':'proceso'
+        })
+    @api.model
+    def get_count_states(self):
+        jefatura = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['jefatura'])])
+        contable = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['contable'])])
+        pendiente = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['pendiente'])])
+        return [jefatura, contable, pendiente]

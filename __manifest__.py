@@ -42,6 +42,7 @@
     ],
     'qweb': [
         'static/src/xml/liquidacion_header.xml',
+        'static/src/xml/select_onemany.xml',
         'static/src/xml/table_depositos.xml'
     ],
     'application': True,

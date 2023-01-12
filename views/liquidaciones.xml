@@ -17,8 +17,7 @@
                     <field name="moneda"/>
                     <field name="currency_id" string="Moneda"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                    <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"
-                           sum="Total Of Ages"/>
+                    <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <!--                    <field name="observacionenvio"/>-->
                     <!--                    <field name="numeroplaca"/>-->
                     <!--                    <field name="glosa_entrega"/>-->
@@ -41,13 +40,14 @@
                                 class="oe_highlight"/>
                         <button string="Aprobar" name="button_contable" states="contable" type="object"
                                 class="oe_highlight"/>
-                        <field name="state" widget="statusbar" statusbar_visible="jefatura,contable"/>
+                        <field name="state" widget="statusbar" statusbar_visible="jefatura,contable,pendiente"/>
                     </header>
                     <group string="Detalle Liquidaciones">
                         <group>
                             <field name="num_solicitud" readonly="1"/>
                             <field name="empleado_name" readonly="1"/>
                             <field name="fecha_entrega" readonly="1"/>
+                            <field name="habilitado_state" readonly="1" invisible="1"/>
                             <field name="centro_costo" string="Centro de Costo" readonly="1"/>
                         </group>
                         <group>
@@ -60,10 +60,13 @@
                     <notebook>
                         <page string="Detalle Liquidaciones">
                             <field name="detalleliquidaciones_id" class="custom-control custom-checkbox"
-                                   widget="section_and_note_one2many" mode="tree">
-                                <tree editable="bottom">
+                                   widget="select_onemany" mode="tree">
+                                <!--                                section_and_note_one2many-->
+                                <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
+                                      decoration-warning="revisado_state == 'corregido'"
+                                      decoration-danger="revisado_state== 'rechazado'">
                                     <field name="tipo"/>
-
+                                    <field name="revisado_state"/>
                                     <field name="ruc"/>
                                     <field name="subtipo"/>
                                     <field name="serie"/>
@@ -79,11 +82,13 @@
 
                                     <field name="totaldocumento"/>
                                     <field name="numero"/>
-                                    <field name="ruc"/>
                                     <field name="cuenta_contable"/>
+                                    <field name="observacionrepresentacion" string="Obs. Presentacion"/>
 
-                                    <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up"/>
-                                    <button string="Rechazar" name="action_refuse" type="object" icon="fa-times"/>
+                                    <field name="observacionjefatura" string="Obs. jefatura"/>
+
+                                    <!--                                    <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up"/>-->
+                                    <!--                                    <button string="Rechazar" name="action_refuse" type="object" icon="fa-times"/>-->
                                     <!--                                        attrs="{'invisible':['|',('current_user_uid','!=',1),('state','!=','aprobado1')]}"-->
 
                                 </tree>
@@ -97,9 +102,6 @@
                                     </group>
                                 </form>
                             </field>
-                        </page>
-                        <page string="Depósito">
-                            <field name="table_depositos" widget="widget_depositos"/>
                         </page>
                     </notebook>
 
@@ -118,6 +120,8 @@
                     <filter name="jefatura" string="Sin visto jefe" domain="[('state', '=', 'jefatura')]"/>
                     <separator/>
                     <filter name="contable" string="Contable" domain="[('state', '=', 'contable')]"/>
+                    <separator/>
+                    <filter name="pendiente" string="Pendiente" domain="[('state', '=', 'pendiente')]"/>
                 </search>
             </field>
         </record>
@@ -133,7 +137,7 @@
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>
             <field name="context">{'search_default_jefatura':1}</field>
-            <field name="domain">[('habilitado_state', '=', 'proceso')]</field>
+            <field name="domain">[('habilitado_state', 'in', ['proceso','corregir'])]</field>
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
@@ -150,8 +154,27 @@
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>
-            <field name="context">{'search_default_contable':1}</field>
-            <field name="domain">[('habilitado_state', '=', 'proceso')]</field>
+            <!--            <field name="context">{'search_default_contable':1}</field>-->
+            <field name="domain">[('habilitado_state', 'in', ['proceso','corregir'])]</field>
+
+            <field name="target">main</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No RFQs to display
+                </p>
+            </field>
+        </record>
+
+        <record id="action_view_pendiente_liquidaciones" model="ir.actions.act_window">
+            <field name="name">Flujo de aprobaciones</field>
+            <field name="res_model">tqc.liquidaciones</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="gastos_tqc.search_view_gastos_tqc_filter"/>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>
+            <field name="context">{'search_default_pendiente':1}</field>
+            <field name="domain">[('habilitado_state', 'in', ['proceso','corregir'])]</field>
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
@@ -204,8 +227,9 @@
         <!--    <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_registro_gastos"/>
         <!--    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>-->
-        <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2"
+        <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Flujo aprobaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>
+
         <!-- menu categories -->
         <!--
             <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>

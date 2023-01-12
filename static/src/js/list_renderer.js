@@ -32,21 +32,17 @@ odoo.define("gastos_tqc.restrict_list_view",function(require){
         many2one: 'o_list_many2one',
     };
 
-    var MyListRenderer = ListRender.include({
+    ListRender.include({
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
         },
         willStart: function () {
-            // console.log('ESte es el valor : ',this)
-            console.log(this.model)
-            console.log(this.res_id)
-            console.log(this.recordData)
             return this._super.apply(this, arguments);
         },
         _renderRow: function (record) {
-            console.log("Index 222 : ")
+            // console.log("Index 222 : ")
             var $row = this._super.apply(this, arguments);
-            console.log("RENDER ROW : ",record.data.state)
+            // console.log("RENDER ROW : ",record.data.state)
             if(record.model === "tqc.detalle.liquidaciones" && record.data.state === 'historial')
             {
                 $row.addClass('hide_row_gasto')
@@ -57,5 +53,4 @@ odoo.define("gastos_tqc.restrict_list_view",function(require){
             return this._super.apply(this, arguments);
         },
     });
-    return MyListRenderer;
 });

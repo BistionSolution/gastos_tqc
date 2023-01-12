@@ -12,21 +12,21 @@ class detalleLiquidaciones(models.Model):
     liquidacion_id = fields.Many2one('tqc.liquidaciones')
     tipo = fields.Char()
     subtipo = fields.Char()
-    serie = fields.Char()
-    numero = fields.Char()
-    ruc = fields.Char()
-    moneda = fields.Char()
-    tipocambio = fields.Integer()
-    fechaemision = fields.Date()
+    serie = fields.Char(required=1)
+    numero = fields.Char(required=1)
+    ruc = fields.Char(string='RUC', required=1)
+    moneda = fields.Char(required=1)
+    tipocambio = fields.Integer(required=1)
+    fechaemision = fields.Date(required=1)
 
-    base_afecta = fields.Monetary(currency_field='currency_id')
-    base_inafecta = fields.Monetary(currency_field='currency_id')
-    montoigv = fields.Monetary(currency_field='currency_id')
-    totaldocumento = fields.Monetary(currency_field='currency_id')
+    base_afecta = fields.Monetary(currency_field='currency_id',required=1)
+    base_inafecta = fields.Monetary(currency_field='currency_id',required=1)
+    montoigv = fields.Monetary(currency_field='currency_id',required=1)
+    totaldocumento = fields.Monetary(currency_field='currency_id',required=1)
 
     cuenta_contable = fields.Many2one('cuenta.contable.gastos')
-    tipodocumento = fields.Many2one('tqc.tipo.documentos')
-    observacionrepresentacion = fields.Text()
+    tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
+    observacionrepresentacion = fields.Text(string='Observacion representacion',required=1)
     nocliente = fields.Char()
 
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
@@ -52,10 +52,21 @@ class detalleLiquidaciones(models.Model):
     proveedornoexiste = fields.Boolean()
     proveedornohabido = fields.Boolean()
 
+    # Estado para poder pasar a modo historial o modo edicion 'documento'
     state = fields.Selection([
         ('document', 'Documento'),
         ('historial', 'Historial ERC')
-    ], string='Tipo', default='document',
+    ], string='Stado', default='document',
+        help="Estado solicitud" +
+             "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
+             "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
+
+    revisado_state = fields.Selection([
+        ('borrador', 'Borrador'),
+        ('aprobado', 'Aprobado'),
+        ('rechazado', 'Rechazado'),
+        ('corregido', 'Corregido'),
+    ], string='Estado', default='borrador',
         help="Tipo de de solicitud" +
              "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
@@ -83,6 +94,12 @@ class detalleLiquidaciones(models.Model):
             rec.montoigv = monto_igv
             rec.totaldocumento = monto_igv + rec.base_afecta + rec.base_inafecta
 
+    def unlink(self):
+        # liquidaciones = self.sudo().env['tqc.liquidaciones'].search([('liquidacion_id', '=', self.id), ('habilitado_state', 'in', ['proceso', 'corregir'])])
+        print("PROCESO LIQUIDACION", self.liquidacion_id.habilitado_state)
+        if self.liquidacion_id.habilitado_state in ['proceso', 'corregir']:
+            raise UserError(_("No puedes eliminar registro en estado 'corregir' y 'proceso'"))
+        return super(detalleLiquidaciones, self).unlink()
     def action_approve(self):
         pass
 
@@ -117,8 +134,6 @@ class tipoDocumento(models.Model):
     _description = 'Tipo de Documentos'
 
     name = fields.Char()
-
-
 class cuentaContable(models.Model):
     _name = 'cuenta.contable.gastos'
     _description = 'Tipo de Liquidaciones'
@@ -141,57 +156,7 @@ class cuentaContable(models.Model):
     #         # else:
     #         #     id_trabajador = record.vc_trabajador.id
 
-class transitdetalle(models.AbstractModel):
+
+class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'
-    _description = 'Transito de Liquidaciones'
-
-    # liquidacion_id = fields.Many2one('tqc.liquidaciones')
-    tipo = fields.Char()
-    subtipo = fields.Char()
-    serie = fields.Char()
-    numero = fields.Char()
-    ruc = fields.Char()
-    moneda = fields.Char()
-    tipocambio = fields.Integer()
-    fechaemision = fields.Date()
-    #
-    # base_afecta = fields.Monetary(currency_field='currency_id')
-    # base_inafecta = fields.Monetary(currency_field='currency_id')
-    # montoigv = fields.Monetary(currency_field='currency_id')
-    # totaldocumento = fields.Monetary(currency_field='currency_id')
-    #
-    # cuenta_contable = fields.Many2one('cuenta.contable.gastos')
-    tipodocumento = fields.Many2one('tqc.tipo.documentos')
-    # observacionrepresentacion = fields.Text()
-    # nocliente = fields.Char()
-    #
-    # currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
-    #                               states={'reported': [('readonly', True)], 'approved': [('readonly', True)],
-    #                                       'done': [('readonly', True)]}, compute='_compute_currency_id',
-    #                               default=lambda self: self.env.company.currency_id)
-
-    useraprobacionjefatura = fields.Integer()
-    fechaaprobacionjefatura = fields.Datetime()
-    aprobacionjefatura = fields.Boolean()
-    observacionjefatura = fields.Text()
-
-    useraprobacioncontabilidad = fields.Integer()
-    fechaaprobacioncontabilidad = fields.Datetime()
-    aprobacioncontabilidad = fields.Boolean()
-    observacioncontabilidad = fields.Text()
-
-    cliente = fields.Char()
-    totaldocumento_soles = fields.Float()
-    cliente_razonsocial = fields.Char()
-    cuenta_contable_descripcion = fields.Char()
-
-    proveedornoexiste = fields.Boolean()
-    proveedornohabido = fields.Boolean()
-
-    state = fields.Selection([
-        ('document', 'Documento'),
-        ('historial', 'Historial ERC')
-    ], string='Tipo',
-        help="Tipo de de solicitud" +
-             "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
-             "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
+    _description = 'Vamos'

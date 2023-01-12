@@ -7,7 +7,7 @@ odoo.define("gastos_tqc.restrict_editable_view",function(require){
     const { WidgetAdapterMixin } = require('web.OwlCompatibility');
     var _t = core._t;
 
-    var ListEditableRender = ListRenderer.include({
+    ListRenderer.include({
         setRowMode: function (recordID, mode) {
             var self = this;
             var record = self._getRecord(recordID);
@@ -63,7 +63,6 @@ odoo.define("gastos_tqc.restrict_editable_view",function(require){
             // Toggle selected class here so that style is applied at the end
             $row.toggleClass('o_selected_row', editMode);
             // Cambios agregado para quitar clase
-            console.log("edit liquidacioness")
             this.$('.o_selected_row').removeClass('hide_row_gasto');
             if (editMode) {
                 this._disableRecordSelectors();

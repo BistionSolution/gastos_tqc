@@ -4,100 +4,94 @@
         <div class="o_field_one2many o_field_widget o_field_x2many o_field_x2many_list custom-control custom-checkbox"
              name="detalleliquidaciones_id" id="o_field_input_837" data-original-title="" title="">
         <div class="o_x2m_control_panel"><div role="toolbar" aria-label="Control panel buttons" class="o_cp_buttons"></div>
-
-
             <div role="search" class="o_cp_pager"></div></div>
             <div class="o_list_view">
             <div class="table-responsive">
-            <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped o_section_and_note_list_view table-borderless"
-                       style="table-layout: fixed; display: revert;">
-            <thead style="width:100% !important;">
-                <tr>
-                    <th data-name="tipo" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="width: 58px;">Tipo
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="ruc" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="width: 43px;">Ruc
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="subtipo" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="width: 66px;">Subtipo
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="serie" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="width: 51px;">Serie
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="fechaemision" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="min-width: 92px; width: 102px;">Fechaemision
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="base_afecta" class="o_monetary_cell o_column_sortable o_list_number_th" tabindex="-1"
-                        data-original-title="" title="" style="min-width: 104px; max-width: 103px; width: 103px;">Base
-                        Afecta
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="base_inafecta" class="o_monetary_cell o_column_sortable o_list_number_th"
-                        tabindex="-1" data-original-title="" title=""
-                        style="min-width: 104px; max-width: 103px; width: 103px;">Base Inafecta
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="montoigv" class="o_monetary_cell o_column_sortable o_list_number_th" tabindex="-1"
-                        data-original-title="" title="" style="min-width: 104px; max-width: 103px; width: 103px;">
-                        Montoigv
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="moneda" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="width: 68px;">Moneda
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="totaldocumento" tabindex="-1" class="o_column_sortable o_list_number_th"
-                        data-original-title="" title="" style="min-width: 104px; max-width: 103px; width: 103px;">
-                        Totaldocumento
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="numero" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="width: 67px;">Numero
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="ruc" tabindex="-1" class="o_column_sortable" data-original-title="" title=""
-                        style="width: 43px;">Ruc
-                        <span class="o_resize"></span>
-                    </th>
-                    <th data-name="cuenta_contable" tabindex="-1" class="o_column_sortable" data-original-title=""
-                        title="" style="max-width: 103px; width: 103px;">Cuenta Contable
-                        <span class="o_resize"></span>
-                    </th>
-                </tr>
+            <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped o_section_and_note_list_view"
+                   style="table-layout: auto; width:100%; overflow-x:auto;">
+
+            <thead>
+                <tr><th data-name="tipodocumento" tabindex="-1" class="o_column_sortable" data-original-title="" title="" style="width: 75px;">Tipo doc.<span
+                    class="o_resize"></span>
+                </th>
+                <th data-name="serie" tabindex="-1" class="o_column_sortable"
+                    data-original-title="" title="" style="width: 51px;">Serie<span
+                    class="o_resize"></span>
+                </th>
+                <th data-name="numero" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title="" style="width: 67px;">Numero<span
+                    class="o_resize"></span></th><th data-name="fechaemision" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title=""
+                                                     style="min-width: 92px; max-width: 92px; width: 92px;">Fecha emisión<span
+                    class="o_resize"></span></th><th data-name="ruc" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title=""
+                                                     style="max-width: 92px; width: 92px;">Ruc proveedor<span
+                    class="o_resize"></span></th><th data-name="subtipo" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title="" style="width: 66px;">Subtipo<span
+                    class="o_resize"></span></th><th data-name="moneda" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title="" style="width: 68px;">Moneda<span
+                    class="o_resize"></span></th><th data-name="base_afecta"
+                                                     class="o_monetary_cell o_column_sortable o_list_number_th"
+                                                     tabindex="-1" data-original-title="" title=""
+                                                     style="min-width: 104px; max-width: 92px; width: 92px;">Base Afecta<span
+                    class="o_resize"></span></th><th data-name="base_inafecta"
+                                                     class="o_monetary_cell o_column_sortable o_list_number_th"
+                                                     tabindex="-1" data-original-title="" title=""
+                                                     style="min-width: 104px; max-width: 92px; width: 92px;">Base Inafecta<span
+                    class="o_resize"></span></th><th data-name="montoigv"
+                                                     class="o_monetary_cell o_column_sortable o_list_number_th"
+                                                     tabindex="-1" data-original-title="" title=""
+                                                     style="min-width: 104px; max-width: 92px; width: 92px;">Montoigv<span
+                    class="o_resize"></span></th><th data-name="totaldocumento"
+                                                     class="o_monetary_cell o_column_sortable o_list_number_th"
+                                                     tabindex="-1" data-original-title="" title=""
+                                                     style="min-width: 104px; max-width: 92px; width: 92px;">Totaldocumento<span
+                    class="o_resize"></span></th><th data-name="cuenta_contable" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title=""
+                                                     style="max-width: 92px; width: 92px;">Cuenta Contable<span
+                    class="o_resize"></span></th><th data-name="nocliente" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title="" style="width: 77px;">Nocliente<span
+                    class="o_resize"></span></th><th data-name="cliente" tabindex="-1" class="o_column_sortable"
+                                                     data-original-title="" title="" style="width: 62px;">Cliente<span
+                    class="o_resize"></span></th><th data-name="cliente_razonsocial" tabindex="-1"
+                                                     class="o_column_sortable" data-original-title="" title=""
+                                                     style="max-width: 92px; width: 92px;">Cliente Razonsocial<span
+                    class="o_resize"></span></th><th data-name="observacionrepresentacion" tabindex="-1"
+                                                     class="o_column_sortable" data-original-title="" title=""
+                                                     style="max-width: 92px; width: 92px;">Observacion representacion<span
+                    class="o_resize"></span></th><th data-name="revisado_state" class="o_badge_cell o_column_sortable"
+                                                     tabindex="-1" data-original-title="" title="" style="width: 61px;">Estado<span
+                    class="o_resize"></span></th></tr>
             </thead>
-            <tbody class="ui-sortable" style="width:100% !important;">
+                <tbody class="ui-sortable" style="width:100% !important;">
                  <t t-foreach="expenses" t-as="expense">
                     <tr class="o_data_row" data-id="tqc.detalle.liquidaciones_4">
-                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="asdfa"><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="sdf"><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="asdf"><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title=""><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell" tabindex="-1" title=""><span t-esc="expense.tipo"/></td>
+                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="gta"><span t-esc="expense.tipodocumento[1]"/></td>
+                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="gta"><span t-if="expense.serie" t-esc="expense.serie"/></td>
+                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="gta"><span t-if="expense.numero" t-esc="expense.numero"/></td>
+                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="gta"><span t-if="expense.fechaemision" t-esc="expense.fechaemision"/></td>
+                        <td class="o_data_cell o_field_cell" tabindex="-1" title="gta"><span t-esc="expense.ruc"/></td>
                         <td class="o_data_cell o_field_cell o_list_number o_monetary_cell" tabindex="-1">
-                            <span t-esc="expense.tipo"/>
+                            <span t-esc="expense.subtipo"/>
                         </td>
                         <td class="o_data_cell o_field_cell o_list_number o_monetary_cell" tabindex="-1">
-                            <span t-esc="expense.tipo"/>
+                            <span t-esc="expense.moneda"/>
                         </td>
                         <td class="o_data_cell o_field_cell o_list_number o_monetary_cell" tabindex="-1">
-                            <span t-esc="expense.tipo"/>
+                            <span t-esc="expense.base_afecta"/>
                         </td>
-                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title=""><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell o_list_number" tabindex="-1" title="0.00"><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title=""><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="sdf"><span t-esc="expense.tipo"/></td>
-                        <td class="o_data_cell o_field_cell o_list_many2one" tabindex="-1" title=""><span t-esc="expense.tipo"/></td>
-
+                        <td class="o_data_cell o_field_cell o_list_number o_monetary_cell" tabindex="-1">
+                            <span t-esc="expense.base_inafecta"/>
+                        </td>
+                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title=""><span t-esc="expense.montoigv"/></td>
+                        <td class="o_data_cell o_field_cell o_list_number" tabindex="-1" title="0.00"><span t-esc="expense.totaldocumento"/></td>
+                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title=""><span t-if="expense.cuenta_contable" t-esc="expense.cuenta_contable"/></td>
+                        <td class="o_data_cell o_field_cell o_list_char" tabindex="-1" title="sdf"><span t-if="expense.nocliente" t-esc="expense.nocliente"/></td>
+                        <td class="o_data_cell o_field_cell o_list_many2one" tabindex="-1" title=""><span t-if="expense.cliente" t-esc="expense.cliente"/></td>
                     </tr>
                 </t>
             </tbody>
-                    <tfoot>
+                <tfoot>
                 <tr>
                     <td class="tipo"></td>
                     <td class="ruc"></td>
@@ -108,6 +102,10 @@
                     <td class="base_inafecta"></td>
                     <td class="montoigv"></td>
                     <td class="moneda"></td>
+                    <td class="totaldocumento"></td>
+                    <td class="numero"></td>
+                    <td class="ruc"></td>
+                    <td class="cuenta_contable"></td>
                     <td class="totaldocumento"></td>
                     <td class="numero"></td>
                     <td class="ruc"></td>

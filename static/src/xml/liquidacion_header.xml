@@ -25,15 +25,31 @@
 <!--                        aria-current="step">-->
 <!--                    Sin visto contable-->
 <!--                </button>-->
-                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button o_context_two btn-primary"
-                        context='{"search_default_draft": false,"search_default_contable": true}'
+<!--                <t t-esc="state.word"/>-->
+
+                <!--                        t-attf-class="btn o_arrow_button o_context_three  {{ expenses[2] != 0 ? '' : 'btn-primary' }}"-->
+
+                <button type="button" data-value="draft" title="Estado actual" role="radio"
+                        class="btn o_arrow_button o_context_three btn-primary"
+                        context='{"search_default_contable": false,"search_default_pendiente": true}'
+                        aria-current="step">
+                    Pendientes a procesar
+                    (<span t-esc="expenses[2]"/>)
+                </button>
+                <button type="button" data-value="draft" title="Estado actual" role="radio"
+                        class="btn o_arrow_button o_context_two btn-primary"
+                        context='{"search_default_jefatura": false,"search_default_contable": true}'
                         aria-current="step">
                     Sin visto contable
+                    (<span t-esc="expenses[1]"/>)
                 </button>
-                <button type="button" data-value="draft" title="Estado actual" role="radio" class="btn o_arrow_button o_context_one btn-primary"
-                        context='{"search_default_draft": true,"search_default_contable": false}'
+                <button type="button" data-value="draft" title="Estado actual" role="radio"
+                        class="btn o_arrow_button o_context_one btn-primary"
+                        context='{"search_default_jefatura": true,"search_default_contable": false}'
                         aria-current="step">
                     Sin visto jefe
+                    (<span t-esc="expenses[0]"/>)
+
                 </button>
             </div>
 
