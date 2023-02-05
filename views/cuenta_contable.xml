@@ -1,22 +1,52 @@
 <odoo>
     <data>
         <record model="ir.actions.act_window" id="action_view_import_cuenta">
-        <field name="name">Action Cuenta contable</field>
-        <field name="res_model">cuenta.contable.gastos</field>
-        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="name">Cuenta contable</field>
+            <field name="res_model">cuenta.contable.gastos</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
         </record>
 
-                  <!--VISTA  TREE-->
-      <record id="view_tree_cuenta_contable" model="ir.ui.view">
-        <field name="name">view.tree.cuenta.contable.gastos</field>
+        <!--VISTA  TREE-->
+        <record id="view_tree_cuenta_contable" model="ir.ui.view">
+            <field name="name">view.tree.cuenta.contable.gastos</field>
             <field name="model">cuenta.contable.gastos</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name"/>
+                    <field name="name" string="Descripcion"/>
+                    <field name="centrocosto"/>
+<!--                    <field name="description"/>-->
+<!--                    <field name="descripcioncentrocosto"/>-->
+
+                    <field name="estado"/>
                 </tree>
             </field>
         </record>
 
-        <menuitem id="menu_cuenta_contable" parent="gastos_tqc.menu_main_liquidaciones" sequence="3" name="Cuenta Contables" action="gastos_tqc.action_view_import_cuenta"/>
+
+        <!--VISTA from TREE-->
+        <record id="view_form_cuenta_contable" model="ir.ui.view">
+            <field name="name">view.form.contable.gastos</field>
+            <field name="model">cuenta.contable.gastos</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" string="Descripcion"/>
+                            <field name="centrocosto"/>
+<!--                            <field name="description"/>-->
+<!--                            <field name="descripcioncentrocosto"/>-->
+
+                            <field name="estado"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <menuitem id="menu_cuenta_contable" parent="gastos_tqc.menu_flujo_configuraciones" sequence="1"
+                  name="Cuenta Contables" action="gastos_tqc.action_view_import_cuenta"/>
     </data>
 </odoo>

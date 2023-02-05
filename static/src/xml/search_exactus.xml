@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="search_ruc">
+        <div class="o_row o_row_readonly o_hr_holidays_dates">
+            <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="" type="text"
+                   autocomplete="off" id="ruc"/>
+            <button type="button" class="btn button_search_ruc btn-primary" data-original-title="" title=""><i class="fa fa-fw o_button_icon fa-search"></i>
+                <span>Buscar</span>
+            </button>
+        </div>
+        <span class="o_field_char o_field_widget o_readonly_modifier" id="rruc"></span>
+        <span class="o_field_char o_field_widget o_readonly_modifier" id="result"></span>
+        <div>
+            <button class="aceptar_ruc_button oe_highlight">
+                Aceptar
+            </button>
+            <button class="cancelar_ruc_button">
+                Cancelar
+            </button>
+        </div>
+    </t>
+
+    <t t-name="search_client">
+        <div class="o_row o_row_readonly o_hr_holidays_dates">
+            <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="" type="text"
+                   autocomplete="off" id="client"/>
+            <button type="button" class="btn button_search_client btn-primary" data-original-title="" title=""><i class="fa fa-fw o_button_icon fa-search"></i>
+                <span>Buscar</span>
+            </button>
+        </div>
+        <span class="o_field_char o_field_widget o_readonly_modifier" id="rruc2"></span>
+        <span class="o_field_char o_field_widget o_readonly_modifier" id="result2"></span>
+        <div>
+            <button class="aceptar_client_button oe_highlight">
+                Aceptar
+            </button>
+            <button class="cancelar_client_button">
+                Cancelar
+            </button>
+        </div>
+    </t>
+</templates>

@@ -1,4 +1,4 @@
-odoo.define("gastos_tqc.js_table_depositos", function (require) {
+odoo.define("gastos_tqc.js_search_ruc", function (require) {
     "use strict";
     var AbtractAction = require("web.AbstractAction");
     var AbstractField = require("web.AbstractField");
@@ -9,17 +9,23 @@ odoo.define("gastos_tqc.js_table_depositos", function (require) {
     var Dialog = require('web.Dialog');
     var QWeb = core.qweb;
 
-    var WidgetTableDeposito = AbstractField.extend({
+    var WidgetSeachruc = AbstractField.extend({
         // template: "gastos_tqc.table_depositos",
         supportedFieldTypes: ['html'],
         init: function (parent, name, record, options) {
             this._super(parent, name, record, options)
+
             // console.log('VER TABLA : ', this.value)
             // console.log('TABLA PRO : ', this.mode)
             // console.log(this.model)
             // console.log(this.res_id)
             // console.log(this.recordData)
             // this.vali = "jajajaa";
+        },
+        events: {
+            'click .button_search_ruc': '_onClickSearch',
+            'click .aceptar_ruc_button': '_onClickAccept',
+            'click .cancelar_ruc_button': '_onClickCancel'
         },
         start: function () {
             return this._super.apply(this, arguments);
@@ -36,15 +42,19 @@ odoo.define("gastos_tqc.js_table_depositos", function (require) {
         _render: async function () {
             var self = this;
             await this._super(...arguments);
-            const result = await this._rpc({
-                model: 'tqc.detalle.liquidaciones',
-                method: 'search_read',
-                domain:[['liquidacion_id','=',self.res_id],['state','=','historial']],
-            });
-            const elem = QWeb.render('gastos_tqc.table_depositos', {
-                expenses: result
+            // const result = await this._rpc({
+            //     model: 'tqc.detalle.liquidaciones',
+            //     method: 'search_read',
+            //     domain:[['liquidacion_id','=',self.res_id],['state','=','historial']],
+            // });
+            const elem = QWeb.render('search_ruc', {
+                // expenses: result
             });
             self.$el.html(elem);
+
+
+            console.log("ELEMTNO : ", self.$el.parent().parent())
+            $('.modal-footer').append('<button class="aceptar_ruc_button oe_highlight">Aceptar</button>')
 
             // var $row = this._super(record);
             // // Add progress bar widget at the end of rows
@@ -58,10 +68,31 @@ odoo.define("gastos_tqc.js_table_depositos", function (require) {
         },
         _renderReadonly: function () {
             // console.log("RENDER READONLY")
+        },
+        _onClickSearch: function () {
+            var self = this
+            let ruc = $(self.$el).find('#ruc').val()
+            self._rpc({ //envia el modelo, parametos
+                model: "tqc.detalle.liquidaciones",
+                method: "search_ruc",
+                args: [{'ruc': ruc}],
+                kwargs: {}
+            }).then(function (e) {
+                $(self.$el).find('#rruc').text(e[0])
+                $(self.$el).find('#result').text(e[1])
+            })
+        },
+        _onClickAccept: function () {
+            $("input[name='ruc']").val($('#rruc').text())
+            $("input[name='ruc']").trigger("change");
+            $('.modal').remove()
+        },
+        _onClickCancel: function () {
+            $('.modal').remove()
         }
     })
 
-    field_registry.add("widget_depositos", WidgetTableDeposito);
+    field_registry.add("search_ruc", WidgetSeachruc);
 
-    return WidgetTableDeposito;
+    return WidgetSeachruc;
 });

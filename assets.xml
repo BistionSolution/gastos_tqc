@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!--        'gastos_tqc/static/src/js/liquidacion_header.js',-->
-<!--        'gastos_tqc/static/src/scss/gastos_tqc.scss',-->
+    <!--        'gastos_tqc/static/src/js/liquidacion_header.js',-->
+    <!--        'gastos_tqc/static/src/scss/gastos_tqc.scss',-->
     <template id="assets_backend" name="Wbsite assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/gastos_tqc/static/src/js/liquidacion_header.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/registro_gasto.js"/>
+            <script type="text/javascript" src="/gastos_tqc/static/src/js/list_editable_render.js"/>
         </xpath>
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/gastos_tqc/static/src/scss/gastos_tqc.scss"/>
         </xpath>
         <xpath expr="//script[last()]" position="after">
             <script type="text/javascript" src="/gastos_tqc/static/src/js/table_depositos.js"/>
+            <script type="text/javascript" src="/gastos_tqc/static/src/js/render_search_ruc.js"/>
+            <script type="text/javascript" src="/gastos_tqc/static/src/js/render_search_client.js"/>
 
             <script type="text/javascript" src="/gastos_tqc/static/src/js/list_renderer.js"/>
-            <script type="text/javascript" src="/gastos_tqc/static/src/js/list_editable_render.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/web_client.js"/>
 
             <script type="text/javascript" src="/gastos_tqc/static/src/js/onemany_selectable.js"/>
-
         </xpath>
     </template>
-<!--        <template id="assets_tests" name="HR Expense Assets Tests" inherit_id="web.assets_tests">-->
-<!--            <xpath expr="." position="inside">-->
-<!--                <script type="text/javascript" src="/hr_expense/static/src/js/tours/hr_expense.js"></script>-->
-<!--                <script type="text/javascript" src="/hr_expense/static/tests/tours/expense_upload_tours.js"></script>-->
-<!--            </xpath>-->
-<!--        </template>-->
+    <!--        <template id="assets_tests" name="HR Expense Assets Tests" inherit_id="web.assets_tests">-->
+    <!--            <xpath expr="." position="inside">-->
+    <!--                <script type="text/javascript" src="/hr_expense/static/src/js/tours/hr_expense.js"></script>-->
+    <!--                <script type="text/javascript" src="/hr_expense/static/tests/tours/expense_upload_tours.js"></script>-->
+    <!--            </xpath>-->
+    <!--        </template>-->
 
 </odoo>

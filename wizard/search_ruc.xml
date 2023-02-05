@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+        <record model="ir.actions.act_window" id="action_view_tqc_searchruc">
+            <field name="name">Action tqc searchruc</field>
+            <field name="res_model">tqc.searchruc</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+        <!--VISTA  TREE-->
+        <record id="view_tree_tqc_searchruc" model="ir.ui.view">
+            <field name="name">view.tree.tqc.searchruc</field>
+            <field name="model">tqc.searchruc</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_form_tqc_searchruc" model="ir.ui.view">
+            <field name="name">view.form.tqc.searchruc</field>
+            <field name="model">tqc.searchruc</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="Liquidacion">
+                    <field name="consulta" widget="search_ruc"/>
+                    <footer class="footer-ruc">
+<!--                        <button name="action_add" string="Aceptar" type="object" class="aceptar_ruc oe_highlight"/>-->
+<!--                        <button string="Cancel" class="btn-secondary" special="cancel"/>-->
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

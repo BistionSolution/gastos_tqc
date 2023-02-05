@@ -1,14 +1,14 @@
 <odoo>
     <data>
         <record model="ir.actions.act_window" id="action_view_tipo_liquidaciones">
-        <field name="name">Action Tipo liquidacion</field>
-        <field name="res_model">tqc.tipo.liquidaciones</field>
-        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="name">Action Tipo liquidacion</field>
+            <field name="res_model">tqc.tipo.liquidaciones</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
         </record>
 
-                  <!--VISTA  TREE-->
-      <record id="view_tree_cuenta_contable" model="ir.ui.view">
-        <field name="name">view.tree.tqc.tipo.liquidaciones</field>
+        <!--VISTA  TREE-->
+        <record id="view_tree_cuenta_tipo" model="ir.ui.view">
+            <field name="name">view.tree.tqc.tipo.liquidaciones</field>
             <field name="model">tqc.tipo.liquidaciones</field>
             <field name="arch" type="xml">
                 <tree>
@@ -16,7 +16,5 @@
                 </tree>
             </field>
         </record>
-
-        <menuitem id="menu_tipo_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" name="Tipo liquidaciones" action="gastos_tqc.action_view_tipo_liquidaciones"/>
     </data>
 </odoo>

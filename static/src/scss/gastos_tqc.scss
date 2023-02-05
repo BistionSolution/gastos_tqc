@@ -1,70 +1,134 @@
 .gastos_tqc {
-  .gastos_button{
+  .gastos_button {
     //width: 100px;
     //height: 75px;
   }
 }
-.o_list_view .o_list_table tfoot{
-  position: sticky;
-    bottom: 0;
+
+.o_list_view .o_list_table tfoot {
+  //position: sticky;
+  bottom: 0;
 }
 
-.o_gastos_button{
-    display: flex;
-    //margin-left: auto;
-    flex-flow: row-reverse wrap-reverse !important;
-    align-self: stretch;
-    align-items: stretch;
+.o_list_view .o_list_table.o_empty_list {
+  table-layout: auto !important;
+  width: 100%;
 }
-.o_gastos_button .btn-secondary{
-    color: #adb5bd;
-    pointer-events: none;
-    border-left: 1px solid #dee2e6;
+
+.o_gastos_button {
+  display: flex;
+  //margin-left: auto;
+  flex-flow: row-reverse wrap-reverse !important;
+  align-self: stretch;
+  align-items: stretch;
 }
-.o_gastos_button > .o_arrow_button{
-    min-height: 33px;
-    font-size: 11px;
-    font-weight: bold;
-    position: relative;
-    padding-left: 22px;
-    //padding-right: 22px;
-    border-radius: 0;
-    transition: all 0.1s ease 0s;
+
+.o_gastos_button .btn-secondary {
+  color: #adb5bd;
+  pointer-events: none;
+  border-left: 1px solid #dee2e6;
 }
-.o_gastos_button > .o_arrow_button:after,.o_gastos_button > .o_arrow_button:before {
-    content: " ";
-    opacity: 1;
-    display: block;
-    position: absolute;
-    top: 0;
-    left: auto;
-    bottom: auto;
-    right: -11px;
-    border-top: 16px solid transparent;
-    border-bottom: 17px solid transparent;
-    border-right: none;
-    border-left: 11px solid white;
-    border-left-color: #5D8DA8;
-    transition: border 0.2s ease 0s;
-    -moz-transform: scale(0.9999);
+
+.o_gastos_button > .o_arrow_button {
+  min-height: 33px;
+  font-size: 11px;
+  font-weight: bold;
+  position: relative;
+  padding-left: 22px;
+  //padding-right: 22px;
+  border-radius: 0;
+  transition: all 0.1s ease 0s;
 }
+
+.o_gastos_button > .o_arrow_button:after, .o_gastos_button > .o_arrow_button:before {
+  content: " ";
+  opacity: 1;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: auto;
+  bottom: auto;
+  right: -11px;
+  border-top: 16px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-right: none;
+  border-left: 11px solid white;
+  border-left-color: #5D8DA8;
+  transition: border 0.2s ease 0s;
+  -moz-transform: scale(0.9999);
+}
+
 .o_gastos_button .o_arrow_button:before {
-    right: -13px;
-    border-left-color: #fff;
+  right: -13px;
+  border-left-color: #fff;
 }
-.o_gastos_button > .o_arrow_button:hover + o_arrow_button:after,.o_gastos_button > .o_arrow_button:hover + o_arrow_button:before{
-    border-left-color: #5D8DA8;
+
+.o_gastos_button > .o_arrow_button:hover + o_arrow_button:after, .o_gastos_button > .o_arrow_button:hover + o_arrow_button:before {
+  border-left-color: #5D8DA8;
 }
 
 /*Oculta filas en registro de documentos (registro gastos)*/
-.hide_row_gasto{
-    display: none;
+.hide_row_gasto {
+  display: none;
 }
-.button_black{
-    background: #0B1612;
+
+.button_black {
+  background: #0B1612;
 }
 
 /*tabla max width*/
-.table_depositos{
-    width: 100%;
+.table_depositos {
+  width: 100%;
+}
+
+.table-aument {
+  table-layout: auto;
+  width: 100%;
+}
+
+
+/*Modal search eprsonalziadaos*/
+.captura_name {
+  width: 100% !important;
+}
+
+.search_ruc, .search_client {
+  position: absolute !important;
+  z-index: 10 !important;
+}
+
+.aceptar_ruc_button, .aceptar_client_button {
+  color: #FFFFFF !important;
+  background-color: #5D8DA8 !important;
+  border-color: #5D8DA8 !important;
+}
+
+.cancelar_ruc_button, .cancelar_client_button {
+  color: #000 !important;
+  background-color: #fff !important;
+  border-color: #fff !important;
+}
+
+.overnone {
+  overflow: visible !important;
+}
+
+.font-boldodo {
+  font-weight: bold !important;
+}
+/*Estilo de tabla*/
+.o_list_gastos .o_list_table thead > tr > th{
+  border-left: 1px solid #E2E2E2 !important;
+  border-right: 1px solid #E2E2E2 !important;
+}
+.o_list_gastos .o_list_table tbody > tr > td{
+  border-left: 1px solid #E2E2E2 !important;
+  border-right: 1px solid #E2E2E2 !important;
+}
+.o_list_gastos .o_list_table{
+  table-layout: auto !important;
+}
+.o_list_gastos .o_list_table thead > tr > th{
+  white-space: normal !important;
+  border-bottom: 1px solid #E2E2E2 !important;
 }

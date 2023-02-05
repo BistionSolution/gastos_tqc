@@ -8,6 +8,7 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
     var ListRenderer = require('web.ListRenderer');
     var session = require('web.session');
     var dom = require('web.dom');
+    var rpc = require('web.rpc');
 
     const config = require('web.config');
 
@@ -60,10 +61,9 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                         domain: [['user_id', '=', session.user_id]],
                         // context: this.context,
                     }).then(function (employee) {
-                        console.log("ESTE empleado : ", employee)
-                        console.log("ESTE empleado : ", employee.length)
                         if (employee.length !== 0) {
-                            self.$el.parent().prev().prepend(employee[0].name + ' - ' + employee[0].department_id[1])
+                            self.$el.parent().prev().find('#mydata').remove()
+                            self.$el.parent().prev().prepend("<span id='mydata'>"+employee[0].name + " - " + employee[0].department_id[1]+"</span>");
                         }
                     });
 
@@ -164,7 +164,8 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                     // context: this.context,
                 }).then(function (employee) {
                     if (employee.length !== 0) {
-                        self.$el.parent().prev().prepend(employee[0].name + ' - ' + employee[0].department_id[1])
+                        self.$el.parent().prev().find('#mydata').remove()
+                        self.$el.parent().prev().prepend("<span id='mydata'>"+employee[0].name + " - " + employee[0].department_id[1]+"</span>")
                     }
                 });
             })

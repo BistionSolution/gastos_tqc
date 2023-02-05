@@ -5,17 +5,22 @@
         </record>
 
         <record id="res_groups_administrator" model="res.groups">
-            <field name="name">Administrador</field>
+            <field name="name">Gasto-Administrador</field>
             <field name="category_id" ref="gastos_tqc.module_gastos_tqc"/>
         </record>
 
         <record id="res_groups_employee_gastos" model="res.groups">
-            <field name="name">Empleado</field>
+            <field name="name">Gasto-Empleado</field>
             <field name="category_id" ref="gastos_tqc.module_gastos_tqc"/>
         </record>
 
         <record id="res_groups_aprobador_gastos" model="res.groups">
-            <field name="name">Aprobador</field>
+            <field name="name">Gasto-Aprobador</field>
+            <field name="category_id" ref="gastos_tqc.module_gastos_tqc"/>
+        </record>
+
+        <record id="res_groups_contador_gastos" model="res.groups">
+            <field name="name">Gasto-Contador</field>
             <field name="category_id" ref="gastos_tqc.module_gastos_tqc"/>
         </record>
 

@@ -7,6 +7,8 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <tree js_class="gastos_view_name">
+                    <field name="empleado_name"
+                           groups="gastos_tqc.res_groups_administrator,gastos_tqc.res_groups_aprobador_gastos"/>
                     <field name="num_solicitud"/>
                     <!--                    <field name="empleado_name"/>-->
                     <field name="state"/>
@@ -41,6 +43,10 @@
                 <form string="Liquidacion">
                     <header>
                         <!--                        <field name="habilitado_state" invisible="1"/>-->
+                        <field name="uid_create" invisible="1"/>
+                        <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
+                                class="oe_highlight oe_read_only"
+                                attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"/>
                         <button name="volver_enviar" string="Volver a enviar" type="object"
                                 class="oe_highlight"
                                 attrs="{'invisible': [('habilitado_state','not in',['corregir'])]}"/>
@@ -51,50 +57,76 @@
                     <!--&lt;!&ndash;                        <button string="Enviar a aprobacion" name="action_confirm" states="a_enviar" type="object" class="oe_highlight"/>&ndash;&gt;-->
                     <!--                        <field name="state" widget="statusbar" statusbar_visible="draft,jefatura,contable"/>-->
                     <!--                    </header>-->
-                    <group string="Detalle Liquidaciones">
-                        <group>
-                            <field name="name" readonly="1"/>
-                            <field name="num_solicitud" readonly="1"/>
-                            <field name="fecha_entrega" readonly="1"/>
-                            <field name="centro_costo" string="Centro de Costo" readonly="1"/>
-                            <field name="glosa_entrega" string="Glosa de solicitud" readonly="1"/>
-                            <!--                                <field name="moneda" readonly="1"/>-->
+                    <group>
 
-                        </group>
-                        <group>
-                            <field name="monto_entrega" readonly="1"/>
-                            <field name="saldo" readonly="1"/>
-                            <!--                                <field name="observacionenvio" readonly="1"/>-->
-                            <field name="currency_id" readonly="1" string="Moneda"/>
-                            <field name="numeroplaca" readonly="1"/>
-                            <field name="tipoliquidacion_id" readonly="1"/>
-                            <div class="oe_read_only">
-                                <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
-                                        class="oe_highlight"
-                                        attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"/>
+                            <field name="empleado_name" invisible="1"/>
+                            <field name="name" readonly="1" invisible="1"/>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <span class="oe_inline font-boldodo">
+                                    N° Solicitud :
+                                </span>
+                                <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                                <label for="fecha_entrega" class="oe_inline font-boldodo">
+                                    Fecha :
+                                </label>
+                                <field name="fecha_entrega" class="oe_inline" readonly="1"/>
                             </div>
 
-                        </group>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <span class="oe_inline font-boldodo">
+                                    Centro de costo :
+                                </span>
+                                <field name="centro_costo" class="oe_inline" readonly="1"/>
+                                <span class="oe_inline font-boldodo">
+                                    Glosa entrega :
+                                </span>
+                                <field name="glosa_entrega" class="oe_inline" readonly="1"/>
+                            </div>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <span class="oe_inline font-boldodo">
+                                    Monto entrega :
+                                </span>
+                                <field name="monto_entrega" class="oe_inline" readonly="1"/>
+                                <span class="oe_inline font-boldodo">
+                                    Saldo :
+                                </span>
+                                <field name="saldo" class="oe_inline" readonly="1"/>
+                                <span class="oe_inline font-boldodo">
+                                    Moneda :
+                                </span>
+                                <field name="currency_id" class="oe_inline" readonly="1" string="Moneda"/>
+                            </div>
+
+
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+
+                                <span class="oe_inline font-boldodo">
+                                    numeroplaca :
+                                </span>
+                                <field name="numeroplaca" class="oe_inline" readonly="1" string="Moneda"/>
+                            </div>
+                            <!--                                <field name="moneda" readonly="1"/>-->
+
                     </group>
 
                     <notebook>
 
                         <page string="Documentos">
 
-                            <field name="detalleliquidaciones_id" class="custom-control custom-checkbox"
-                                   widget="section_and_note_one2many" mode="tree">
+                            <field name="detalleliquidaciones_id" class="custom-control custom-checkbox" >
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
                                       decoration-danger="revisado_state== 'rechazado'">
-                                    <field name="tipodocumento" string="Tipo doc."/>
+                                    <field name="tipodocumento" string="Tipo doc."
+                                           options="{'no_create': True, 'no_create_edit':True}"/>
                                     <field name="serie"/>
                                     <field name="numero"/>
-                                    <field name="fechaemision" string="Fecha emisión"/>
-                                    <field name="ruc" string="Ruc proveedor"/>
-
+                                    <field name="fechaemision" string="Fecha emisión" />
+                                    <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
+                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc"/>
+                                    <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1" force_save="1"/>
                                     <!--                                    <field name="state"/>-->
-                                    <field name="subtipo"/>
-                                    <field name="moneda"/>
+<!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
                                     <field name="base_inafecta" widget="monetary"
@@ -103,10 +135,11 @@
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
                                     <field name="totaldocumento" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
-                                    <field name="cuenta_contable"/>
-                                    <field name="nocliente"/>
-                                    <field name="cliente"/>
-                                    <field name="cliente_razonsocial"/>
+                                    <field name="cuenta_contable" options="{'no_create': True, 'no_create_edit':True}"
+                                           />
+<!--                                    <field name="nocliente"/>-->
+                                    <field name="cliente" class="consult_client"/>
+                                    <field name="cliente_razonsocial" readonly="1" force_save="1"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
                                     <field name="observacionjefatura" string="Obs. jefatura"/>
                                     <field name="state" invisible="1"/>
@@ -180,6 +213,24 @@
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_registro_gasto')})]"/>
             <field name="search_view_id" ref="gastos_tqc.search_register_filter"/>
             <field name="context">{'search_default_filtro_rendir':1}</field>
+            <field name="domain">[('empleado_name.user_id','=',uid)]</field>
+            <field name="target">main</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No RFQs to display
+                </p>
+            </field>
+        </record>
+
+        <record id="action_view_todos_registro_liquidaciones" model="ir.actions.act_window">
+            <field name="name">Registro de gasto</field>
+            <field name="res_model">tqc.liquidaciones</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_registro_gasto')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_registro_gasto')})]"/>
+            <field name="search_view_id" ref="gastos_tqc.search_register_filter"/>
+            <field name="context">{'search_default_filtro_rendir':1}</field>
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
@@ -218,8 +269,10 @@
         <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
         <!--        <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1" name="Registro gasto" action="gastos_tqc.action_registro_gastos"/>-->
         <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1"
-                  name="Registro gasto" action="gastos_tqc.action_view_registro_liquidaciones"/>
-        <menuitem id="menu_flujo_configuraciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2"
+                  name="Registro gastos" action="gastos_tqc.action_view_registro_liquidaciones"/>
+        <menuitem id="menu_registro_gasto_admin" parent="gastos_tqc.menu_main_liquidaciones" sequence="2"
+                  name="Todos Registros" action="gastos_tqc.action_view_todos_registro_liquidaciones" groups="gastos_tqc.res_groups_administrator"/>
+        <menuitem id="menu_flujo_configuraciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Configuracion"/>
     </data>
 </odoo>

@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'base_setup', 'hr'],
 
     # always loaded
     'data': [
@@ -34,6 +34,11 @@
         'views/tipo_liquidaciones.xml',
         'views/tipo_documentos.xml',
         'views/registrar_gasto.xml',
+        'views/tqc_autorizadores.xml',
+        'views/hr_employee.xml',
+
+        'wizard/search_ruc.xml',
+        'wizard/search_client.xml',
         'assets.xml',
     ],
     # only loaded in demonstration mode
@@ -43,7 +48,8 @@
     'qweb': [
         'static/src/xml/liquidacion_header.xml',
         'static/src/xml/select_onemany.xml',
-        'static/src/xml/table_depositos.xml'
+        'static/src/xml/table_depositos.xml',
+        'static/src/xml/search_exactus.xml'
     ],
     'application': True,
     # 'assets': {

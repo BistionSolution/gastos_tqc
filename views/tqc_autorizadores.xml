@@ -1,0 +1,70 @@
+<odoo>
+    <data>
+        <record id="view_tree_autorizadores_gasto" model="ir.ui.view">
+            <field name="name">view.tree.auth.gasto</field>
+            <field name="model">tqc.autorizadores</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="superior"/>
+                    <field name="subordinados"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_form_autorizadores_gasto" model="ir.ui.view">
+            <field name="name">view.form.aut.gasto</field>
+            <field name="model">tqc.autorizadores</field>
+            <field name="arch" type="xml">
+                <form string="Superior">
+                    <group string="Jefatura">
+                        <field name="superior"/>
+                        <field name="subordinados"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_auth_gastos">
+            <field name="name">Autorizadores</field>
+            <field name="res_model">tqc.autorizadores</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+    <!--CONTAVILIDAD AUTORIZADORES-->
+        <record id="view_tree_auth_conta" model="ir.ui.view">
+            <field name="name">view.tree.auth.conta</field>
+            <field name="model">tqc.auth.contabilidad</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="empleado"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_form_auth_conta" model="ir.ui.view">
+            <field name="name">view.form.auth.conta</field>
+            <field name="model">tqc.auth.contabilidad</field>
+            <field name="arch" type="xml">
+                <form string="Superior">
+                    <group string="Contabilidad">
+                       <field name="empleado"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_auth_conta_gastos">
+            <field name="name">Autorizadores Contabilidad</field>
+            <field name="res_model">tqc.auth.contabilidad</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+        <menuitem id="menu_autorizadores_gasto" parent="gastos_tqc.menu_flujo_configuraciones" name="Autorizadores"/>
+        <menuitem id="menu_autorizadores_jefartura" parent="gastos_tqc.menu_autorizadores_gasto" name="Jefatura"
+                  action="gastos_tqc.action_auth_gastos" sequence="1"/>
+        <menuitem id="menu_autorizadores_contabilidad" parent="gastos_tqc.menu_autorizadores_gasto" name="Contabilidad"
+                  action="gastos_tqc.action_auth_conta_gastos" sequence="2"/>
+
+    </data>
+
+</odoo>

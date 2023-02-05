@@ -1,7 +1,7 @@
-odoo.define("gastos_tqc.restrict_list_view",function(require){
+odoo.define("gastos_tqc.restrict_list_view", function (require) {
     "use strict";
     var BasicRenderer = require('web.BasicRenderer');
-    const { ComponentWrapper } = require('web.OwlCompatibility');
+    const {ComponentWrapper} = require('web.OwlCompatibility');
     var config = require('web.config');
     var core = require('web.core');
     var dom = require('web.dom');
@@ -13,14 +13,14 @@ odoo.define("gastos_tqc.restrict_list_view",function(require){
     var _t = core._t;
 
     var DECORATIONS = [
-    'decoration-bf',
-    'decoration-it',
-    'decoration-danger',
-    'decoration-info',
-    'decoration-muted',
-    'decoration-primary',
-    'decoration-success',
-    'decoration-warning'
+        'decoration-bf',
+        'decoration-it',
+        'decoration-danger',
+        'decoration-info',
+        'decoration-muted',
+        'decoration-primary',
+        'decoration-success',
+        'decoration-warning'
     ];
 
     var FIELD_CLASSES = {
@@ -35,17 +35,27 @@ odoo.define("gastos_tqc.restrict_list_view",function(require){
     ListRender.include({
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
+            // this.$current.delegate('td', 'click', function (e) {
+            //     console.log("HOLA")
+            //
+            //     e.stopPropagation();
+            // });
+        },
+        _render: function () {
+            this.$el.addClass('o_list_gastos')
+            return this._super.apply(this, arguments);
         },
         willStart: function () {
             return this._super.apply(this, arguments);
         },
         _renderRow: function (record) {
-            // console.log("Index 222 : ")
+            var self = this;
             var $row = this._super.apply(this, arguments);
-            // console.log("RENDER ROW : ",record.data.state)
-            if(record.model === "tqc.detalle.liquidaciones" && record.data.state === 'historial')
-            {
-                $row.addClass('hide_row_gasto')
+
+            if (record.model === "tqc.detalle.liquidaciones" && record.data.state === 'historial') {
+                if (record.context.mode_view !== 'flujo') {
+                    $row.addClass('hide_row_gasto')
+                }
             }
             return $row;
         },

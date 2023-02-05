@@ -1,12 +1,24 @@
 <odoo>
     <data>
         <!--REGLA PARA EMPLEADOS CUENTA VACAIONES-->
-        <record id="ir_rule_employee_vc_ctavacation" model="ir.rule">
+        <record id="ir_rule_employee_gastos" model="ir.rule">
             <field name="name">Mostrar cuenta vacaciones propia</field>
             <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
             <field name="domain_force">[('empleado_name.user_id','=',user.id)]</field>
 <!--            <field name="domain_force">[('empleado_name','=','09362888')]</field>-->
             <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_employee_gastos'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <record id="ir_rule_aprobador_gastos" model="ir.rule">
+            <field name="name">Mostrar solicitud vacaciones usuarios de los que aprueba</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="domain_force">['|',('empleado_name.superior.user_id','=',user.id),('empleado_name.user_id','=',user.id)]</field>
+<!--            <field name="domain_force">[('empleado_name','=','09362888')]</field>-->
+            <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_aprobador_gastos'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_unlink" eval="True"/>

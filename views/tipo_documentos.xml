@@ -13,10 +13,11 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
+                    <field name="code"/>
                 </tree>
             </field>
         </record>
 
-        <menuitem id="menu_tipo_documentos" parent="gastos_tqc.menu_main_liquidaciones" name="Tipo documentos" action="gastos_tqc.action_view_tipo_documentos"/>
+        <menuitem id="menu_tipo_documentos" parent="gastos_tqc.menu_flujo_configuraciones" name="Tipo documentos" action="gastos_tqc.action_view_tipo_documentos"/>
     </data>
 </odoo>

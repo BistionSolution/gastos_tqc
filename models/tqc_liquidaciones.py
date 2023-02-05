@@ -2,8 +2,10 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-
+from datetime import datetime, date, timedelta, time
 import re, pyodbc
+
+
 class Liquidaciones(models.Model):
     _name = 'tqc.liquidaciones'
     _description = 'Liquidaciones'
@@ -69,11 +71,46 @@ class Liquidaciones(models.Model):
                                       default='a_rendir', string='Tipo documento')
 
     habilitado_state = fields.Selection([('habilitado', 'Habilitado para liquidar'),
-                                       ('proceso', 'Proceso de liquidacion'),
-                                       ('corregir', 'Corregir y seguir')],
-                                      default='habilitado', string='Tipo documento')
+                                         ('proceso', 'Proceso de liquidacion'),
+                                         ('corregir', 'Corregir y seguir')],
+                                        default='habilitado', string='Tipo documento')
+    mode_view = fields.Selection([('registro', 'Registro'),
+                                  ('flujo', 'Flujo')],
+                                 string='Modo de vista')
 
     table_depositos = fields.Html()
+    current_user_uid = fields.Integer(compute='_get_current_user', default=0)
+    uid_create = fields.Integer(compute='_get_current_user')
+
+    @api.depends()
+    def _get_current_user(self):
+        active_ids = self.env.context.get('active_ids', [])
+        print("model ", active_ids)
+        # data_id = model_obj._get_id('module_name', 'view_id_which_you_want_refresh')
+
+        # view_id = model_obj.browse(data_id).res_id
+        user_now = self.env.uid
+        for record in self:
+            # record.sudo().empleado_name.user_id.id == user_now) or
+            if self.env.user.has_group('gastos_tqc.res_groups_administrator'):
+                record.uid_create = 1
+            elif self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
+                record.uid_create = 3
+            elif self.env.user.has_group('gastos_tqc.res_groups_contador_gastos'):
+                record.uid_create = 2
+            else:
+                record.uid_create = 0
+
+            ##### NUEVA LOGICA
+            # record.auth_one = record.id_trabajador.auth_one.id
+            # record.auth_two = record.id_trabajador.auth_one.id
+            # record.auth_three = record.id_trabajador.auth_one.id
+
+            super = record.sudo().empleado_name.superior.user_id.id
+            if super == user_now:
+                record.current_user_uid = 1
+            else:
+                record.current_user_uid = 0
 
     @api.depends('num_solicitud')
     def _get_name_soli(self):
@@ -82,9 +119,9 @@ class Liquidaciones(models.Model):
                 rec.name = rec.num_solicitud
             else:
                 rec.name = False
+
     @api.model
     def default_get(self, default_fields):
-        print("DEFAUL GET FUNTION IS : ",default_fields)
         return super(Liquidaciones, self).default_get(default_fields)
 
     @api.model
@@ -103,28 +140,27 @@ class Liquidaciones(models.Model):
                           MONEDA AS moneda,
                           APLICACION AS glosa_entrega,
                           FECHA_ENTREGA AS fecha_entrega,
-                          CAST(MONTO as decimal(10,2)) AS monto_entrega,
+                          CONVERT(decimal(10,2),MONTO) AS monto_entrega,
                           CONVERT(decimal(10,2),SALDO) AS saldo
                         FROM
                           tqc.ENTREGA_A_RENDIR
                         WHERE LIQUIDADO = 'N'"""
 
         sql = """SELECT
-                                  ENTREGA_A_RENDIR AS external_id,
-                                  ENTREGA_A_RENDIR AS num_solicitud,
-                                  EMPLEADO AS empleado_name,
-                                  MONEDA AS moneda,
-                                  APLICACION AS glosa_entrega,
-                                  FECHA_ENTREGA AS fecha_entrega,
-                                  MONTO AS monto_entrega,
-                                  SALDO AS saldo
-                                FROM
-                                  tqc.ENTREGA_A_RENDIR
-                                WHERE LIQUIDADO = 'N'"""
+                  ENTREGA_A_RENDIR AS external_id,
+                  ENTREGA_A_RENDIR AS num_solicitud,
+                  EMPLEADO AS empleado_name,
+                  MONEDA AS moneda,
+                  APLICACION AS glosa_entrega,
+                  FECHA_ENTREGA AS fecha_entrega,
+                  MONTO AS monto_entrega,
+                  SALDO AS saldo
+                FROM
+                  tqc.ENTREGA_A_RENDIR
+                WHERE LIQUIDADO = 'N'"""
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
-            print("QUE PASOOO")
             if "SELECT" in sql:
                 campList = self.convert_sql(sql)  # lista de campos odoo
                 company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
@@ -142,6 +178,8 @@ class Liquidaciones(models.Model):
                 idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
                 for user in idusers:
+                    user[6] = (user[6]) / 100
+                    user[7] = (user[7]) / 100
                     variJson = {}
                     work_email = False  # comprueba si tiene Correo, sino no llena
                     existId = True
@@ -160,52 +198,6 @@ class Liquidaciones(models.Model):
 
                         for j in range(len(campList)):
                             ## SOLO para validar correo repetidos en TQC ##
-                            #############
-                            try:
-                                # if table_bd == 'hr.employee' and (str(user[j]) == '1980-01-01 00:00:00'):
-                                #     user[j] = False
-                                if table_bd == 'res.users' and '@' in user[j]:  # CORREO VALIDACION TQC
-                                    if ";" in user[j]:
-                                        user[j] = re.split(r'[;]', user[j])
-                                    else:
-                                        user[j] = re.split(r'[,]', user[j])
-                                    user[j] = user[j][0]
-                                    exist_mail = self.env["res.users"].search(
-                                        [('login', '=', user[j]), ('id', '!=', int(id_register))])
-                                    self.env.cr.commit()
-                                    if exist_mail:
-                                        no_register = True
-                                        break
-                                    if company_table.lower() == 'tqc.empleado':
-                                        if 'tqc.com.pe' not in user[j]:
-                                            no_register = True
-                                            break
-                                    elif company_table.lower() == 'talex.empleado':
-                                        if 'talex.com.pe' not in user[j]:
-                                            if 'tqc.com.pe' not in user[j]:
-                                                no_register = True
-                                                break
-                                    elif company_table.lower() == 'semillas.empleado':
-                                        if 'tqcsemillas.com.pe' not in user[j]:
-                                            if 'tqc.com.pe' not in user[j]:
-                                                no_register = True
-                                                break
-                                    else:  # PARA BIOGEN.EMPLEADO
-                                        if 'biogenagro.com' not in user[j]:
-                                            if 'tqc.com.pe' not in user[j]:
-                                                no_register = True
-                                                break
-                                if (table_bd == 'hr.employee') and ('@' in user[j]):
-                                    if ";" in user[j]:
-                                        user[j] = re.split(r'[;]', user[j])
-                                    else:
-                                        user[j] = re.split(r'[,]', user[j])
-                                    user[j] = user[j][0]
-                                    work_email = user[j]
-
-                            except:
-                                print("encontro una fecha, no puede comparar")
-                            ##################
                             ## HASTA AQUI ##
                             if j == 0:
                                 continue
@@ -229,22 +221,9 @@ class Liquidaciones(models.Model):
                             res = {"success"}
 
                         if not no_register:  # si no cumple con los campos de usuarios no registra
-                            self.env[table_bd].browse(id_register).write(variJson)
+                            self.env[table_bd].browse(id_register).sudo().write(variJson)
                             self.env.cr.commit()
 
-                            # ACTUALIZA CONTACTO EL CORREO
-                            if table_bd == 'res.users':
-                                # en respartner tr
-                                self.env["res.partner"].search([('user_ids', 'in', [id_register])]).write(
-                                    {'email': variJson['login']})
-                                self.env.cr.commit()
-
-                            if table_bd == 'hr.employee' and work_email:
-                                self.env[table_bd].browse(id_register).write(
-                                    {'work_email': work_email, 'work_phone': '999999999'})
-                                self.env.cr.commit()
-
-                        print("ESTE VARI JSON : ", variJson)
                     else:  # CREA NUEVO REGISTRO
                         cont = 0
                         no_register = False  # PARA REGISTRAR
@@ -313,47 +292,16 @@ class Liquidaciones(models.Model):
                                 cont += 1
                                 continue
                             variJson['{}'.format(campList[i])] = user[i]
-                        res = variJson
-                        if no_register:
-                            print("no registro el registro")
-                        else:
+
+                        if not no_register:
                             original_id = self.env[table_bd].create(variJson).id
                             # Si funciona
-                            self.env["ir.model.data"].create(
+                            self.env["ir.model.data"].sudo().create(
                                 {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
                             self.env.cr.commit()
-
-                            if table_bd == 'hr.employee' and work_email:
-                                self.env[table_bd].browse(original_id).write(
-                                    {'work_email': work_email, 'work_phone': '999999999'})
-                                self.env.cr.commit()
-
-                # update employee cesados ('CES')
-                # if 'empleado' in company_table.lower():
-                if 'xdvdx' in company_table.lower():
-                    try:
-                        connection2 = pyodbc.connect(
-                            'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                            data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
-                        all_employees = self.env['hr.employee'].search([]).mapped('id_integrador')
-                        for empl in all_employees:
-                            if empl:
-                                cursor2 = connection2.cursor()
-                                cursor2.execute(
-                                    "SELECT ESTADO_EMPLEADO,FECHA_SALIDA FROM " + company_table + " WHERE EMPLEADO = '" + empl + "'")
-                                stado = cursor2.fetchall()
-                                if stado:
-                                    for st in stado:
-                                        if st[0] == 'CES':
-                                            self.env['hr.employee'].search(
-                                                [('id_integrador', '=', empl)]).write(
-                                                {'stado': 'CES', 'finish_job': st[1]})
-                                            self.env.cr.commit()
-                    except Exception as e:
-                        raise ValidationError("error here correctamente")
         except Exception as e:
             print("NADA")
-        return "HOLAAA"
+
     @api.model
     def create(self, vals):
         if "TARJETA" in str(vals.get("glosa_entrega")):
@@ -437,6 +385,7 @@ class Liquidaciones(models.Model):
                                             """
         }
         return res
+
     def convert_sql(self, frase):
         variJson = []
         frase_express = frase.replace("SELECT", "").replace("WHERE", "$").replace("FROM", "$").replace("\n",
@@ -482,16 +431,7 @@ class Liquidaciones(models.Model):
         return sumex
 
     def _action_registro_gasto(self):
-        try:
-            form_view_id = self.env.ref("gastos_tqc.view_form_registro_gasto").id
-            tree_view_id = self.env.ref("gastos_tqc.view_tree_registro_gasto").id
-            search_view_id = self.env.ref("gastos_tqc.search_register_filter").id
-        except Exception as e:
-            form_view_id = False
-            tree_view_id = False
-            search_view_id = False
-
-        name_employee = "Registro gasto"
+        name_employee = "Registro gastos"
         if (self.env.user.employee_id):
             name_employee = name_employee + " : " + self.env.user.employee_id.name + " | Centro de costo: " + self.env.user.employee_id.department_id.id_integrador + " - " + self.env.user.employee_id.department_id.name
         # employee_id
@@ -500,11 +440,12 @@ class Liquidaciones(models.Model):
             "name": name_employee,
             "type": "ir.actions.act_window",
             "res_model": "tqc.liquidaciones",
-            "sequence":1,
+            "sequence": 1,
             "view_type": "form",
             "view_mode": "form,tree",
             "search_view_id": (self.env.ref("gastos_tqc.search_register_filter").id,),
-            'views': [[self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'], [self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form']],
+            'views': [[self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'],
+                      [self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form']],
             "target": "current",
             "nodestroy": False,
             "context": {'search_default_filtro_rendir': True,
@@ -521,41 +462,53 @@ class Liquidaciones(models.Model):
         return res
 
     def generate_liquidacion(self):
-        ids = self.detalleliquidaciones_id.mapped('id')
-        print("VAMOSSS es :", ids)
-        self.write({
-            'habilitado_state':'proceso',
-            'state':'jefatura'
-        })
+        if self.detalleliquidaciones_id:
+            ids = self.detalleliquidaciones_id.mapped('id')
+            print("VAMOSSS es :", datetime.today())
+            self.write({
+                'habilitado_state': 'proceso',
+                'state': 'jefatura',
+                'fecha_generacion': datetime.today()
+            })
 
-        for id in ids:
-            self.env["tqc.detalle.liquidaciones"].browse(id).write(
-                {
-                    'state': 'historial'
-                })
+            for id in ids:
+                self.env["tqc.detalle.liquidaciones"].browse(id).write(
+                    {
+                        'state': 'historial'
+                    })
+        else:
+            raise UserError(_("Los documentos estan vacios"))
         # self.env["tqc.detalle.liquidaciones"].browse(self.id).write(
         #     {
         #         'state': 'historial'
         #     })
+
     def button_jefatura(self):
         if self.state == 'jefatura':
-            self.write({'state':'contable'})
+            self.write({'state': 'contable'})
 
     def button_contable(self):
         if self.state == 'contable':
-            self.write({'state':'pendiente'})
+            self.write({'state': 'pendiente'})
 
     def volver_enviar(self):
         self.env['tqc.detalle.liquidaciones'].search([('liquidacion_id', '=', self.id)]).write({
-            'revisado_state':'corregido',
-            'state':'historial'
+            'revisado_state': 'corregido',
+            'state': 'historial'
         })
         self.write({
-            'habilitado_state':'proceso'
+            'habilitado_state': 'proceso'
         })
+
     @api.model
     def get_count_states(self):
         jefatura = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['jefatura'])])
         contable = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['contable'])])
         pendiente = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['pendiente'])])
         return [jefatura, contable, pendiente]
+
+    def search_ruc(self):
+        pass
+
+    def search_cod_client(self):
+        pass

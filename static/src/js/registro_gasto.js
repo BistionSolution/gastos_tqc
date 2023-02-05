@@ -38,7 +38,6 @@ odoo.define('gastos_tqc.registro_gasto', function (require) {
                 action_name: "gastos_tqc.action_view_filter_gastos",
                 action_context: $action.attr('context'),
             });
-            console.log("ESTE ES KA ACCUIBa sdfasd ; ", $action.attr('context'))
         }
                 // render_monetary_field: function (value, currency_id) {
         //     value = value.toFixed(2);
