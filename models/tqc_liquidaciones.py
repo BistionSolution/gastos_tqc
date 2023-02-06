@@ -5,7 +5,6 @@ from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, date, timedelta, time
 import re, pyodbc
 
-
 class Liquidaciones(models.Model):
     _name = 'tqc.liquidaciones'
     _description = 'Liquidaciones'

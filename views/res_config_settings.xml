@@ -1,0 +1,58 @@
+<odoo>
+
+    <record id="res_config_settings_view_form_gastos_tqc" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.gastos.tqc</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="10"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Gastos Tqc" string="Gastos TQC" data-key="gastos_tqc" groups="gastos_tqc.res_groups_administrator">
+                    <h2>Base de datos control</h2>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options">
+                            <div class="o_setting_right_pane">
+                                <label for="data_base_gastos"/>
+                                <field name="data_base_gastos"/>
+                            </div>
+                        </div>
+                    </div>
+                    <h2>Establecer contraseña</h2>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options-2">
+                            <div class="o_setting_right_pane">
+                                <label for="pass_user_gastos"/>
+                                <field name="pass_user_gastos"/>
+                            </div>
+                            <button string="Cambiar contraseña" name="action_calcular" type="object" class="oe_highlight"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+<!--    <record id="action_vacation_control_config_settings" model="ir.actions.act_window">-->
+<!--        <field name="name">Settings</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">res.config.settings</field>-->
+<!--        <field name="view_id" ref="res_config_settings_view_form_vacation_control"/>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="target">inline</field>-->
+<!--        <field name="context">{'module' : 'vacation_control', 'bin_size': False}</field>-->
+<!--    </record>-->
+
+<!--    <menuitem id="menu_gastos_tqc_config_settings"-->
+<!--        name="Base de datos"-->
+<!--        parent="gastos_tqc.menu_conf_authorization"-->
+<!--        sequence="100"-->
+<!--        groups="base.group_system"-->
+<!--    />-->
+
+<!--    <menuitem id="menu_astos_tqc_general_settings"-->
+<!--        name="Configurar Prefijo"-->
+<!--        parent="menu_vacation_control_config_settings"-->
+<!--        sequence="0"-->
+<!--        action="action_vacation_control_config_settings"-->
+<!--        groups="base.group_system"/>-->
+</odoo>

@@ -25,6 +25,7 @@ class detalleLiquidaciones(models.Model):
     base_afecta = fields.Monetary(currency_field='currency_id', required=1)
     base_inafecta = fields.Monetary(currency_field='currency_id', required=1)
     montoigv = fields.Monetary(currency_field='currency_id', required=1)
+    impuesto = fields.Many2one('tqc.impuestos', required=1)
     totaldocumento = fields.Monetary(currency_field='currency_id', required=1)
 
     cuenta_contable = fields.Many2one('cuenta.contable.gastos', required=1)
@@ -50,7 +51,7 @@ class detalleLiquidaciones(models.Model):
     cliente = fields.Char(required=1)
     totaldocumento_soles = fields.Float()
     cliente_razonsocial = fields.Char()
-    cuenta_contable_descripcion = fields.Char(required=1)
+    cuenta_contable_descripcion = fields.Char()
 
     proveedornoexiste = fields.Boolean()
     proveedornohabido = fields.Boolean()
@@ -80,26 +81,25 @@ class detalleLiquidaciones(models.Model):
             if rec.moneda == 'USD':
                 rec.currency_id = 2
 
-    @api.constrains('base_afecta')
-    def check_saldo(self):
+    @api.onchange('totaldocumento')
+    def _onchange_totaldocumento(self):
         for rec in self:
-            saldo_liqudacion = rec.liquidacion_id.saldo
-            sum_total = sum(rec.liquidacion_id.detalleliquidaciones_id.mapped('totaldocumento'))
-            # print("Saldo : ",saldo_liqudacion)
-            # print("Saldo 2 : ",sum_total)
-            if sum_total > saldo_liqudacion:
-                raise UserError(_('Se paso del saldo'))
+            if rec.totaldocumento:
+                saldo_liqudacion = rec.liquidacion_id.saldo
+                sum_total = sum(rec.liquidacion_id.detalleliquidaciones_id.mapped('totaldocumento'))
+                if sum_total > saldo_liqudacion:
+                    raise UserError(_('Se paso del saldo'))
 
-    @api.constrains('tipocambio')
-    def check_saldo(self):
-        for rec in self:
-            if rec.tipocambio == 0:
-                raise UserError(_('se debe seleccionar fecha de emision correcta para tipo de cambio'))
+    # @api.constrains('tipocambio')
+    # def check_saldo(self):
+    #     for rec in self:
+    #         if rec.tipocambio == 0:
+    #             raise UserError(_('se debe seleccionar fecha de emision correcta para tipo de cambio'))
 
-    @api.onchange('base_afecta', 'base_inafecta')
+    @api.onchange('base_afecta', 'base_inafecta', 'impuesto')
     def _compute_igv_total(self):
         for rec in self:
-            monto_igv = (rec.base_afecta * 18) / 100
+            monto_igv = (rec.base_afecta * rec.impuesto.impuesto) / 100
             rec.montoigv = monto_igv
             rec.totaldocumento = monto_igv + rec.base_afecta + rec.base_inafecta
 

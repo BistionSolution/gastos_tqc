@@ -3,9 +3,13 @@
     <t t-name="gastos_tqc.table_depositos">
         <div class="o_field_one2many o_field_widget o_field_x2many o_field_x2many_list custom-control custom-checkbox"
              name="detalleliquidaciones_id" id="o_field_input_837" data-original-title="" title="">
-        <div class="o_x2m_control_panel"><div role="toolbar" aria-label="Control panel buttons" class="o_cp_buttons"></div>
-            <div role="search" class="o_cp_pager"></div></div>
-            <div class="o_list_view">
+        <div class="o_x2m_control_panel">
+            <div role="toolbar" aria-label="Control panel buttons" class="o_cp_buttons">
+            </div>
+            <div role="search" class="o_cp_pager">
+            </div>
+        </div>
+            <div class="o_list_view o_list_gastos">
             <div class="table-responsive">
             <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped o_section_and_note_list_view"
                    style="table-layout: auto; width:100%; overflow-x:auto;">

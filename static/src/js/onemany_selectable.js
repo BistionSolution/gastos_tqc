@@ -114,7 +114,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
 
             // detecta si existe el widget one2many selecteable
             if($tr.find('.o_list_record_selector').length > 0){
-                var rowIndex = $tr.prop('rowIndex') - 2;
+                var rowIndex = $tr.prop('rowIndex') - 1;
             }else{
                 var rowIndex = $tr.prop('rowIndex') - 1;
             }

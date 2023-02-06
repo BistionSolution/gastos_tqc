@@ -102,26 +102,30 @@
                                       decoration-warning="revisado_state == 'corregido'"
                                       decoration-danger="revisado_state== 'rechazado'">
                                     <field name="tipodocumento" string="Tipo doc."
-                                           options="{'no_create': True, 'no_create_edit':True}"/>
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="serie"/>
                                     <field name="numero"/>
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
-                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc"/>
+                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc" decoration-danger="proveedor_razonsocial == False"/>
+                                    <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
+                                           force_save="1"/>
                                     <!--                                    <field name="state"/>-->
-<!--                                    <field name="subtipo"/>-->
+                                    <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
+                                           options="{'currency_field': 'currency_id'}" />
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"/>
+                                    <field name="impuesto" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="montoigv" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
                                     <field name="totaldocumento" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
-                                    <field name="cuenta_contable" options="{'no_create': True, 'no_create_edit':True}"
+                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1" sum="Total Documentos"/>
+                                    <field name="cuenta_contable" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                     />
-                                    <field name="cliente" class="consult_client"/>
-                                    <field name="cliente_razonsocial"/>
+                                    <!--                                    <field name="nocliente"/>-->
+                                    <field name="cliente" class="consult_client" decoration-danger="cliente_razonsocial == False"/>
+                                    <field name="cliente_razonsocial" readonly="1" force_save="1"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
                                     <field name="observacionjefatura" string="Obs. jefatura"/>
                                     <field name="state" invisible="1"/>

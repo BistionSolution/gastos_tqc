@@ -1,0 +1,42 @@
+<odoo>
+    <data>
+        <record id="view_tree_tqc_impuestos" model="ir.ui.view">
+            <field name="name">view.tree.tqc.impuestos</field>
+            <field name="model">tqc.impuestos</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="descripcion"/>
+                    <field name="impuesto"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_form_tqc_impuestos" model="ir.ui.view">
+            <field name="name">view.form.tqc.impuestos</field>
+            <field name="model">tqc.impuestos</field>
+            <field name="arch" type="xml">
+                <form string="Superior">
+                    <sheet>
+                        <group string="Impuestos">
+                            <field name="name"/>
+                            <field name="descripcion"/>
+                            <field name="impuesto"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tqc_impuestos">
+            <field name="name">Impuestos</field>
+            <field name="res_model">tqc.impuestos</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+        <menuitem id="menu_impuestos_tqc" parent="gastos_tqc.menu_flujo_configuraciones" name="Impuestos"
+                  action="gastos_tqc.action_tqc_impuestos" sequence="3"/>
+
+    </data>
+
+</odoo>

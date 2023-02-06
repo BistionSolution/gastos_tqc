@@ -9,3 +9,4 @@ access_gastos_tqc_autorizadores,access.tqc.autorizadores,model_tqc_autorizadores
 access_gastos_tqc_searchruc,access.tqc.searchruc,model_tqc_searchruc,base.group_user,1,1,1,1
 access_gastos_tqc_searchclient,access.tqc.searchclient,model_tqc_searchclient,base.group_user,1,1,1,1
 access_gastos_tqc_auth_contabilidad,access.tqc.auth.contabilidad,model_tqc_auth_contabilidad,base.group_user,1,1,1,1
+access_gastos_tqc_impuestos,access.tqc.impuestos,model_tqc_impuestos,base.group_user,1,1,1,1

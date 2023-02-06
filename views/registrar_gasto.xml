@@ -59,53 +59,53 @@
                     <!--                    </header>-->
                     <group>
 
-                            <field name="empleado_name" invisible="1"/>
-                            <field name="name" readonly="1" invisible="1"/>
-                            <div class="o_row o_row_readonly o_hr_holidays_dates">
-                                <span class="oe_inline font-boldodo">
-                                    N° Solicitud :
-                                </span>
-                                <field name="num_solicitud" class="oe_inline" readonly="1"/>
-                                <label for="fecha_entrega" class="oe_inline font-boldodo">
-                                    Fecha :
-                                </label>
-                                <field name="fecha_entrega" class="oe_inline" readonly="1"/>
-                            </div>
+                        <field name="empleado_name" invisible="1"/>
+                        <field name="name" readonly="1" invisible="1"/>
+                        <div class="o_row o_row_readonly o_hr_holidays_dates">
+                            <span class="oe_inline font-boldodo">
+                                N° Solicitud :
+                            </span>
+                            <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                            <label for="fecha_entrega" class="oe_inline font-boldodo">
+                                Fecha :
+                            </label>
+                            <field name="fecha_entrega" class="oe_inline" readonly="1"/>
+                        </div>
 
-                            <div class="o_row o_row_readonly o_hr_holidays_dates">
-                                <span class="oe_inline font-boldodo">
-                                    Centro de costo :
-                                </span>
-                                <field name="centro_costo" class="oe_inline" readonly="1"/>
-                                <span class="oe_inline font-boldodo">
-                                    Glosa entrega :
-                                </span>
-                                <field name="glosa_entrega" class="oe_inline" readonly="1"/>
-                            </div>
-                            <div class="o_row o_row_readonly o_hr_holidays_dates">
-                                <span class="oe_inline font-boldodo">
-                                    Monto entrega :
-                                </span>
-                                <field name="monto_entrega" class="oe_inline" readonly="1"/>
-                                <span class="oe_inline font-boldodo">
-                                    Saldo :
-                                </span>
-                                <field name="saldo" class="oe_inline" readonly="1"/>
-                                <span class="oe_inline font-boldodo">
-                                    Moneda :
-                                </span>
-                                <field name="currency_id" class="oe_inline" readonly="1" string="Moneda"/>
-                            </div>
+                        <div class="o_row o_row_readonly o_hr_holidays_dates">
+                            <span class="oe_inline font-boldodo">
+                                Centro de costo :
+                            </span>
+                            <field name="centro_costo" class="oe_inline" readonly="1"/>
+                            <span class="oe_inline font-boldodo">
+                                Glosa entrega :
+                            </span>
+                            <field name="glosa_entrega" class="oe_inline" readonly="1"/>
+                        </div>
+                        <div class="o_row o_row_readonly o_hr_holidays_dates">
+                            <span class="oe_inline font-boldodo">
+                                Monto entrega :
+                            </span>
+                            <field name="monto_entrega" class="oe_inline" readonly="1"/>
+                            <span class="oe_inline font-boldodo">
+                                Saldo :
+                            </span>
+                            <field name="saldo" class="oe_inline" readonly="1"/>
+                            <span class="oe_inline font-boldodo">
+                                Moneda :
+                            </span>
+                            <field name="currency_id" class="oe_inline" readonly="1" string="Moneda"/>
+                        </div>
 
 
-                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                        <div class="o_row o_row_readonly o_hr_holidays_dates">
 
-                                <span class="oe_inline font-boldodo">
-                                    numeroplaca :
-                                </span>
-                                <field name="numeroplaca" class="oe_inline" readonly="1" string="Moneda"/>
-                            </div>
-                            <!--                                <field name="moneda" readonly="1"/>-->
+                            <span class="oe_inline font-boldodo">
+                                numeroplaca :
+                            </span>
+                            <field name="numeroplaca" class="oe_inline" readonly="1" string="Moneda"/>
+                        </div>
+                        <!--                                <field name="moneda" readonly="1"/>-->
 
                     </group>
 
@@ -113,32 +113,34 @@
 
                         <page string="Documentos">
 
-                            <field name="detalleliquidaciones_id" class="custom-control custom-checkbox" >
+                            <field name="detalleliquidaciones_id" class="custom-control custom-checkbox">
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
                                       decoration-danger="revisado_state== 'rechazado'">
                                     <field name="tipodocumento" string="Tipo doc."
-                                           options="{'no_create': True, 'no_create_edit':True}"/>
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="serie"/>
                                     <field name="numero"/>
-                                    <field name="fechaemision" string="Fecha emisión" />
+                                    <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
-                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc"/>
-                                    <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1" force_save="1"/>
+                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc" decoration-danger="proveedor_razonsocial == False"/>
+                                    <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
+                                           force_save="1"/>
                                     <!--                                    <field name="state"/>-->
-<!--                                    <field name="subtipo"/>-->
+                                    <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}" sum="Total Of Ages"/>
+                                           options="{'currency_field': 'currency_id'}" />
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"/>
+                                    <field name="impuesto" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="montoigv" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
                                     <field name="totaldocumento" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
-                                    <field name="cuenta_contable" options="{'no_create': True, 'no_create_edit':True}"
-                                           />
-<!--                                    <field name="nocliente"/>-->
-                                    <field name="cliente" class="consult_client"/>
+                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1" sum="Total Documentos"/>
+                                    <field name="cuenta_contable" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                    />
+                                    <!--                                    <field name="nocliente"/>-->
+                                    <field name="cliente" class="consult_client" decoration-danger="cliente_razonsocial == False"/>
                                     <field name="cliente_razonsocial" readonly="1" force_save="1"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
                                     <field name="observacionjefatura" string="Obs. jefatura"/>
@@ -268,10 +270,13 @@
         <!-- Top menu item -->
         <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
         <!--        <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1" name="Registro gasto" action="gastos_tqc.action_registro_gastos"/>-->
+        <menuitem id="menu_main_liquidaciones" name="Web de gastos"
+                  action="gastos_tqc.action_view_registro_liquidaciones"/>
         <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1"
                   name="Registro gastos" action="gastos_tqc.action_view_registro_liquidaciones"/>
         <menuitem id="menu_registro_gasto_admin" parent="gastos_tqc.menu_main_liquidaciones" sequence="2"
-                  name="Todos Registros" action="gastos_tqc.action_view_todos_registro_liquidaciones" groups="gastos_tqc.res_groups_administrator"/>
+                  name="Todos Registros" action="gastos_tqc.action_view_todos_registro_liquidaciones"
+                  groups="gastos_tqc.res_groups_administrator"/>
         <menuitem id="menu_flujo_configuraciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Configuracion"/>
     </data>

@@ -18,6 +18,6 @@
             </field>
         </record>
 
-        <menuitem id="menu_tipo_documentos" parent="gastos_tqc.menu_flujo_configuraciones" name="Tipo documentos" action="gastos_tqc.action_view_tipo_documentos"/>
+        <menuitem id="menu_tipo_documentos" parent="gastos_tqc.menu_flujo_configuraciones" name="Tipo documentos" action="gastos_tqc.action_view_tipo_documentos" sequence="2"/>
     </data>
 </odoo>

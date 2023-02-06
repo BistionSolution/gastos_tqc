@@ -25,17 +25,19 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'security/ir_rules.xml',
         'security/res_group.xml',
+        'security/ir_rules.xml',
 
         'views/liquidaciones.xml',
         'views/templates.xml',
+        'views/registrar_gasto.xml',
+        'views/res_config_settings.xml',
         'views/cuenta_contable.xml',
         'views/tipo_liquidaciones.xml',
         'views/tipo_documentos.xml',
-        'views/registrar_gasto.xml',
         'views/tqc_autorizadores.xml',
         'views/hr_employee.xml',
+        'views/tqc_impuestos.xml',
 
         'wizard/search_ruc.xml',
         'wizard/search_client.xml',
