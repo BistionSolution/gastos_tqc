@@ -6,26 +6,25 @@
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
                 <tree js_class="gastos_tqc_tree_selections" class="gastos_tqc">
-                    <field name="habilitado_state"/>
-                    <field name="fecha_generacion"/>
-                    <field name="mode_view" force_save="1"/>
+                    <field name="habilitado_state" invisible="1"/>
+                    <field name="mode_view" force_save="1" invisible="1"/>
 
                     <field name="num_solicitud"/>
                     <field name="empleado_name"/>
                     <field name="centro_costo"/>
-                    <field name="fecha_entrega"/>
-                    <field name="fecha_contable"/>
-
+                    <field name="fecha_entrega" string="Fecha solicitud"/>
+                    <field name="fecha_contable" invisible="1"/>
                     <field name="moneda"/>
-                    <field name="currency_id" string="Moneda"/>
+                    <field name="currency_id" string="Moneda" invisible="1"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <!--                    <field name="observacionenvio"/>-->
                     <!--                    <field name="numeroplaca"/>-->
                     <!--                    <field name="glosa_entrega"/>-->
-                    <field name="state"/>
-                    <field name="tipoliquidacion_id"/>
+                    <field name="fecha_generacion"/>
 
+                    <field name="state"/>
+                    <field name="tipo_documento"/>
                     <!--                    <field name="id_current" invisible="1"/>-->
                 </tree>
             </field>
@@ -39,13 +38,15 @@
                 <form string="Liquidacion">
                     <header>
                         <button string="Enviar a contabilidad" name="button_jefatura" states="jefatura" type="object"
-                                class="oe_highlight" groups="gastos_tqc.res_groups_aprobador_gastos,gastos_tqc.res_groups_administrator"/>
+                                class="oe_highlight"
+                                groups="gastos_tqc.res_groups_aprobador_gastos,gastos_tqc.res_groups_administrator"/>
                         <button string="Aprobar" name="button_contable" states="contable" type="object"
-                                class="oe_highlight" groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
+                                class="oe_highlight"
+                                groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
                         <field name="state" widget="statusbar" statusbar_visible="jefatura,contable,pendiente"/>
                     </header>
                     <group>
-                        <field name="mode_view" force_save="1"/>
+                        <field name="mode_view" force_save="1" invisible="1"/>
                         <field name="empleado_name" invisible="1"/>
                         <field name="name" readonly="1" invisible="1"/>
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
@@ -100,39 +101,45 @@
                                 <!--                                section_and_note_one2many-->
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
-                                      decoration-danger="revisado_state== 'rechazado'">
+                                      decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']">
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="serie"/>
                                     <field name="numero"/>
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
-                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc" decoration-danger="proveedor_razonsocial == False"/>
+                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc"
+                                           decoration-danger="proveedor_razonsocial == False"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
                                            force_save="1"/>
                                     <!--                                    <field name="state"/>-->
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}" />
+                                           options="{'currency_field': 'currency_id'}"/>
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"/>
-                                    <field name="impuesto" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                                    <field name="impuesto"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="montoigv" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
                                     <field name="totaldocumento" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1" sum="Total Documentos"/>
-                                    <field name="cuenta_contable" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
+                                           sum="Total Documentos"/>
+                                    <field name="cuenta_contable"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                     />
                                     <!--                                    <field name="nocliente"/>-->
-                                    <field name="cliente" class="consult_client" decoration-danger="cliente_razonsocial == False"/>
+                                    <field name="cliente" class="consult_client"
+                                           decoration-danger="cliente_razonsocial == False"/>
                                     <field name="cliente_razonsocial" readonly="1" force_save="1"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
-                                    <field name="observacionjefatura" string="Obs. jefatura"/>
+                                    <field name="observacionjefatura" string="Obs. Jefatura" readonly="1"/>
+                                    <field name="observacioncontabilidad" string="Obs. Contabilidad" readonly="1"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"
                                            decoration-warning="revisado_state == 'corregido'"
-                                           decoration-danger="revisado_state== 'rechazado'"/>
+                                           decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"/>
 
                                     <!--                                    <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up"/>-->
                                     <!--                                    <button string="Rechazar" name="action_refuse" type="object" icon="fa-times"/>-->
@@ -201,7 +208,7 @@
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>
-            <!--            <field name="context">{'search_default_contable':1}</field>-->
+            <field name="context">{'search_default_contable':1,'mode_view':'flujo'}</field>
             <field name="domain">[('habilitado_state', 'in', ['proceso','corregir'])]</field>
 
             <field name="target">main</field>
@@ -220,7 +227,7 @@
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>
-            <field name="context">{'search_default_pendiente':1}</field>
+            <field name="context">{'search_default_pendiente':1,'mode_view':'flujo'}</field>
             <field name="domain">[('habilitado_state', 'in', ['proceso','corregir'])]</field>
             <field name="target">main</field>
             <field name="help" type="html">
@@ -273,7 +280,8 @@
         <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
         <!--    <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_main_liquidaciones" name="Web de gastos"
-                  action="gastos_tqc.action_view_registro_liquidaciones"/>
+                  action="gastos_tqc.action_view_registro_liquidaciones"
+                  web_icon="gastos_tqc,static/description/icon.png"/>
         <!--    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Flujo aprobaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>

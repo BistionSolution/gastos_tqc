@@ -9,7 +9,7 @@
                      new_field after it -->
                 <xpath expr="//div[@id='o_work_employee_main']" position="inside">
                     <group string="Aprobador Gastos">
-                       <field name="superior"/>
+                       <field name="superior" widget="many2many_tags"/>
                         <field name="subordinados" widget="many2many_tags"/>
                     </group>
 

@@ -87,7 +87,7 @@
 }
 
 
-/*Modal search eprsonalziadaos*/
+/*Modal search presonalizados*/
 .captura_name {
   width: 100% !important;
 }
@@ -116,19 +116,34 @@
 .font-boldodo {
   font-weight: bold !important;
 }
-/*Estilo de tabla*/
-.o_list_gastos .o_list_table thead > tr > th{
+
+/*Estilo de tabla original de odoo*/
+.o_list_gastos .o_list_table thead > tr > th {
   border-left: 1px solid #E2E2E2 !important;
   border-right: 1px solid #E2E2E2 !important;
 }
-.o_list_gastos .o_list_table tbody > tr > td{
+
+.o_list_gastos .o_list_table tbody > tr > td {
   border-left: 1px solid #E2E2E2 !important;
   border-right: 1px solid #E2E2E2 !important;
 }
-.o_list_gastos .o_list_table{
+
+.o_list_gastos .o_list_table {
   table-layout: auto !important;
 }
-.o_list_gastos .o_list_table thead > tr > th{
+
+.o_list_gastos .o_list_table thead > tr > th {
   white-space: normal !important;
   border-bottom: 1px solid #E2E2E2 !important;
+}
+.o_list_view thead{
+  background-color: #eee !important;
+}
+/*Estilo de tabla de busqueda personalizada*/
+.search_aument{
+  width: 100% !important;
+}
+
+.hidden_remove{
+  display: none;
 }

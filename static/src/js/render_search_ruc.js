@@ -25,7 +25,8 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
         events: {
             'click .button_search_ruc': '_onClickSearch',
             'click .aceptar_ruc_button': '_onClickAccept',
-            'click .cancelar_ruc_button': '_onClickCancel'
+            'click .cancelar_ruc_button': '_onClickCancel',
+            'dblclick .o_data_row': '_onDoubleClickRow'
         },
         start: function () {
             return this._super.apply(this, arguments);
@@ -52,8 +53,7 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
             });
             self.$el.html(elem);
 
-
-            console.log("ELEMTNO : ", self.$el.parent().parent())
+            self.$el.addClass('search_aument')
             $('.modal-footer').append('<button class="aceptar_ruc_button oe_highlight">Aceptar</button>')
 
             // var $row = this._super(record);
@@ -69,17 +69,30 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
         _renderReadonly: function () {
             // console.log("RENDER READONLY")
         },
-        _onClickSearch: function () {
+        _onClickSearch: async function () {
             var self = this
             let ruc = $(self.$el).find('#ruc').val()
-            self._rpc({ //envia el modelo, parametos
+            $(self.$el).find('tbody').find('tr').remove();
+            await self._rpc({ //envia el modelo, parametos
                 model: "tqc.detalle.liquidaciones",
                 method: "search_ruc",
                 args: [{'ruc': ruc}],
                 kwargs: {}
-            }).then(function (e) {
-                $(self.$el).find('#rruc').text(e[0])
-                $(self.$el).find('#result').text(e[1])
+            }).then(function (proveedores) {
+                _.each(proveedores, function (prob, key) {
+                    console.log({prob})
+                    var addRows = [$('<td>', {
+                            class: 'o_data_cell o_field_cell o_list_char',
+                            tabindex: -1
+                        }).attr('data-id', key).append(prob.ruc.trimStart()),
+                    $('<td>', {
+                            class: 'o_data_cell o_field_cell o_list_char',
+                            tabindex: -1
+                        }).attr('data-id', key).append(prob.razon.trimStart())]
+
+                    var $rows = $('<tr/>', {class: 'o_data_row'}).attr('onselectstart',"return false").append(addRows)
+                    $(self.$el).find('tbody').append($rows);
+                })
             })
         },
         _onClickAccept: function () {
@@ -88,6 +101,11 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
             $('.modal').remove()
         },
         _onClickCancel: function () {
+            $('.modal').remove()
+        },
+        _onDoubleClickRow: function (e) {
+            $("input[name='ruc']").val(e.currentTarget.cells[0].innerText)
+            $("input[name='ruc']").trigger("change");
             $('.modal').remove()
         }
     })

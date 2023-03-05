@@ -29,7 +29,7 @@ class Liquidaciones(models.Model):
     state = fields.Selection([
         ('habilitado', 'habilitado'),
         ('jefatura', 'Sin visto jefe'),
-        ('contable', 'Visto Contable'),
+        ('contable', 'Sin visto Contable'),
         ('pendiente', 'Pediente a procesar')],
         default='habilitado', string='Estado Solicitud')
 
@@ -72,13 +72,14 @@ class Liquidaciones(models.Model):
     habilitado_state = fields.Selection([('habilitado', 'Habilitado para liquidar'),
                                          ('proceso', 'Proceso de liquidacion'),
                                          ('corregir', 'Corregir y seguir')],
-                                        default='habilitado', string='Tipo documento')
+                                        default='habilitado', string='Proceso')
     mode_view = fields.Selection([('registro', 'Registro'),
                                   ('flujo', 'Flujo')],
                                  string='Modo de vista')
 
     table_depositos = fields.Html()
-    current_user_uid = fields.Integer(compute='_get_current_user', default=0)
+
+    current_user_uid = fields.Integer() #compute='_get_current_user', default=0
     uid_create = fields.Integer(compute='_get_current_user')
 
     @api.depends()
@@ -105,11 +106,11 @@ class Liquidaciones(models.Model):
             # record.auth_two = record.id_trabajador.auth_one.id
             # record.auth_three = record.id_trabajador.auth_one.id
 
-            super = record.sudo().empleado_name.superior.user_id.id
-            if super == user_now:
-                record.current_user_uid = 1
-            else:
-                record.current_user_uid = 0
+            # super = record.sudo().empleado_name.superior.user_id.id
+            # if super == user_now:
+            #     record.current_user_uid = 1
+            # else:
+            #     record.current_user_uid = 0
 
     @api.depends('num_solicitud')
     def _get_name_soli(self):

@@ -114,7 +114,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
 
             // detecta si existe el widget one2many selecteable
             if($tr.find('.o_list_record_selector').length > 0){
-                var rowIndex = $tr.prop('rowIndex') - 1;
+                var rowIndex = $tr.prop('rowIndex') - 2;
             }else{
                 var rowIndex = $tr.prop('rowIndex') - 1;
             }
@@ -124,7 +124,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             }
             var fieldIndex = Math.max($tr.find('.o_field_cell').index($td), 0);
             this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
-
                 // add button with custom code bistion
                 // console.log("ESTE ES tr: ", &)
                 if ($td.hasClass('consult_ruc')) {
@@ -244,17 +243,19 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             var selected_lines = self.find_deleted_lines();
             console.log("VAMOS CON TOD : ", this.res_id)
             console.log("VAMOS CON 2 : ", this.recordData)
+            console.log("VAMOS Cestado : ", this.recordData.state)
             if (selected_lines.length === 0) {
                 this.do_warn(_t("Please Select at least One Record."));
                 return false;
             }
-            var w_response = confirm("Dou You Want to modify ?");
+            var w_response = confirm("¿Seguro que deseas rechazar los documentos seleccionados?");
             if (w_response) {
+
                 rpc.query({
                     'model': current_model,
                     'method': 'write',
                     'args': [selected_lines, {
-                        'revisado_state': 'rechazado',
+                        'revisado_state': 'rechazado_'+this.recordData.state,
                         'state': 'document'
                     }],
                 }).then(function (result) {

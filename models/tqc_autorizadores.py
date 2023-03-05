@@ -4,6 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 
 import re, pyodbc
 
+
 class TqcAuth(models.Model):
     _name = 'tqc.autorizadores'
     _description = 'Autorizadores Jefatura'
@@ -20,7 +21,7 @@ class TqcAuth(models.Model):
                       SUPERIOR AS external_id,
                       SUPERIOR AS superior,
                       SUBORDINADO AS subordinados
-                    FROM """+data_base+""".EMPLEADO_JERARQUIA"""
+                    FROM """ + data_base + """.EMPLEADO_JERARQUIA"""
 
             ip_conexion = "10.10.10.228"
             data_base = "TQC"
@@ -93,19 +94,23 @@ class TqcAuth(models.Model):
         # EMPIEZA EL CALCULO DE AUTORIZADORES
         all_employee = self.env["hr.employee"].search([])
         for rec in all_employee:
-            id_superior = self.env["tqc.autorizadores"].search([('superior', '=', rec.id)])
-            if id_superior:
-                ids_subord = id_superior.mapped('subordinados').mapped('id')
-                self.env["hr.employee"].browse(rec.id).sudo().write({'subordinados': [(6, 0, ids_subord)]})
+            superior = self.env["tqc.autorizadores"].search([('subordinados', "in", rec.id)])
+            if superior:
+                ids_superior = superior.mapped('superior').mapped('id')
+                self.env["hr.employee"].browse(rec.id).sudo().write({'superior': [(6, 0, ids_superior)]})
                 self.env.cr.commit()
-                for sub in ids_subord:
-                    sub_employee = self.env["hr.employee"].search([('id', '=', sub)])
-                    if sub_employee:
-                        sub_employee.write({'superior': rec.id})
             else:
                 self.env["hr.employee"].browse(rec.id).sudo().write({'superior': False})
                 self.env.cr.commit()
-        print("faaa")
+
+            subords = self.env["tqc.autorizadores"].search([('superior', '=', rec.id)])
+            if subords:
+                ids_subord = subords.mapped('subordinados').mapped('id')
+                self.env["hr.employee"].browse(rec.id).sudo().write({'subordinados': [(6, 0, ids_subord)]})
+                self.env.cr.commit()
+            else:
+                self.env["hr.employee"].browse(rec.id).sudo().write({'superior': False})
+                self.env.cr.commit()
 
     # SINCRONIZAR EMPLEADOS CON SU RESPECTIVO AUTORIZADOR
     def sicronizar_auth(self):
@@ -199,10 +204,10 @@ class TqcAuthConta(models.Model):
         self.env['res.groups'].search([('id', '=', id_group_aprob)]).sudo().write(
             {'users': [(3, i) for i in list_new_emple]})
 
-
 class gastosEmployee(models.Model):
     _inherit = "hr.employee"
 
-    superior = fields.Many2one("hr.employee", string="Superior")  # relacionada foreigth key hr.department
+    superior = fields.Many2many("hr.employee", 'super_emple_rel', 'emple_id', 'sup_id',
+                                string="Superior")  # relacionada foreigth key hr.department
     subordinados = fields.Many2many("hr.employee", 'super_subord_rel', 'sup_id', 'sub_id',
                                     string="Subordinados")  # relacionada foreigth key hr.department

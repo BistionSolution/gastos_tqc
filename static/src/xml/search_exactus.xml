@@ -8,6 +8,39 @@
                 <span>Buscar</span>
             </button>
         </div>
+
+        <div class="o_field_one2many o_field_x2many_list custom-checkbox"
+             name="detalleliquidaciones_id" id="o_field_input_837" data-original-title="" title="">
+
+            <div class="o_list_view o_list_gastos" style="margin-top: 15px;">
+                <div class="table-responsive">
+                <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped o_section_and_note_list_view"
+                   style="table-layout: auto; width:100%; overflow-x:auto;">
+                    <thead>
+                        <tr>
+                            <th data-name="tipodocumento" tabindex="-1" class="o_column_sortable" data-original-title=""
+                                title="" style="width: 30%;">RUC<span
+                                    class="o_resize"></span>
+                            </th>
+                            <th data-name="serie" tabindex="-1" class="o_column_sortable"
+                                data-original-title="" title="" style="width: 70%;">Razon Social<span
+                                    class="o_resize"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="ui-sortable" style="width:100% !important;">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="tipo"></td>
+                            <td class="ruc"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        </div>
+
         <span class="o_field_char o_field_widget o_readonly_modifier" id="rruc"></span>
         <span class="o_field_char o_field_widget o_readonly_modifier" id="result"></span>
         <div>

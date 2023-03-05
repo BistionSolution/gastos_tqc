@@ -17,7 +17,7 @@
                     <field name="fecha_entrega" string="Fecha de solicitud"/>
                     <!--                    <field name="fecha_contable"/>-->
                     <field name="moneda"/>
-                    <field name="currency_id"/>
+                    <field name="currency_id" invisible="1"/>
                     <field name="glosa_entrega" string="Glosa de solicitud"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"
                            sum="Total Of Ages"/>
@@ -106,13 +106,10 @@
                             <field name="numeroplaca" class="oe_inline" readonly="1" string="Moneda"/>
                         </div>
                         <!--                                <field name="moneda" readonly="1"/>-->
-
                     </group>
 
                     <notebook>
-
                         <page string="Documentos">
-
                             <field name="detalleliquidaciones_id" class="custom-control custom-checkbox">
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
@@ -123,9 +120,9 @@
                                     <field name="numero"/>
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
-                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc" decoration-danger="proveedor_razonsocial == False"/>
-                                    <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
-                                           force_save="1"/>
+                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc" decoration-danger="razonsocial_invisible == False"/>
+                                    <field name="razonsocial_invisible" invisible="1"/>
+                                    <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                     <!--                                    <field name="state"/>-->
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
@@ -143,7 +140,6 @@
                                     <field name="cliente" class="consult_client" decoration-danger="cliente_razonsocial == False"/>
                                     <field name="cliente_razonsocial" readonly="1" force_save="1"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
-                                    <field name="observacionjefatura" string="Obs. jefatura"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"

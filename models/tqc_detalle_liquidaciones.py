@@ -14,10 +14,11 @@ class detalleLiquidaciones(models.Model):
     liquidacion_id = fields.Many2one('tqc.liquidaciones')
     tipo = fields.Char()
     subtipo = fields.Char()
-    serie = fields.Char(required=1)
+    serie = fields.Char(required=1, size=4)
     numero = fields.Char(required=1)
     ruc = fields.Char(string='RUC', required=1)
     proveedor_razonsocial = fields.Char(string='Razón social')
+    razonsocial_invisible = fields.Char(string='Razón social')
     moneda = fields.Char()
     tipocambio = fields.Float(required=1, digits=(12, 3))
     fechaemision = fields.Date(required=1)
@@ -67,8 +68,10 @@ class detalleLiquidaciones(models.Model):
 
     revisado_state = fields.Selection([
         ('borrador', 'Borrador'),
-        ('aprobado', 'Aprobado'),
-        ('rechazado', 'Rechazado'),
+        ('aprobado_jefatura', 'Aprobado jefatura'),
+        ('aprobado_contable', 'Aprobado contabilidad'),
+        ('rechazado_jefatura', 'Rechazado jefatura'),
+        ('rechazado_contable', 'Rechazado Contabilidad'),
         ('corregido', 'Corregido'),
     ], string='Estado', default='borrador',
         help="Tipo de de solicitud" +
@@ -167,8 +170,8 @@ class detalleLiquidaciones(models.Model):
 
                 except Exception as e:
                     result = ""
-                print("razon soc ",result)
                 rec.proveedor_razonsocial = result
+                rec.razonsocial_invisible = result
 
     @api.onchange('cliente')
     def _onchange_cliente(self):
@@ -202,6 +205,9 @@ class detalleLiquidaciones(models.Model):
 
     def unlink(self):
         # liquidaciones = self.sudo().env['tqc.liquidaciones'].search([('liquidacion_id', '=', self.id), ('habilitado_state', 'in', ['proceso', 'corregir'])])
+        if self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
+            raise UserError(_("No puedes eliminar registro si eres rol jefatura"))
+
         if self.liquidacion_id.habilitado_state in ['proceso', 'corregir']:
             raise UserError(_("No puedes eliminar registro en estado 'corregir' y 'proceso'"))
         return super(detalleLiquidaciones, self).unlink()
@@ -214,8 +220,7 @@ class detalleLiquidaciones(models.Model):
 
     @api.model
     def search_ruc(self, args):
-        result = ""
-        rucproveedor = ""
+        info = []
 
         ip_conexion = "10.10.10.228"
         data_base = "TQC"
@@ -224,7 +229,7 @@ class detalleLiquidaciones(models.Model):
         table_bd = "tqc.liquidaciones"
         table_relations = """empleado_name OF hr.employee"""
 
-        sql_prime = """SELECT TOP 1 * FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args['ruc'] + """'"""
+        sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args['ruc'] + """%' OR NOMBRE LIKE '%"""+ args['ruc'] +"""%'"""
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
@@ -232,18 +237,15 @@ class detalleLiquidaciones(models.Model):
             cursor.execute(sql_prime)
             proveedores = cursor.fetchall()
 
-            for proveedor in proveedores:
-                rucproveedor = proveedor[0]
-                result = proveedor[2]
-
+            for key in proveedores:
+                info.append({
+                    "ruc": key[0],
+                    "razon": key[1]
+                })
         except Exception as e:
-            result = "Fallo la conexxion"
+            resp = "Fallo la conexxion"
 
-        if result:
-            rucproveedor = rucproveedor.strip()
-            return [rucproveedor, result]
-        else:
-            return 'esta vacio'
+        return info
 
     @api.model
     def search_client(self, args):

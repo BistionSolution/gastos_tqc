@@ -6,7 +6,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="superior"/>
-                    <field name="subordinados"/>
+                    <field name="subordinados" widget="many2many_tags"/>
                 </tree>
             </field>
         </record>

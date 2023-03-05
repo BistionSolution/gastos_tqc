@@ -116,12 +116,12 @@
                     <td class="subtipo"></td>
                     <td class="serie"></td>
                     <td class="fechaemision"></td>
-                    <td class="base_afecta o_list_number" title="Total Of Ages">0.00</td>
+                    <td class="base_afecta o_list_number"></td>
                     <td class="base_inafecta"></td>
                     <td class="montoigv"></td>
                     <td class="moneda"></td>
-                    <td class="totaldocumento"></td>
-                    <td class="numero"></td>
+                    <td class="totaldocumento" ></td>
+                    <td class="numero" title="Total documento">100.00</td>
                     <td class="ruc"></td>
                     <td class="cuenta_contable"></td>
                     <td class="totaldocumento"></td>
