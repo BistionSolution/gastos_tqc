@@ -325,30 +325,6 @@ class tipoDocumento(models.Model):
             result.append((rec.id, name))
         return result
 
-
-class cuentaContable(models.Model):
-    _name = 'cuenta.contable.gastos'
-    _description = 'Tipo de Liquidaciones'
-
-    name = fields.Char()
-    description = fields.Char()
-    estado = fields.Char()
-    centrocosto = fields.Many2one('hr.department')
-    descripcioncentrocosto = fields.Char()
-
-    # def unlink(self):
-    #     for record in self:
-    #         if not (self.env.user.has_group('vacation_control.res_groups_administrator')):
-    #             if record.state in ['aprobado', 'en_goce', 'gozado', 'suspend']:
-    #                 raise UserError(_("No puedes eliminar registro ya calculados"))
-    #         #     else:
-    #         #         id_trabajador = record.vc_trabajador.id
-    #         #         res = super(solicitudVacaciones, record).unlink()
-    #         #         self.estado_cuenta(id_trabajador)
-    #         # else:
-    #         #     id_trabajador = record.vc_trabajador.id
-
-
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'
     _description = 'Vamos'

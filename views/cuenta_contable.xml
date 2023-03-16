@@ -16,7 +16,6 @@
                     <field name="centrocosto"/>
 <!--                    <field name="description"/>-->
 <!--                    <field name="descripcioncentrocosto"/>-->
-
                     <field name="estado"/>
                 </tree>
             </field>
@@ -33,12 +32,14 @@
                 <form>
                     <sheet>
                         <group>
+                            <field name="cuenta_contable" widget="get_cuenta_contable"/>
                             <field name="name" string="Descripcion"/>
                             <field name="centrocosto"/>
 <!--                            <field name="description"/>-->
 <!--                            <field name="descripcioncentrocosto"/>-->
 
                             <field name="estado"/>
+
                         </group>
                     </sheet>
                 </form>

@@ -16,6 +16,7 @@
             <script type="text/javascript" src="/gastos_tqc/static/src/js/table_depositos.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/render_search_ruc.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/render_search_client.js"/>
+            <script type="text/javascript" src="/gastos_tqc/static/src/js/get_cuenta_contable.js"/>
 
             <script type="text/javascript" src="/gastos_tqc/static/src/js/list_renderer.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/web_client.js"/>

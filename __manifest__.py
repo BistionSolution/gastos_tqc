@@ -41,6 +41,7 @@
 
         'wizard/search_ruc.xml',
         'wizard/search_client.xml',
+        'wizard/cuenta_contable.xml',
         'assets.xml',
     ],
     # only loaded in demonstration mode
@@ -51,7 +52,8 @@
         'static/src/xml/liquidacion_header.xml',
         'static/src/xml/select_onemany.xml',
         'static/src/xml/table_depositos.xml',
-        'static/src/xml/search_exactus.xml'
+        'static/src/xml/search_exactus.xml',
+        'static/src/xml/cuenta_contable.xml'
     ],
     'application': True,
     # 'assets': {

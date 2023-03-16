@@ -1,4 +1,4 @@
-odoo.define("gastos_tqc.js_search_client", function (require) {
+odoo.define("gastos_tqc.js_get_cuenta_contable", function (require) {
     "use strict";
     var AbtractAction = require("web.AbstractAction");
     var AbstractField = require("web.AbstractField");
@@ -16,9 +16,7 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
             this._super(parent, name, record, options)
         },
         events: {
-            'click .button_search_client': '_onClickSearch',
-            'click .aceptar_client_button': '_onClickAccept',
-            'click .cancelar_client_button': '_onClickCancel'
+            'click .button_search_cuenta': '_onClickSearch'
         },
         start: function () {
             return this._super.apply(this, arguments);
@@ -40,7 +38,7 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
             //     method: 'search_read',
             //     domain:[['liquidacion_id','=',self.res_id],['state','=','historial']],
             // });
-            const elem = QWeb.render('search_client', {
+            const elem = QWeb.render('get_cuenta', {
                 // expenses: result
             });
             self.$el.html(elem);
@@ -61,20 +59,27 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
             // console.log("RENDER READONLY")
         },
         _onClickSearch: function () {
-            var self = this
-            let client = $(self.$el).find('#client').val()
-            self._rpc({ //envia el modelo, parametos
-                model: "tqc.detalle.liquidaciones",
-                method: "search_client",
-                args: [{'client': client}],
-                kwargs: {}
-            }).then(function (e) {
-                $(self.$el).find('#rruc2').text(e[0])
-                $(self.$el).find('#result2').text(e[1])
-            })
+            var self = this;
+            var action = {
+                name: 'Buscar Cuenta',
+                type: 'ir.actions.act_window',
+                res_model: 'cuenta.contable.transient',
+                views: [[false, 'form']],
+                view_type: 'form',
+                target: 'new'
+            }
+            var options = {}
+            options.on_close = function () {
+                var self = this;
+                // $("input[name='ruc']").val($('#result').text())
+                // $("input[name='ruc']").trigger("change");
+                // self.trigger_up('reload')
+            }
+            self.do_action(action, options).then(function () {
+                var self = this
+            });
         },
         _onClickAccept: function () {
-
             $("input[name='cliente']").val($('#rruc2').text())
             $("input[name='cliente']").trigger("change")
 
@@ -100,7 +105,7 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
         }
     })
 
-    field_registry.add("search_client", WidgetSeachruc);
+    field_registry.add("get_cuenta_contable", WidgetSeachruc);
 
     return WidgetSeachruc;
 });
