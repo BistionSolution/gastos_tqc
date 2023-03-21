@@ -241,9 +241,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             var self = this;
             var current_model = this.recordData[this.name].model;
             var selected_lines = self.find_deleted_lines();
-            console.log("VAMOS CON TOD : ", this.res_id)
-            console.log("VAMOS CON 2 : ", this.recordData)
-            console.log("VAMOS Cestado : ", this.recordData.state)
+
             if (selected_lines.length === 0) {
                 this.do_warn(_t("Please Select at least One Record."));
                 return false;

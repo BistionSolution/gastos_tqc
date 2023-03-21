@@ -81,6 +81,27 @@ class Liquidaciones(models.Model):
 
     current_user_uid = fields.Integer() #compute='_get_current_user', default=0
     uid_create = fields.Integer(compute='_get_current_user')
+    current_total = fields.Float(string='Current Total', compute='_compute_amount')
+
+    @api.depends('detalleliquidaciones_id')
+    def _compute_amount(self):
+        for rec in self:
+            print("provando ")
+            total = 0.0
+            for line in rec.detalleliquidaciones_id:
+                total += line.totaldocumento
+            if total > rec.saldo:
+                raise UserError(_('Se paso del saldo'))
+            rec.current_total = total
+
+    # @api.onchange('detalleliquidaciones_id')
+    # def _onchange_amount(self):
+    #     for rec in self:
+    #         print("provando ")
+    #         total = 0.0
+    #         for line in rec.detalleliquidaciones_id:
+    #             total += line.totaldocumento
+    #         rec.current_total = total
 
     @api.depends()
     def _get_current_user(self):

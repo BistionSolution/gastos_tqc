@@ -6,6 +6,7 @@ import datetime
 
 import re, pyodbc
 
+no_server = False
 
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
@@ -77,6 +78,8 @@ class detalleLiquidaciones(models.Model):
         help="Tipo de de solicitud" +
              "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
+    attachment = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id', string="Attachment",
+                                  help='You can upload your document', copy=False)
 
     @api.depends("moneda")
     def _compute_currency_id(self):
@@ -84,36 +87,58 @@ class detalleLiquidaciones(models.Model):
             if rec.moneda == 'USD':
                 rec.currency_id = 2
 
-    @api.onchange('totaldocumento')
-    def _onchange_totaldocumento(self):
-        for rec in self:
-            if rec.totaldocumento:
-                saldo_liqudacion = rec.liquidacion_id.saldo
-                sum_total = sum(rec.liquidacion_id.detalleliquidaciones_id.mapped('totaldocumento'))
-                if sum_total > saldo_liqudacion:
-                    raise UserError(_('Se paso del saldo'))
-
     # @api.constrains('tipocambio')
     # def check_saldo(self):
     #     for rec in self:
     #         if rec.tipocambio == 0:
     #             raise UserError(_('se debe seleccionar fecha de emision correcta para tipo de cambio'))
 
-    @api.onchange('base_afecta', 'base_inafecta', 'impuesto')
-    def _compute_igv_total(self):
+    # @api.onchange('totaldocumento')
+    # def _onchange_totaldocumento(self):
+    #     for rec in self:
+    #         if rec.totaldocumento:
+    #             saldo_liqudacion = rec.liquidacion_id.saldo
+    #             sum_total = sum(rec.liquidacion_id.detalleliquidaciones_id.mapped('totaldocumento'))
+    #             if sum_total > saldo_liqudacion:
+    #                 raise UserError(_('Se paso del saldo'))
+
+    @api.onchange('base_afecta','base_inafecta','impuesto')
+    def _onchange_base_afecta(self):
         for rec in self:
-            monto_igv = (rec.base_afecta * rec.impuesto.impuesto) / 100
-            rec.montoigv = monto_igv
-            rec.totaldocumento = monto_igv + rec.base_afecta + rec.base_inafecta
+            rec.update(rec._get_price_total())
+
+    def _get_price_total(self, liquidacion_id=None, base_afecta=None, impuesto=None, base_inafecta=None):
+        self.ensure_one()
+        res = {}
+        print("self id : ", self.id)
+        print("asd as : ",self.liquidacion_id.saldo)
+        print("detalles : ",self.liquidacion_id.detalleliquidaciones_id.mapped('totaldocumento'))
+        # Compute 'price_subtotal'.
+        saldo_liqudacion = self.liquidacion_id.saldo
+        monto_igv = (self.base_afecta * self.impuesto.impuesto) / 100
+        totaldocumento = monto_igv + self.base_afecta + self.base_inafecta
+
+        res['totaldocumento'] = totaldocumento
+        #In case of multi currency, round before it's use for computing debit credit
+        return res
+
+    # @api.onchange('base_inafecta')
+    # def _onchange_base_inafecta(self):
+    #     for rec in self:
+    #         rec.update(rec._get_price_total())
+    #
+    #
+    # @api.onchange('impuesto')
+    # def _onchange_impuesto(self):
+    #     for rec in self:
+    #         rec.update(rec._get_price_total())
 
     @api.onchange('fechaemision')
     def _onchange_fecha(self):
         for rec in self:
-            if rec.fechaemision:
+            if rec.fechaemision and no_server:
                 cambio = 0
                 strfecha = rec.fechaemision
-                print("fecgha es s, ", strfecha)
-                print("string fecha es ", strfecha.strftime('%Y-%m-%d'))
                 ip_conexion = "10.10.10.228"
                 data_base = "TQC"
                 user_bd = "vacaciones"
@@ -147,7 +172,7 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('ruc')
     def _onchange_ruc(self):
         for rec in self:
-            if rec.ruc:
+            if rec.ruc and no_server:
                 result = ""
                 ip_conexion = "10.10.10.228"
                 data_base = "TQC"
@@ -176,7 +201,7 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('cliente')
     def _onchange_cliente(self):
         for rec in self:
-            if rec.cliente:
+            if rec.cliente and no_server:
                 print("que fuentes")
                 result = ""
 
@@ -220,64 +245,66 @@ class detalleLiquidaciones(models.Model):
 
     @api.model
     def search_ruc(self, args):
-        info = []
+        if no_server:
+            info = []
 
-        ip_conexion = "10.10.10.228"
-        data_base = "TQC"
-        user_bd = "vacaciones"
-        pass_bd = "exvacaciones"
-        table_bd = "tqc.liquidaciones"
-        table_relations = """empleado_name OF hr.employee"""
+            ip_conexion = "10.10.10.228"
+            data_base = "TQC"
+            user_bd = "vacaciones"
+            pass_bd = "exvacaciones"
+            table_bd = "tqc.liquidaciones"
+            table_relations = """empleado_name OF hr.employee"""
 
-        sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args['ruc'] + """%' OR NOMBRE LIKE '%"""+ args['ruc'] +"""%'"""
-        try:
-            connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
-            cursor = connection.cursor()
-            cursor.execute(sql_prime)
-            proveedores = cursor.fetchall()
+            sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args['ruc'] + """%' OR NOMBRE LIKE '%"""+ args['ruc'] +"""%'"""
+            try:
+                connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                                            data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+                cursor = connection.cursor()
+                cursor.execute(sql_prime)
+                proveedores = cursor.fetchall()
 
-            for key in proveedores:
-                info.append({
-                    "ruc": key[0],
-                    "razon": key[1]
-                })
-        except Exception as e:
-            resp = "Fallo la conexxion"
+                for key in proveedores:
+                    info.append({
+                        "ruc": key[0],
+                        "razon": key[1]
+                    })
+            except Exception as e:
+                resp = "Fallo la conexxion"
 
-        return info
+            return info
 
     @api.model
     def search_client(self, args):
-        result = ""
-        rucclient = ""
+        if no_server:
+            result = ""
+            rucclient = ""
 
-        ip_conexion = "10.10.10.228"
-        data_base = "TQC"
-        user_bd = "vacaciones"
-        pass_bd = "exvacaciones"
+            ip_conexion = "10.10.10.228"
+            data_base = "TQC"
+            user_bd = "vacaciones"
+            pass_bd = "exvacaciones"
 
-        sql_prime = """SELECT TOP 1 * FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args['client'] + """'"""
-        try:
-            connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
-            cursor = connection.cursor()
-            cursor.execute(sql_prime)
-            proveedores = cursor.fetchall()
+            sql_prime = """SELECT TOP 1 * FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args['client'] + """'"""
+            try:
+                connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                                            data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+                cursor = connection.cursor()
+                cursor.execute(sql_prime)
+                proveedores = cursor.fetchall()
 
-            for proveedor in proveedores:
-                rucclient = proveedor[0]
-                result = proveedor[1]
+                for proveedor in proveedores:
+                    rucclient = proveedor[0]
+                    result = proveedor[1]
 
-        except Exception as e:
-            result = "Fallo la conexion"
+            except Exception as e:
+                result = "Fallo la conexion"
 
-        if result:
-            print(rucclient)
-            rucclient = rucclient.strip()
-            return [rucclient, result]
-        else:
-            return 'esta vacio cliente'
+            if result:
+                print(rucclient)
+                rucclient = rucclient.strip()
+                return [rucclient, result]
+            else:
+                return 'esta vacio cliente'
 
     def search_cod_client(self):
         pass
@@ -325,6 +352,9 @@ class tipoDocumento(models.Model):
             result.append((rec.id, name))
         return result
 
+class cuentaAttachment(models.Model):
+    _inherit = 'ir.attachment'
+    attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'attachment', 'attachment_id', 'document_id', string = "Attachment")
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'
     _description = 'Vamos'

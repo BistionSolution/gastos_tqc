@@ -30,12 +30,12 @@
             </field>
         </record>
 
-        <!--VISTA ATORIZACION TREE-->
+        <!--VISTA ATORIZACION FORM-->
         <record id="view_form_tqc_liquidaciones" model="ir.ui.view">
             <field name="name">view.form.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion">
+                <form string="Liquidacion" create="0">
                     <header>
                         <button string="Enviar a contabilidad" name="button_jefatura" states="jefatura" type="object"
                                 class="oe_highlight"
@@ -49,17 +49,26 @@
                         <field name="mode_view" force_save="1" invisible="1"/>
                         <field name="empleado_name" invisible="1"/>
                         <field name="name" readonly="1" invisible="1"/>
-                        <div class="o_row o_row_readonly o_hr_holidays_dates">
-                            <span class="oe_inline font-boldodo">
-                                N° Solicitud :
-                            </span>
-                            <field name="num_solicitud" class="oe_inline" readonly="1"/>
-                            <label for="fecha_entrega" class="oe_inline font-boldodo">
-                                Fecha :
-                            </label>
-                            <field name="fecha_entrega" class="oe_inline" readonly="1"/>
+                        <div>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                                <span class="oe_inline font-boldodo">
+                                                    N° Solicitud :
+                                                </span>
+                                                <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                                                <label for="fecha_entrega" class="oe_inline font-boldodo">
+                                                    Fecha :
+                                                </label>
+                                                <field name="fecha_entrega" class="oe_inline" readonly="1"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
                             <span class="oe_inline font-boldodo">
                                 Centro de costo :
@@ -97,7 +106,7 @@
                             <field name="uid_create" invisible="1"/>
                             <field name="detalleliquidaciones_id" class="custom-control custom-checkbox"
                                    widget="select_onemany"
-                                   attrs="{'readonly':['|','&amp;',('uid_create', '=', 2),('state', '!=', 'contable'),'&amp;',('uid_create', '=', 3),('state', '!=', 'jefatura')]}">
+                                   attrs="{'readonly':['|','&amp;',('uid_create', '=', 2),('state', '!=', 'contable'),'&amp;',('uid_create', '=', 3),('state', '=', 'jefatura')]}">
                                 <!--                                section_and_note_one2many-->
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
@@ -105,6 +114,7 @@
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="serie"/>
+                                    <field name="attachment"/>
                                     <field name="numero"/>
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>

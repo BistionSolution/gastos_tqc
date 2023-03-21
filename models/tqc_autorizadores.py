@@ -86,7 +86,7 @@ class TqcAuth(models.Model):
                         self.env.cr.commit()
 
                     except ValueError:
-                        print("No validadeo")
+                        print("No validado")
             TqcAuth.sicronizar_auth(self)
 
     def cal_all_auth(self):
@@ -96,7 +96,11 @@ class TqcAuth(models.Model):
         for rec in all_employee:
             superior = self.env["tqc.autorizadores"].search([('subordinados', "in", rec.id)])
             if superior:
+
                 ids_superior = superior.mapped('superior').mapped('id')
+                if rec.id == 452:
+                    print("name : ", rec.name)
+                    print(ids_superior)
                 self.env["hr.employee"].browse(rec.id).sudo().write({'superior': [(6, 0, ids_superior)]})
                 self.env.cr.commit()
             else:
@@ -109,7 +113,7 @@ class TqcAuth(models.Model):
                 self.env["hr.employee"].browse(rec.id).sudo().write({'subordinados': [(6, 0, ids_subord)]})
                 self.env.cr.commit()
             else:
-                self.env["hr.employee"].browse(rec.id).sudo().write({'superior': False})
+                # self.env["hr.employee"].browse(rec.id).sudo().write({'superior': False})
                 self.env.cr.commit()
 
     # SINCRONIZAR EMPLEADOS CON SU RESPECTIVO AUTORIZADOR

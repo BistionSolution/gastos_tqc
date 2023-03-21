@@ -61,16 +61,28 @@
 
                         <field name="empleado_name" invisible="1"/>
                         <field name="name" readonly="1" invisible="1"/>
-                        <div class="o_row o_row_readonly o_hr_holidays_dates">
-                            <span class="oe_inline font-boldodo">
-                                N° Solicitud :
-                            </span>
-                            <field name="num_solicitud" class="oe_inline" readonly="1"/>
-                            <label for="fecha_entrega" class="oe_inline font-boldodo">
-                                Fecha :
-                            </label>
-                            <field name="fecha_entrega" class="oe_inline" readonly="1"/>
+                        <div>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                                <span class="oe_inline font-boldodo">
+                                                    N° Solicitud :
+                                                </span>
+                                                <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                                                <label for="fecha_entrega" class="oe_inline font-boldodo">
+                                                    Fecha :
+                                                </label>
+                                                <field name="fecha_entrega" class="oe_inline" readonly="1"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+
+
 
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
                             <span class="oe_inline font-boldodo">
@@ -96,14 +108,16 @@
                             </span>
                             <field name="currency_id" class="oe_inline" readonly="1" string="Moneda"/>
                         </div>
-
-
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
 
                             <span class="oe_inline font-boldodo">
                                 numeroplaca :
                             </span>
-                            <field name="numeroplaca" class="oe_inline" readonly="1" string="Moneda"/>
+                            <field name="current_total" class="oe_inline" readonly="1" string="Moneda"/>
+                            <span class="oe_inline font-boldodo">
+                                Current totals :
+                            </span>
+                            <field name="current_total" class="oe_inline" readonly="1" force_save="1" string="current_total"/>
                         </div>
                         <!--                                <field name="moneda" readonly="1"/>-->
                     </group>
@@ -117,6 +131,8 @@
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="serie"/>
+<!--                                     widget="many2many_binary"-->
+                                    <field name="attachment" widget="many2many_binary"/>
                                     <field name="numero"/>
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
