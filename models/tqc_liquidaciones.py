@@ -147,6 +147,7 @@ class Liquidaciones(models.Model):
 
     @api.model
     def importar_exactus(self):
+        print("lee o no")
         ip_conexion = "10.10.10.228"
         data_base = "TQC"
         user_bd = "vacaciones"
@@ -202,7 +203,6 @@ class Liquidaciones(models.Model):
                     user[6] = (user[6]) / 100
                     user[7] = (user[7]) / 100
                     variJson = {}
-                    work_email = False  # comprueba si tiene Correo, sino no llena
                     existId = True
 
                     sumNom = "{}.{}".format(nom_module, user[0])  # (nombre modulo) + (id del sql)
@@ -213,6 +213,7 @@ class Liquidaciones(models.Model):
                         existId = False
 
                     if existId:  # SI EXISTE ACTUALIZA
+                        print("existeeee")
                         # ACTUALIZA REGISTRO
                         cont = 0
                         no_register = False
@@ -239,9 +240,9 @@ class Liquidaciones(models.Model):
                                 continue
 
                             variJson['{}'.format(campList[j])] = user[j]
-                            res = {"success"}
 
                         if not no_register:  # si no cumple con los campos de usuarios no registra
+                            print("VARIJASON : ", variJson)
                             self.env[table_bd].browse(id_register).sudo().write(variJson)
                             self.env.cr.commit()
 
@@ -249,58 +250,12 @@ class Liquidaciones(models.Model):
                         cont = 0
                         no_register = False  # PARA REGISTRAR
                         for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
-                            try:
-                                ## SOLO para validar correo repetidos en TQC ##
-                                if (table_bd == 'res.users') and ('@' in user[i]):  # CORREO VALIDACION TQC
-                                    if ";" in user[i]:
-                                        user[i] = re.split(r'[;]', user[i])
-                                    else:
-                                        user[i] = re.split(r'[,]', user[i])
-                                    user[i] = user[i][0]
-                                    exist_mail = self.env["res.users"].search(
-                                        [('login', '=', user[i]), ('id', '!=', int(id_register))])
-                                    self.env.cr.commit()
-                                    if exist_mail:
-                                        no_register = True
-                                        break
-                                    if company_table == 'tqc.EMPLEADO':
-                                        if 'tqc.com.pe' not in user[i]:
-                                            no_register = True
-                                            break
-                                    elif company_table == 'TALEX.EMPLEADO':
-                                        if 'talex.com.pe' not in user[i]:
-                                            if 'tqc.com.pe' not in user[i]:
-                                                no_register = True
-                                                break
-                                    elif company_table == 'SEMILLAS.EMPLEADO':
-                                        if 'tqcsemillas.com.pe' not in user[i]:
-                                            if 'tqc.com.pe' not in user[i]:
-                                                no_register = True
-                                                break
-                                    else:  # PARA BIOGEN.EMPLEADO
-                                        if 'biogenagro.com' not in user[i]:
-                                            if 'tqc.com.pe' not in user[i]:
-                                                no_register = True
-                                                break
-                                ##################
-                                ## SOLO PARA CORREO DE TQC EMPLEADOS
-                                if table_bd == 'hr.employee' and '@' in user[i]:  # CORREO VALIDADCION TQC
-                                    if ";" in user[i]:
-                                        user[i] = re.split(r'[;]', user[i])
-                                    else:
-                                        user[i] = re.split(r'[,]', user[i])
-                                    user[i] = user[i][0]
-                                    work_email = user[i]
-                                ##################
-                            except:
-                                print("encontro fecha, no puede comparar")
                             if i == 0:
                                 continue
                             if i in posiUser:  # cambia los nombres por los id correspondientes
                                 if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
                                     id_exField = False
                                 else:
-
                                     searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
                                     #
                                     try:

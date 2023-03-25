@@ -50,15 +50,20 @@
                         <field name="empleado_name" invisible="1"/>
                         <field name="name" readonly="1" invisible="1"/>
                         <div>
-                            <table>
+                            <table style="width: 400px;">
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                            <div class="o_row o_hr_holidays_dates">
                                                 <span class="oe_inline font-boldodo">
                                                     N° Solicitud :
                                                 </span>
                                                 <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="o_row  o_hr_holidays_dates">
+
                                                 <label for="fecha_entrega" class="oe_inline font-boldodo">
                                                     Fecha :
                                                 </label>
@@ -104,47 +109,64 @@
                     <notebook>
                         <page string="Detalle Liquidaciones">
                             <field name="uid_create" invisible="1"/>
-                            <field name="detalleliquidaciones_id" class="custom-control custom-checkbox"
+                            <field name="detalleliquidaciones_id"
+                                   class="o_field_one2many custom-control custom-checkbox"
                                    widget="select_onemany"
-                                   attrs="{'readonly':['|','&amp;',('uid_create', '=', 2),('state', '!=', 'contable'),'&amp;',('uid_create', '=', 3),('state', '=', 'jefatura')]}">
+                                   options="{'create':false ,'create_edit': false}"
+                                   attrs="{'readonly':['|','&amp;',('uid_create', '=', 2),('state', '!=', 'contable'),'&amp;',('uid_create', '=', 3),('state', 'in', ['jefatura','contable'])]}">
                                 <!--                                section_and_note_one2many-->
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
                                       decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']">
                                     <field name="tipodocumento" string="Tipo doc."
-                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
-                                    <field name="serie"/>
-                                    <field name="attachment"/>
-                                    <field name="numero"/>
-                                    <field name="fechaemision" string="Fecha emisión"/>
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+                                    <field name="serie"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+                                    <field name="numero"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+                                    <field name="fechaemision" string="Fecha emisión"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
+                                    <field name="attachment"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="proveedor_razonsocial == False"/>
+                                           decoration-danger="proveedor_razonsocial == False"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
                                            force_save="1"/>
                                     <!--                                    <field name="state"/>-->
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}"/>
+                                           options="{'currency_field': 'currency_id'}"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
                                     <field name="base_inafecta" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}"/>
+                                           options="{'currency_field': 'currency_id'}"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
                                     <field name="impuesto"
-                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
-                                    <field name="montoigv" widget="monetary"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+                                    <field name="montoigv" widget="monetary" string="Monto IGV"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
-                                    <field name="totaldocumento" widget="monetary"
+                                    <field name="totaldocumento" widget="monetary" string="Total Documento"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                            sum="Total Documentos"/>
                                     <field name="cuenta_contable"
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"
                                     />
                                     <!--                                    <field name="nocliente"/>-->
                                     <field name="cliente" class="consult_client"
-                                           decoration-danger="cliente_razonsocial == False"/>
+                                           decoration-danger="cliente_razonsocial == False"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
                                     <field name="cliente_razonsocial" readonly="1" force_save="1"/>
-                                    <field name="observacionrepresentacion" string="Obs. Presentacion"/>
-                                    <field name="observacionjefatura" string="Obs. Jefatura" readonly="1"/>
-                                    <field name="observacioncontabilidad" string="Obs. Contabilidad" readonly="1"/>
+                                    <field name="observacionrepresentacion" string="Obs. Presentacion"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+                                    <field name="observacionjefatura" string="Obs. Jefatura"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+                                    <field name="observacioncontabilidad" string="Obs. Contabilidad"
+                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"

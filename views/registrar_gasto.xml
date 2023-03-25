@@ -27,7 +27,9 @@
                     <!--                    <field name="glosa_entrega"/>-->
                     <field name="habilitado_state" widget="badge" decoration-success="habilitado_state == 'habilitado'"
                            decoration-warning="habilitado_state == 'corregir'"
-                           decoration-info="habilitado_state == 'proceso'"/>
+                           decoration-info="habilitado_state == 'proceso'"
+                           string="Estado"
+                    />
                     <!--                    <field name="tipoliquidacion_id"/>-->
                     <!--                    <field name="id_current" invisible="1"/>-->
                 </tree>
@@ -85,10 +87,10 @@
 
 
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
-                            <span class="oe_inline font-boldodo">
-                                Centro de costo :
-                            </span>
-                            <field name="centro_costo" class="oe_inline" readonly="1"/>
+<!--                            <span class="oe_inline font-boldodo">-->
+<!--                                Centro de costo :-->
+<!--                            </span>-->
+<!--                            <field name="centro_costo" class="oe_inline" readonly="1"/>-->
                             <span class="oe_inline font-boldodo">
                                 Glosa entrega :
                             </span>
@@ -98,24 +100,23 @@
                             <span class="oe_inline font-boldodo">
                                 Monto entrega :
                             </span>
-                            <field name="monto_entrega" class="oe_inline" readonly="1"/>
+                            <field name="monto_entrega" class="oe_inline" readonly="1" style="margin-right: 10px;"/>
                             <span class="oe_inline font-boldodo">
                                 Saldo :
                             </span>
-                            <field name="saldo" class="oe_inline" readonly="1"/>
+                            <field name="saldo" class="oe_inline" readonly="1" style="margin-right: 10px;"/>
                             <span class="oe_inline font-boldodo">
                                 Moneda :
                             </span>
                             <field name="currency_id" class="oe_inline" readonly="1" string="Moneda"/>
                         </div>
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
-
                             <span class="oe_inline font-boldodo">
-                                numeroplaca :
+                                Numero Placa :
                             </span>
-                            <field name="current_total" class="oe_inline" readonly="1" string="Moneda"/>
+                            <field name="current_total" class="oe_inline" readonly="1" string="Moneda" style="margin-right: 10px;"/>
                             <span class="oe_inline font-boldodo">
-                                Current totals :
+                                Total neto :
                             </span>
                             <field name="current_total" class="oe_inline" readonly="1" force_save="1" string="current_total"/>
                         </div>
@@ -231,7 +232,7 @@
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
-                    No RFQs to display
+                    No hay registros
                 </p>
             </field>
         </record>
@@ -248,7 +249,7 @@
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
-                    No RFQs to display
+                    No hay registros
                 </p>
             </field>
         </record>
@@ -289,7 +290,7 @@
         <menuitem id="menu_registro_gasto_admin" parent="gastos_tqc.menu_main_liquidaciones" sequence="2"
                   name="Todos Registros" action="gastos_tqc.action_view_todos_registro_liquidaciones"
                   groups="gastos_tqc.res_groups_administrator"/>
-        <menuitem id="menu_flujo_configuraciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
+        <menuitem id="menu_flujo_configuraciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="4"
                   name="Configuracion"/>
     </data>
 </odoo>

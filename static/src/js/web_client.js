@@ -1,6 +1,5 @@
 odoo.define('gastos_tqc.WebClient', function (require) {
     "use strict";
-
     var WebClient = require('web.WebClient');
     var config = require('web.config');
     var core = require('web.core');
@@ -15,20 +14,19 @@ odoo.define('gastos_tqc.WebClient', function (require) {
         },
         on_menu_clicked: function (ev) {
             var self = this;
-            console.log("click here")
             // return this._super.apply(this, arguments);
             return this.menu_dp.add(data_manager.load_action(ev.data.action_id))
                 .then(function (result) {
-                    // if (result.model_name === 'tqc.liquidaciones' || result.res_model === 'tqc.liquidaciones') {
-                    //     self._rpc({ //envia el modelo, parametos
-                    //         model: "tqc.liquidaciones",
-                    //         method: "importar_exactus"
-                    //     }).then(function (e) {
-                    //         // puede ser para desactivar boton
-                    //         // self.$el.find('dropdown-menu')
-                    //         self.trigger_up('reload');
-                    //     })
-                    // }
+                    if (result.model_name === 'tqc.liquidaciones' || result.res_model === 'tqc.liquidaciones') {
+                        self._rpc({ //envia el modelo, parametos
+                            model: "tqc.liquidaciones",
+                            method: "importar_exactus"
+                        }).then(function (e) {
+                            // puede ser para desactivar boton
+                            // self.$el.find('dropdown-menu')
+                            self.trigger_up('reload');
+                        })
+                    }
 
                     self.$el.removeClass('o_mobile_menu_opened');
 

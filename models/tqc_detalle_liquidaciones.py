@@ -6,7 +6,7 @@ import datetime
 
 import re, pyodbc
 
-no_server = False
+no_server = True
 
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
@@ -78,7 +78,7 @@ class detalleLiquidaciones(models.Model):
         help="Tipo de de solicitud" +
              "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
-    attachment = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id', string="Attachment",
+    attachment = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id', string="Archivos",
                                   help='You can upload your document', copy=False)
 
     @api.depends("moneda")
@@ -110,9 +110,6 @@ class detalleLiquidaciones(models.Model):
     def _get_price_total(self, liquidacion_id=None, base_afecta=None, impuesto=None, base_inafecta=None):
         self.ensure_one()
         res = {}
-        print("self id : ", self.id)
-        print("asd as : ",self.liquidacion_id.saldo)
-        print("detalles : ",self.liquidacion_id.detalleliquidaciones_id.mapped('totaldocumento'))
         # Compute 'price_subtotal'.
         saldo_liqudacion = self.liquidacion_id.saldo
         monto_igv = (self.base_afecta * self.impuesto.impuesto) / 100
