@@ -50,7 +50,7 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
             _renderView: async function () {
                 var self = this;
                 this._super(...arguments);
-                const result = await self._rpc({
+                await self._rpc({
                     model: 'tqc.liquidaciones',
                     method: 'get_count_states'
                     // context: this.context,
@@ -77,6 +77,8 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                     // console.log("VAMOS A VER ",dom)
                     self.$el.prepend(elem);
                 })
+                self.$el.find('.o_expense_container').children().find(`#${self.state.domain[2][2]}`).addClass('button_black')
+
 
             },
             _context_jefe: function (e) {
@@ -96,7 +98,6 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                     action_name: "gastos_tqc.action_view_contable_liquidaciones",
                     action_context: $action.attr('context'),
                 });
-                $('.o_context_two').addClass('button_black')
             },
             _context_pendientes: function (e) {
                 e.preventDefault();
@@ -131,8 +132,6 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
          * @param {OdooEvent} e
          */
         _onDashboardOpenAction: function (e) {
-            console.log("ESEGUNDO ESTA")
-            console.log("esta es : ", e.data.action_name)
             return this.do_action(e.data.action_name,
                 {additional_context: JSON.parse(e.data.action_context)});
         },

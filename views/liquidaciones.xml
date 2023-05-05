@@ -43,47 +43,69 @@
                         <button string="Aprobar" name="button_contable" states="contable" type="object"
                                 class="oe_highlight"
                                 groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
+                        <button string="Enviar a exactus" name="send_exactus" states="pendiente" type="object"
+                                class="oe_highlight"
+                                groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
                         <field name="state" widget="statusbar" statusbar_visible="jefatura,contable,pendiente"/>
                     </header>
                     <group>
                         <field name="mode_view" force_save="1" invisible="1"/>
                         <field name="empleado_name" invisible="1"/>
                         <field name="name" readonly="1" invisible="1"/>
-                        <div>
-                            <table style="width: 400px;">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="o_row o_hr_holidays_dates">
-                                                <span class="oe_inline font-boldodo">
-                                                    N° Solicitud :
-                                                </span>
-                                                <field name="num_solicitud" class="oe_inline" readonly="1"/>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="o_row  o_hr_holidays_dates">
-
-                                                <label for="fecha_entrega" class="oe_inline font-boldodo">
-                                                    Fecha :
-                                                </label>
-                                                <field name="fecha_entrega" class="oe_inline" readonly="1"/>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <table style="width: 100%;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="o_row o_hr_holidays_dates">
+                                            <span class="oe_inline font-boldodo">
+                                                Empleado :
+                                            </span>
+                                            <field name="empleado_name" class="oe_inline" readonly="1"/>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="o_row o_hr_holidays_dates">
+                                            <span class="oe_inline font-boldodo">
+                                                Centro de costo :
+                                            </span>
+                                            <field name="centro_costo" class="oe_inline" readonly="1"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
-                            <span class="oe_inline font-boldodo">
-                                Centro de costo :
-                            </span>
-                            <field name="centro_costo" class="oe_inline" readonly="1"/>
+
                             <span class="oe_inline font-boldodo">
                                 Glosa entrega :
                             </span>
                             <field name="glosa_entrega" class="oe_inline" readonly="1"/>
                         </div>
+                        <table style="width: 400px;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="o_row o_hr_holidays_dates">
+                                            <span class="oe_inline font-boldodo">
+                                                N° Solicitud :
+                                            </span>
+                                            <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="o_row o_hr_holidays_dates">
+
+                                            <label for="fecha_entrega" class="oe_inline font-boldodo">
+                                                Fecha :
+                                            </label>
+                                            <field name="fecha_entrega" class="oe_inline" readonly="1"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
                             <span class="oe_inline font-boldodo">
                                 Monto entrega :
@@ -101,9 +123,15 @@
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
 
                             <span class="oe_inline font-boldodo">
-                                numeroplaca :
+                                Numero placa :
                             </span>
-                            <field name="numeroplaca" class="oe_inline" readonly="1" string="Moneda"/>
+                            <field name="numeroplaca" class="oe_inline" readonly="1" string="Moneda"
+                                   style="margin-right: 10px;"/>
+                            <span class="oe_inline font-boldodo">
+                                Total neto :
+                            </span>
+                            <field name="current_total" class="oe_inline" readonly="1" force_save="1"
+                                   string="current_total"/>
                         </div>
                     </group>
                     <notebook>
@@ -160,7 +188,8 @@
                                     <field name="cliente" class="consult_client"
                                            decoration-danger="cliente_razonsocial == False"
                                            attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
-                                    <field name="cliente_razonsocial" readonly="1" force_save="1"/>
+                                    <field name="cliente_razonsocial" readonly="1" force_save="1"
+                                           string="Cliente razon social"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"
                                            attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
                                     <field name="observacionjefatura" string="Obs. Jefatura"
@@ -215,7 +244,7 @@
 
         <!--  Actiones-->
         <record id="action_view_tree_liquidaciones" model="ir.actions.act_window">
-            <field name="name">Flujo de aprobaciones JEFATURA</field>
+            <field name="name">Flujo de aprobaciones</field>
             <field name="res_model">tqc.liquidaciones</field>
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="gastos_tqc.search_view_gastos_tqc_filter"/>
@@ -227,7 +256,7 @@
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
-                    No RFQs to display
+                    No hay registros
                 </p>
             </field>
         </record>
@@ -246,7 +275,7 @@
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
-                    No RFQs to display
+                    No hay registros
                 </p>
             </field>
         </record>
@@ -264,7 +293,7 @@
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
-                    No RFQs to display
+                    No hay registros
                 </p>
             </field>
         </record>

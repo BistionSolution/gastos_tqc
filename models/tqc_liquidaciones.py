@@ -5,6 +5,7 @@ from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, date, timedelta, time
 import re, pyodbc
 
+
 class Liquidaciones(models.Model):
     _name = 'tqc.liquidaciones'
     _description = 'Liquidaciones'
@@ -79,7 +80,7 @@ class Liquidaciones(models.Model):
 
     table_depositos = fields.Html()
 
-    current_user_uid = fields.Integer() #compute='_get_current_user', default=0
+    current_user_uid = fields.Integer()  # compute='_get_current_user', default=0
     uid_create = fields.Integer(compute='_get_current_user')
     current_total = fields.Float(string='Current Total', compute='_compute_amount')
 
@@ -466,6 +467,84 @@ class Liquidaciones(models.Model):
     def button_contable(self):
         if self.state == 'contable':
             self.write({'state': 'pendiente'})
+
+    def send_exactus(self):
+
+        ip_conexion = "10.10.10.228"
+        data_base = "TQCBKP2"
+        user_bd = "vacaciones"
+        pass_bd = "exvacaciones"
+
+        try:
+            connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+
+            sql = """
+            DECLARE @asiento nvarchar(max);
+            DECLARE @mensaje nvarchar(max);
+            EXEC semillas.Exactus_CJ_Ingresar_ERC_Creditos ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @asiento OUTPUT, @mensaje OUTPUT;
+            SELECT @mensaje AS the_output;
+            """
+            values = (
+                'SEMILLAS',
+                '000000000629',  # Numero de solicitud
+                'FAC',  # Tipó DE DOCUMENTO
+                '321546',  # Numero factura
+                0,  # Subtipo
+                '2023-02-05 00:00:00.000',  # fecha de entrega
+                '2023-02-05 00:00:00.000',  # fecha de entrega contable
+                '20572118658',  # Ruc proveedor
+                'FRENOS TARAPOTO  S.A.C.',  # Razon social
+                '20572118658',  # Código del contribuyente
+                'razon probando stored',  # glosa
+                'USD',  # Moneda
+                100,  # Monto del subtotal.
+                0,  # Monto del descuento.
+                18,  # Monto del impuesto 1.
+                0,  # Monto del impuesto 2.
+                0,  # Monto del rubro 1.
+                0,  # Monto del rubro 2.
+                118, # Monto total del documento. Obligatorio. No puede ser cero. Total = Subtotal-Descuento+Impuesto1+Impuesto2+Rubro1+Rubro2-Retencion1-Retencion2-Retencion3-Retencion4.
+                0,  # Monto de la retención 1 (sólo válido para RHP). Opcional.
+                0,  # Monto de la retención 2 (sólo válido para RHP). Opcional.
+                0,  # Monto de la retención 3 (sólo válido para RHP). Opcional.
+                0,  # Monto de la retención 4 (RIGV) (sólo válido para FAC, B/V, N/D, N/C). Opcional.
+                '21.20.99.99',  # Centro de costo de gasto.
+                '11.1.5.2.1.00.00',  # Cuenta contable de gasto. Obligatorio si el subtipo no usa categoría de caja.
+                'NULL',  # Código de la categoría de caja. Obligatorio si el subtipo usa categoría de caja.
+                'NULL',
+                # Consecutivo para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
+                '2023-02-05 00:00:00.000',
+                # Fecha para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
+                'NULL',  # Rubro 1 adicional del documento. Opcional.
+                'NULL',  # Rubro 2 adicional del documento. Opcional.
+                'NULL',  # Rubro 3 adicional del documento. Opcional.
+                'NULL',  # Rubro 4 adicional del documento. Opcional.
+                'NULL',  # Rubro 5 adicional del documento. Opcional.
+                'NULL',  # Rubro 6 adicional del documento. Opcional.
+                'NULL',  # Rubro 7 adicional del documento. Opcional.
+                'NULL',  # Rubro 8 adicional del documento. Opcional.
+                'NULL',  # Rubro 9 adicional del documento. Opcional.
+                'NULL',  # Rubro 10 adicional del documento. Opcional.
+                'NULL',  # Código de la cuenta bancaria. Obligatorio para depósito o devoluciones de efectivo.
+                'NOTA DE USUER',  # NOTAS
+                'SA',  # Código del usuario de la transacción. Obligatorio. Por defecto: SA.
+                # self.state,  # Código del asiento generado por el documento.
+                # self.state  # Mensaje de error en caso ocurra un error en la transacción.
+            )
+            cursor = connection.cursor()
+            cursor.execute(sql, values)
+            # idusers = cursor.fetchval()
+            idusers = cursor.fetchone()
+            print(idusers)
+            # connection.close()
+            for document in self.detalleliquidaciones_id:
+                print("DOCUMENT : ", document.tipocambio)
+                # GUARDA TODOS LOS REGISTROS DE SQL
+
+
+        except Exception as e:
+            print("error : ", e)
 
     def volver_enviar(self):
         self.env['tqc.detalle.liquidaciones'].search([('liquidacion_id', '=', self.id)]).write({

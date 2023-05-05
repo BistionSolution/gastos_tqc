@@ -152,14 +152,15 @@ class detalleLiquidaciones(models.Model):
                     datos = cursor.fetchall()
 
                     for dat in datos:
-                        cambio = dat[1] / 1000
+                        print("DATA : ", dat)
+                        cambio = dat[1]
 
                 except Exception as e:
                     raise UserError(_("Error al consultar sql exactus"))
 
                 if cambio == 0:
                     raise UserError(_("No existe tipo de cambio para la fecha " + strfecha.strftime('%Y-%m-%d')))
-
+                print("DATA : ", cambio)
                 rec.tipocambio = cambio
             # if hi == 1:
             #     raise UserError(_("No existe tipo de cambio para la fecha 2023-01-26"))
@@ -324,13 +325,11 @@ class depositos(models.Model):
     cuenta_bancaria = fields.Char()
     fecha_contable = fields.Date()
 
-
 class tipoLiquidaciones(models.Model):
     _name = 'tqc.tipo.liquidaciones'
     _description = 'Tipo de Liquidaciones'
 
     name = fields.Char()
-
 
 class tipoDocumento(models.Model):
     _name = 'tqc.tipo.documentos'

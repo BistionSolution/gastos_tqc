@@ -64,15 +64,20 @@
                         <field name="empleado_name" invisible="1"/>
                         <field name="name" readonly="1" invisible="1"/>
                         <div>
-                            <table>
+                            <table style="width: 400px;">
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                            <div class="o_row o_hr_holidays_dates">
                                                 <span class="oe_inline font-boldodo">
                                                     N° Solicitud :
                                                 </span>
                                                 <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="o_row  o_hr_holidays_dates">
+
                                                 <label for="fecha_entrega" class="oe_inline font-boldodo">
                                                     Fecha :
                                                 </label>
@@ -83,9 +88,6 @@
                                 </tbody>
                             </table>
                         </div>
-
-
-
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
 <!--                            <span class="oe_inline font-boldodo">-->
 <!--                                Centro de costo :-->
@@ -112,7 +114,7 @@
                         </div>
                         <div class="o_row o_row_readonly o_hr_holidays_dates">
                             <span class="oe_inline font-boldodo">
-                                Numero Placa :
+                                Numero placa :
                             </span>
                             <field name="current_total" class="oe_inline" readonly="1" string="Moneda" style="margin-right: 10px;"/>
                             <span class="oe_inline font-boldodo">
@@ -148,14 +150,14 @@
                                            options="{'currency_field': 'currency_id'}"/>
                                     <field name="impuesto" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="montoigv" widget="monetary"
-                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
+                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1" string="Monto IGV"/>
                                     <field name="totaldocumento" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1" sum="Total Documentos"/>
                                     <field name="cuenta_contable" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                     />
                                     <!--                                    <field name="nocliente"/>-->
                                     <field name="cliente" class="consult_client" decoration-danger="cliente_razonsocial == False"/>
-                                    <field name="cliente_razonsocial" readonly="1" force_save="1"/>
+                                    <field name="cliente_razonsocial" readonly="1" force_save="1" string="Cliente razon social"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"

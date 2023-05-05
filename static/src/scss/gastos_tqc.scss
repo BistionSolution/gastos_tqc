@@ -72,8 +72,11 @@
   display: none;
 }
 
-.button_black {
-  background: #0B1612;
+.button_black{
+  background: #3A5A6B;
+}
+.button_black:after{
+  border-left-color: #3A5A6B !important;
 }
 
 /*tabla max width*/
@@ -146,4 +149,10 @@
 
 .hidden_remove{
   display: none;
+}
+/*Estilo*/
+.table-over{
+  border: 2px #E2E2E2 solid;
+  height: 400px;
+  overflow-x: auto;
 }

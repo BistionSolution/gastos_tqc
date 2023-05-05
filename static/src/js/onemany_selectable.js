@@ -101,7 +101,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             }
             return $rows;
         }, _onCellClick: function (event) {
-            console.log("HE CLIEKCEADO")
             // The special_click property explicitely allow events to bubble all
             // the way up to bootstrap's level rather than being stopped earlier.
             var $td = $(event.currentTarget);
@@ -109,7 +108,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
 
             // detecta si existe el widget one2many selecteable
             if ($tr.find('.o_list_record_selector').length > 0) {
-                var rowIndex = $tr.prop('rowIndex') - 1;
+                var rowIndex = $tr.prop('rowIndex') - 2;
             } else {
                 var rowIndex = $tr.prop('rowIndex') - 1;
             }
