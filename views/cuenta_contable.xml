@@ -34,6 +34,7 @@
                         <group>
                             <field name="cuenta_contable" widget="get_cuenta_contable"/>
                             <field name="name" string="Descripcion"/>
+                            <field name="cuenta_gastos_default"/>
                             <field name="centrocosto"/>
 <!--                            <field name="description"/>-->
 <!--                            <field name="descripcioncentrocosto"/>-->

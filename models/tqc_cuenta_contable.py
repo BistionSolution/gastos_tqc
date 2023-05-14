@@ -14,8 +14,10 @@ class cuentaContable(models.Model):
     description = fields.Char()
     cuenta_contable = fields.Html()
     estado = fields.Char()
+    cuenta_gastos_default = fields.Many2one('cuenta.gastos.default')
     centrocosto = fields.Many2one('hr.department')
     descripcioncentrocosto = fields.Char()
+
 
 class cuentaContableSearch(models.Model):
     _name = 'cuenta.contable.search'

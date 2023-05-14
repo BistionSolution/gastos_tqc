@@ -26,6 +26,7 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
             'click .button_search_ruc': '_onClickSearch',
             'click .aceptar_ruc_button': '_onClickAccept',
             'click .cancelar_ruc_button': '_onClickCancel',
+            'click .o_data_row': '_onOneClick',
             'dblclick .o_data_row': '_onDoubleClickRow'
         },
         start: function () {
@@ -96,12 +97,15 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
             })
         },
         _onClickAccept: function () {
-            $("input[name='ruc']").val($('#rruc').text())
+            $("input[name='ruc']").val($('#clickruc').val())
             $("input[name='ruc']").trigger("change");
             $('.modal').remove()
         },
         _onClickCancel: function () {
             $('.modal').remove()
+        },
+        _onOneClick: function (e) {
+            $("#clickruc").val(e.currentTarget.cells[0].innerText)
         },
         _onDoubleClickRow: function (e) {
             $("input[name='ruc']").val(e.currentTarget.cells[0].innerText)

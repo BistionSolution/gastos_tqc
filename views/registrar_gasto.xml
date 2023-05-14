@@ -157,7 +157,7 @@
                                     />
                                     <!--                                    <field name="nocliente"/>-->
                                     <field name="cliente" class="consult_client" decoration-danger="cliente_razonsocial == False"/>
-                                    <field name="cliente_razonsocial" readonly="1" force_save="1" string="Cliente razon social"/>
+                                    <field name="cliente_razonsocial" string="Cliente razon social"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"

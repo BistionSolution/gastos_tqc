@@ -8,11 +8,13 @@
 <!--                    href="javascript:void(0)">-->
 <!--				<span class="fa fa-check"/> Aprobar-->
 <!--			</button>-->
-			<button t-if="!widget.get('effective_readonly')" style="margin-bottom: 1%;display:none;"
-                    class="button_delete_order_lines"
-                    href="javascript:void(0)">
-				<span class="fa fa-times"/> Rechazar
-			</button>
+			<t t-if="!widget.get('effective_readonly')" >
+				<button style="margin-bottom: 1%;display:none;"
+						class="button_delete_order_lines btn btn-primary oe_highlight"
+						href="javascript:void(0)">
+					<span class="fa fa-times"/> Rechazar
+				</button>
+			</t>
             <t t-if="widget.get('effective_readonly')">
 				<span class="oe_form_char_content"></span>
 			</t>

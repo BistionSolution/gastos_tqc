@@ -469,79 +469,134 @@ class Liquidaciones(models.Model):
             self.write({'state': 'pendiente'})
 
     def send_exactus(self):
-
+        vacio = None
         ip_conexion = "10.10.10.228"
         data_base = "TQCBKP2"
-        user_bd = "vacaciones"
-        pass_bd = "exvacaciones"
+        user_bd = "TQC"
+        pass_bd = "extqc"
 
+        datos = [321580,321581]
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
 
             sql = """
-            DECLARE @asiento nvarchar(max);
-            DECLARE @mensaje nvarchar(max);
-            EXEC semillas.Exactus_CJ_Ingresar_ERC_Creditos ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @asiento OUTPUT, @mensaje OUTPUT;
-            SELECT @mensaje AS the_output;
+            DECLARE	@return_value int,
+                    @psDocumento varchar(20),
+                    @psAsiento varchar(10),
+                    @psMensajeError varchar(250)
+            SELECT	@psDocumento = ?
+
+            EXEC	@return_value = [tqc].[Exactus_CJ_Ingresar_ERC_Creditos]
+                    @psConjunto = ?,
+                    @psEntregaRendir = ?,
+                    @psTipo = ?,
+                    @psDocumento = @psDocumento OUTPUT,
+                    @pnSubtipo = ?,
+                    @pdtFecha = ?,
+                    @pdtFechaContable = ?,
+                    @psProveedor = ?,
+                    @psRazonSocial = ?,
+                    @psContribuyente = ?,
+                    @psAplicacion = ?,
+                    @psMoneda = ?,
+                    @pnSubtotal = ?,
+                    @pnDescuento = ?,
+                    @pnImpuesto1 = ?,
+                    @pnImpuesto2 = ?,
+                    @pnRubro1 = ?,
+                    @pnRubro2 = ?,
+                    @pnMonto = ?,
+                    @pnRetencion1 = ?,
+                    @pnRetencion2 = ?,
+                    @pnRetencion3 = ?,
+                    @pnRetencion4 = ?,
+                    @psCentroCosto = ?,
+                    @psCuentaContable = ?,
+                    @psCategoriaCaja = ?,
+                    @psConsecutivoRecibo = ?,
+                    @pdtFechaRecibo = ?,
+                    @psRubro1Doc = ?,
+                    @psRubro2Doc = ?,
+                    @psRubro3Doc = ?,
+                    @psRubro4Doc = ?,
+                    @psRubro5Doc = ?,
+                    @psRubro6Doc = ?,
+                    @psRubro7Doc = ?,
+                    @psRubro8Doc = ?,
+                    @psRubro9Doc = ?,
+                    @psRubro10Doc = ?,
+                    @psCuentaBanco = ?,
+                    @psNotas = ?,
+                    @psUsuario = ?,
+                    @psAsiento = @psAsiento OUTPUT,
+                    @psMensajeError = @psMensajeError OUTPUT         
+            
+            SELECT	@psDocumento as N'@psDocumento',
+                    @psAsiento as N'@psAsiento',
+                    @psMensajeError as N'@psMensajeError'
             """
-            values = (
-                'SEMILLAS',
-                '000000000629',  # Numero de solicitud
-                'FAC',  # Tipó DE DOCUMENTO
-                '321546',  # Numero factura
-                0,  # Subtipo
-                '2023-02-05 00:00:00.000',  # fecha de entrega
-                '2023-02-05 00:00:00.000',  # fecha de entrega contable
-                '20572118658',  # Ruc proveedor
-                'FRENOS TARAPOTO  S.A.C.',  # Razon social
-                '20572118658',  # Código del contribuyente
-                'razon probando stored',  # glosa
-                'USD',  # Moneda
-                100,  # Monto del subtotal.
-                0,  # Monto del descuento.
-                18,  # Monto del impuesto 1.
-                0,  # Monto del impuesto 2.
-                0,  # Monto del rubro 1.
-                0,  # Monto del rubro 2.
-                118, # Monto total del documento. Obligatorio. No puede ser cero. Total = Subtotal-Descuento+Impuesto1+Impuesto2+Rubro1+Rubro2-Retencion1-Retencion2-Retencion3-Retencion4.
-                0,  # Monto de la retención 1 (sólo válido para RHP). Opcional.
-                0,  # Monto de la retención 2 (sólo válido para RHP). Opcional.
-                0,  # Monto de la retención 3 (sólo válido para RHP). Opcional.
-                0,  # Monto de la retención 4 (RIGV) (sólo válido para FAC, B/V, N/D, N/C). Opcional.
-                '21.20.99.99',  # Centro de costo de gasto.
-                '11.1.5.2.1.00.00',  # Cuenta contable de gasto. Obligatorio si el subtipo no usa categoría de caja.
-                'NULL',  # Código de la categoría de caja. Obligatorio si el subtipo usa categoría de caja.
-                'NULL',
-                # Consecutivo para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
-                '2023-02-05 00:00:00.000',
-                # Fecha para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
-                'NULL',  # Rubro 1 adicional del documento. Opcional.
-                'NULL',  # Rubro 2 adicional del documento. Opcional.
-                'NULL',  # Rubro 3 adicional del documento. Opcional.
-                'NULL',  # Rubro 4 adicional del documento. Opcional.
-                'NULL',  # Rubro 5 adicional del documento. Opcional.
-                'NULL',  # Rubro 6 adicional del documento. Opcional.
-                'NULL',  # Rubro 7 adicional del documento. Opcional.
-                'NULL',  # Rubro 8 adicional del documento. Opcional.
-                'NULL',  # Rubro 9 adicional del documento. Opcional.
-                'NULL',  # Rubro 10 adicional del documento. Opcional.
-                'NULL',  # Código de la cuenta bancaria. Obligatorio para depósito o devoluciones de efectivo.
-                'NOTA DE USUER',  # NOTAS
-                'SA',  # Código del usuario de la transacción. Obligatorio. Por defecto: SA.
-                # self.state,  # Código del asiento generado por el documento.
-                # self.state  # Mensaje de error en caso ocurra un error en la transacción.
-            )
-            cursor = connection.cursor()
-            cursor.execute(sql, values)
-            # idusers = cursor.fetchval()
-            idusers = cursor.fetchone()
-            print(idusers)
+
             # connection.close()
+            for document in self.detalleliquidaciones_id:
+                values = (
+                    document.numero,  # Numero factura
+                    'TQC',
+                    '000000013300',  # Numero de solicitud
+                    'FAC',  # Tipó DE DOCUMENTO
+                    0,  # Subtipo
+                    document.fechaemision,  # fecha de emision del documento, Obligatorio.
+                    document.fechaemision, # Fecha contable del documento. Si no se especifica, se asume igual que la fecha de emisión.
+                    '10200468011',  # Ruc proveedor
+                    'RAMON ALMONACID VICTOR LUIS',  # Razon social
+                    '10200468011',  # Código del contribuyente
+                    document.glosa,  # glosa
+                    'SOL',  # Moneda
+                    document.base_afecta + document.base_inafecta,  # Monto del subtotal.
+                    0,  # Monto del descuento.
+                    document.montoigv,  # Monto del impuesto 1.
+                    0,  # Monto del impuesto 2.
+                    0,  # Monto del rubro 1.
+                    0,  # Monto del rubro 2.
+                    document.totaldocumento,
+                    # Monto total del documento. Obligatorio. No puede ser cero. Total = Subtotal-Descuento+Impuesto1+Impuesto2+Rubro1+Rubro2-Retencion1-Retencion2-Retencion3-Retencion4.
+                    0,  # Monto de la retención 1 (sólo válido para RHP). Opcional.
+                    0,  # Monto de la retención 2 (sólo válido para RHP). Opcional.
+                    0,  # Monto de la retención 3 (sólo válido para RHP). Opcional.
+                    0,  # Monto de la retención 4 (RIGV) (sólo válido para FAC, B/V, N/D, N/C). Opcional.
+                    '42.03.99.99',  # Centro de costo de gasto.
+                    '63.8.1.0.0.00.00',  # Cuenta contable de gasto. Obligatorio si el subtipo no usa categoría de caja.
+                    None,  # Código de la categoría de caja. Obligatorio si el subtipo usa categoría de caja.
+                    None,
+                    # Consecutivo para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
+                    document.fechaemision,
+                    # Fecha para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
+                    None,  # Rubro 1 adicional del documento. Opcional.
+                    None,  # Rubro 2 adicional del documento. Opcional.
+                    None,  # Rubro 3 adicional del documento. Opcional.
+                    None,  # Rubro 4 adicional del documento. Opcional.
+                    None,  # Rubro 5 adicional del documento. Opcional.
+                    None,  # Rubro 6 adicional del documento. Opcional.
+                    None,  # Rubro 7 adicional del documento. Opcional.
+                    None,  # Rubro 8 adicional del documento. Opcional.
+                    None,  # Rubro 9 adicional del documento. Opcional.
+                    None,  # Rubro 10 adicional del documento. Opcional.
+                    None,  # Código de la cuenta bancaria. Obligatorio para depósito o devoluciones de efectivo.
+                    document.observacioncontabilidad,  # NOTAS
+                    'SA',  # Código del usuario de la transacción. Obligatorio. Por defecto: SA.
+                    # self.state,  # Código del asiento generado por el documento.
+                    # self.state  # Mensaje de error en caso ocurra un error en la transacción.
+                )
+                cursor = connection.cursor()
+                cursor.execute(sql, values)
+                idusers = cursor.fetchone()
+                print("GOES RESPUESTA : ", idusers)
+                cursor.commit()
+                # idusers = cursor.fetchval()
+                cursor.close()
             for document in self.detalleliquidaciones_id:
                 print("DOCUMENT : ", document.tipocambio)
                 # GUARDA TODOS LOS REGISTROS DE SQL
-
 
         except Exception as e:
             print("error : ", e)

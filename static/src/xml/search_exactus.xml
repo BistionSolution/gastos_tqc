@@ -4,13 +4,13 @@
         <div class="o_row o_row_readonly o_hr_holidays_dates">
             <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="" type="text"
                    autocomplete="off" id="ruc"/>
+            <input type="hidden" name="clickruc" id="clickruc"/>
             <button type="button" class="btn button_search_ruc btn-primary" data-original-title="" title=""><i class="fa fa-fw o_button_icon fa-search"></i>
                 <span>Buscar</span>
             </button>
         </div>
 
-        <div class="o_field_one2many o_field_x2many_list custom-checkbox"
-             name="detalleliquidaciones_id" id="o_field_input_837" data-original-title="" title="">
+        <div class="o_field_one2many o_field_x2many_list custom-checkbox">
 
             <div class="o_list_view o_list_gastos" style="margin-top: 15px;">
                 <div class="table-responsive table-over">
@@ -41,8 +41,6 @@
         </div>
         </div>
 
-        <span class="o_field_char o_field_widget o_readonly_modifier" id="rruc"></span>
-        <span class="o_field_char o_field_widget o_readonly_modifier" id="result"></span>
         <div>
             <button class="aceptar_ruc_button oe_highlight">
                 Aceptar
@@ -57,12 +55,42 @@
         <div class="o_row o_row_readonly o_hr_holidays_dates">
             <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="" type="text"
                    autocomplete="off" id="client"/>
+            <input type="hidden" name="clickclient" id="clickclient"/>
             <button type="button" class="btn button_search_client btn-primary" data-original-title="" title=""><i class="fa fa-fw o_button_icon fa-search"></i>
                 <span>Buscar</span>
             </button>
         </div>
-        <span class="o_field_char o_field_widget o_readonly_modifier" id="rruc2"></span>
-        <span class="o_field_char o_field_widget o_readonly_modifier" id="result2"></span>
+        <div class="o_field_one2many o_field_x2many_list custom-checkbox">
+
+            <div class="o_list_view o_list_gastos" style="margin-top: 15px;">
+                <div class="table-responsive table-over">
+                <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped o_section_and_note_list_view"
+                   style="table-layout: auto; width:100%; overflow-x:auto;">
+                    <thead>
+                        <tr>
+                            <th data-name="tipodocumento" tabindex="-1" class="o_column_sortable" data-original-title=""
+                                title="" style="width: 30%;">RUC/DNI<span
+                                    class="o_resize"></span>
+                            </th>
+                            <th data-name="serie" tabindex="-1" class="o_column_sortable"
+                                data-original-title="" title="" style="width: 70%;">Razon Social<span
+                                    class="o_resize"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="ui-sortable" style="width:100% !important;">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="tipo"></td>
+                            <td class="ruc"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        </div>
+
         <div>
             <button class="aceptar_client_button oe_highlight">
                 Aceptar

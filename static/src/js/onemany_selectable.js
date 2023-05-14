@@ -9,13 +9,16 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
     var ListRenderer = require('web.ListRenderer');
     var FieldOne2Many = require('web.relational_fields').FieldOne2Many;
     var session = require('web.session');
+    var fields = require('web.relational_fields');
 
     ListRenderer.include({
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
         }, events: _.extend({}, ListRenderer.prototype.events, {
-            'click tbody .search_ruc': '_onClickRuc', 'click tbody .search_client': '_onClickClient'
-        }), _updateSelection: function () {
+            'click tbody .search_ruc': '_onClickRuc',
+            'click tbody .search_client': '_onClickClient'
+        }),
+        _updateSelection: function () {
             this.selection = [];
             var self = this;
             var $inputs = this.$('tbody .o_list_record_selector input:visible:not(:disabled)');
@@ -37,13 +40,15 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             this.$('thead .o_list_record_selector input').prop('checked', allChecked);
             this.trigger_up('selection_changed', {selection: this.selection});
             this._updateFooter();
-        }, _renderRows: function () {
+        },
+        _renderRows: function () {
             var $rows = this.state.data.map(this._renderRow.bind(this));
             // permite quitar por estado de la solicitud para poder quitar el editar
             if (this.__parentedParent.model === 'tqc.liquidaciones') {
                 // if (this.addCreateLine && this.__parentedParent.recordData.habilitado_state !== ['proceso','corregir']) {
                 let stado = ['proceso', 'corregir'];
                 if (this.addCreateLine && stado.indexOf(this.__parentedParent.recordData.habilitado_state) === -1) {
+                    console.log("her event")
                     var $tr = $('<tr>');
                     var colspan = this._getNumberOfCols();
 
@@ -100,18 +105,20 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 }
             }
             return $rows;
-        }, _onCellClick: function (event) {
+        },
+        _onCellClick: function (event) {
             // The special_click property explicitely allow events to bubble all
             // the way up to bootstrap's level rather than being stopped earlier.
             var $td = $(event.currentTarget);
             var $tr = $td.parent();
 
             // detecta si existe el widget one2many selecteable
-            if ($tr.find('.o_list_record_selector').length > 0) {
-                var rowIndex = $tr.prop('rowIndex') - 2;
-            } else {
-                var rowIndex = $tr.prop('rowIndex') - 1;
-            }
+            // if ($tr.find('.o_list_record_selector').length > 0) {
+            //     var rowIndex = $tr.prop('rowIndex') - 1;
+            // } else {
+            //     var rowIndex = $tr.prop('rowIndex') - 1;
+            // }
+            var rowIndex = $tr.prop('rowIndex') - 1;
 
             if (!this._isRecordEditable($tr.data('id')) || $(event.target).prop('special_click')) {
                 return;
@@ -138,7 +145,8 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                     }
                 }
             });
-        }, _onClickRuc: function (event) {
+        },
+        _onClickRuc: function (event) {
             var changes = {}
 
             var self = this;
@@ -182,7 +190,8 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             //         console.log("The user clicks the Save button");
             //     }
             // }).open();
-        }, _onClickClient: function () {
+        },
+        _onClickClient: function () {
             var self = this;
             var action = {
                 name: 'Buscar Cliente',
@@ -206,22 +215,22 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
     })
 
     var One2Manyble = FieldOne2Many.extend({
-        template: 'One2ManySelectable', supportedFieldTypes: ['one2many'], // multi_selection: true,
+        template: 'One2ManySelectable',
+        // supportedFieldTypes: ['one2many'], // multi_selection: true,
         //button click
-        events: {
+        events: _.extend({}, fields.FieldOne2Many.prototype.events, {
             "click .button_delete_order_lines": "delete_selected_lines",
             "click .button_select_order_lines": "selected_lines",
-        }, init: function () {
-            this._super.apply(this, arguments);
-        }, start: function () {
-            return this._super.apply(this, arguments);
-            var self = this
-            // let este = $(self.$el).find('.st2')
-            // remueve boton para agregar mas registros
-            alert("othee")
-            console.log('abriendo sz')
-            // $el.find('.o_field_x2many_list_row_add').remove();
-        }, // start: function () {
+        }),
+        init: function() {
+	        this._super.apply(this, arguments);
+	    },
+        start: function()
+	    {
+	    	this._super.apply(this, arguments);
+			var self=this;
+	    },
+        // start: function () {
         // 	this._super.apply(this, arguments);
         // 	// $('.o_field_x2many_list_row_add').hide()
         // },
@@ -256,10 +265,11 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                     self.trigger_up('reload');
                 });
             }
-        }, selected_lines: function () {
+        },
+        selected_lines: function () {
             var self = this;
             var current_model = this.recordData[this.name].model;
-            var selected_lines = self.find_deleted_lines();
+            var selected_lines = self.find_selected_lines();
             console.log("VAMOS selecto : ", selected_lines)
             if (selected_lines.length === 0) {
                 this.do_warn(_t("Please Select at least One Record"));
@@ -276,17 +286,17 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                     self.trigger_up('reload');
                 });
             }
-        }, _getRenderer: function () {
+        },
+        _getRenderer: function () {
             var self = this
-            console.log("data USER PRO : ", self.recordData.uid_create)
-            var state = self.recordData.state
-            var user = false
+            // console.log("data USER PRO : ", self.recordData.uid_create)
+            // var state = self.recordData.state
+            // var user = false
             if (self.view.arch.tag === 'kanban') {
                 return One2ManyKanbanRenderer;
             }
             if (self.view.arch.tag === 'tree') {
                 if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
-                    console.log("entro a eecutar")
                     return ListRenderer.extend({
                         init: function (parent, state, params) {
                             var self = this
@@ -297,7 +307,8 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 }
             }
             return this._super.apply(this, arguments);
-        }, find_deleted_lines: function () {
+        },
+        find_deleted_lines: function () {
             var self = this;
             var selected_list = [];
             this.$el.find('td.o_list_record_selector input:checked')
@@ -306,8 +317,8 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             });
             return selected_list;
         },
-
         find_selected_lines: function () {
+            console.log("select one")
             var self = this;
             var selected_list = [];
             var selected_list1 = [];
@@ -326,7 +337,8 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 });
             }
             return selected_list2;
-        }, _getResId: function (recordId) {
+        },
+        _getResId: function (recordId) {
             var record;
             utils.traverse_records(this.recordData[this.name], function (r) {
                 if (r.id === recordId) {

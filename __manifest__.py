@@ -38,6 +38,7 @@
         'views/tqc_autorizadores.xml',
         'views/hr_employee.xml',
         'views/tqc_impuestos.xml',
+        'views/cuenta_gastos_default.xml',
 
         'wizard/search_ruc.xml',
         'wizard/search_client.xml',

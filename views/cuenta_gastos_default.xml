@@ -1,0 +1,79 @@
+<odoo>
+    <data>
+        <!--VISTA tree -->
+        <record id="view_tree_cuenta_gastos_default" model="ir.ui.view">
+            <field name="name">view.tree.cuenta.gastos.default</field>
+            <field name="model">cuenta.gastos.default</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="codigo"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--VISTA from -->
+        <record id="view_form_cuenta_gastos_default" model="ir.ui.view">
+            <field name="name">view.form.cuenta.gastos.default</field>
+            <field name="model">cuenta.gastos.default</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="Liquidacion">
+                    <sheet>
+                        <group>
+                            <field name="codigo"/>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--Actiones-->
+        <!--        <record id="action_view_tree_liquidaciones" model="ir.actions.act_window">-->
+        <!--            <field name="name">Flujo de aprobaciones</field>-->
+        <!--            <field name="res_model">tqc.liquidaciones</field>-->
+        <!--            <field name="view_mode">tree,form</field>-->
+        <!--            <field name="search_view_id" ref="gastos_tqc.search_view_gastos_tqc_filter"/>-->
+        <!--            <field name="view_ids" eval="[(5, 0, 0),-->
+        <!--        (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),-->
+        <!--        (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>-->
+        <!--            <field name="context">{'search_default_draft':1}</field>-->
+        <!--            <field name="target">main</field>-->
+        <!--            <field name="help" type="html">-->
+        <!--                <p class="o_view_nocontent_empty_folder">-->
+        <!--                    No RFQs to display-->
+        <!--                </p>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <record id="action_view_cuenta_gastos_default" model="ir.actions.act_window">
+            <field name="name">Cuentas defecto</field>
+            <field name="res_model">cuenta.gastos.default</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">main</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No hay registros
+                </p>
+            </field>
+        </record>
+
+        <!--          <record id="action_view_filter_gastos" model="ir.actions.act_window">-->
+        <!--            <field name="name">Liquidaciones</field>-->
+        <!--            <field name="res_model">tqc.liquidaciones</field>-->
+        <!--            <field name="view_mode">form,tree</field>-->
+        <!--            <field name="view_id" ref="gastos_tqc.view_tree_tqc_liquidaciones"/>-->
+        <!--            <field name="search_view_id" ref="gastos_tqc.view_gastos_tqc_filterview_gastos_tqc_filter"/>-->
+        <!--            <field name="target">main</field>-->
+        <!--            <field name="help" type="html">-->
+        <!--                <p class="o_view_nocontent_empty_folder">-->
+        <!--                    No RFQs to display-->
+        <!--                </p>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <menuitem id="menu_cuenta_default" action="gastos_tqc.action_view_cuenta_gastos_default" parent="gastos_tqc.menu_flujo_configuraciones" sequence="4"
+                  name="Cuentas defecto"/>
+    </data>
+</odoo>

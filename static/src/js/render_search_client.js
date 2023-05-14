@@ -18,7 +18,9 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
         events: {
             'click .button_search_client': '_onClickSearch',
             'click .aceptar_client_button': '_onClickAccept',
-            'click .cancelar_client_button': '_onClickCancel'
+            'click .cancelar_client_button': '_onClickCancel',
+            'click .o_data_row': '_onOneClick',
+            'dblclick .o_data_row': '_onDoubleClickRow'
         },
         start: function () {
             return this._super.apply(this, arguments);
@@ -44,7 +46,8 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
                 // expenses: result
             });
             self.$el.html(elem);
-
+            self.$el.addClass('search_aument')
+            $('.modal-footer').append('<button class="aceptar_ruc_button oe_highlight">Aceptar</button>')
             // $('.modal-footer').append('<button class="aceptar_ruc_button oe_highlight">Aceptar</button>')
 
             // var $row = this._super(record);
@@ -68,34 +71,37 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
                 method: "search_client",
                 args: [{'client': client}],
                 kwargs: {}
-            }).then(function (e) {
-                $(self.$el).find('#rruc2').text(e[0])
-                $(self.$el).find('#result2').text(e[1])
+            }).then(function (clientes) {
+                _.each(clientes, function (client, key) {
+                    console.log({client})
+                    var addRows = [$('<td>', {
+                            class: 'o_data_cell o_field_cell o_list_char',
+                            tabindex: -1
+                        }).attr('data-id', key).append(client.ruc.trimStart()),
+                    $('<td>', {
+                            class: 'o_data_cell o_field_cell o_list_char',
+                            tabindex: -1
+                        }).attr('data-id', key).append(client.razon.trimStart())]
+
+                    var $rows = $('<tr/>', {class: 'o_data_row'}).attr('onselectstart',"return false").append(addRows)
+                    $(self.$el).find('tbody').append($rows);
+                })
             })
         },
         _onClickAccept: function () {
-
-            $("input[name='cliente']").val($('#rruc2').text())
+            $("input[name='cliente']").val($('#clickclient').val())
             $("input[name='cliente']").trigger("change")
-
-            // $("input[name='cliente_razonsocial']").val($('#result2').text())
-            // $("input[name='cliente_razonsocial']").trigger("change");
-            // const fecthCourse2 = async () => {
-            //     //$("input[name='cliente_razonsocial']").trigger("change");
-            //
-            // }
-            // fecthCourse2()
-            // $("input[name='cliente_razonsocial']").val($('#result2').text())
-            // $("input[name='cliente_razonsocial']").trigger("change");
             $('.modal').remove()
-            // $("input[name='cliente_razonsocial']").trigger("change");
-            // $("input[name='cliente']").trigger("change");
-
-            // self.trigger("change");
-
-
         },
         _onClickCancel: function () {
+            $('.modal').remove()
+        },
+        _onOneClick: function (e) {
+            $("#clickclient").val(e.currentTarget.cells[0].innerText)
+        },
+        _onDoubleClickRow: function (e) {
+            $("input[name='cliente']").val(e.currentTarget.cells[0].innerText)
+            $("input[name='cliente']").trigger("change");
             $('.modal').remove()
         }
     })

@@ -267,42 +267,37 @@ class detalleLiquidaciones(models.Model):
                         "razon": key[1]
                     })
             except Exception as e:
-                resp = "Fallo la conexxion"
+                raise UserError(e)
 
             return info
 
     @api.model
     def search_client(self, args):
         if no_server:
-            result = ""
-            rucclient = ""
 
+            info = []
             ip_conexion = "10.10.10.228"
             data_base = "TQC"
             user_bd = "vacaciones"
             pass_bd = "exvacaciones"
-
-            sql_prime = """SELECT TOP 1 * FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args['client'] + """'"""
+            sql_prime = """SELECT CLIENTE, NOMBRE FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args['client'] + """%' OR NOMBRE LIKE '%"""+args['client']+"""%'"""
             try:
                 connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                             data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                 cursor = connection.cursor()
                 cursor.execute(sql_prime)
-                proveedores = cursor.fetchall()
+                clientes = cursor.fetchall()
 
-                for proveedor in proveedores:
-                    rucclient = proveedor[0]
-                    result = proveedor[1]
+                for key in clientes:
+                    info.append({
+                        "ruc": key[0],
+                        "razon": key[1]
+                    })
 
             except Exception as e:
-                result = "Fallo la conexion"
+                raise UserError(e)
 
-            if result:
-                print(rucclient)
-                rucclient = rucclient.strip()
-                return [rucclient, result]
-            else:
-                return 'esta vacio cliente'
+            return info
 
     def search_cod_client(self):
         pass
