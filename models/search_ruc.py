@@ -11,3 +11,10 @@ class tqcSearchRuc(models.TransientModel):
 
     name = fields.Char("Ruc")
     consulta = fields.Html()
+
+    def action_add(self):
+        print("guardar")
+
+    @api.model
+    def close_modal(self):
+        return {'type': 'ir.actions.act_window_close'}

@@ -16,7 +16,6 @@ odoo.define('gastos_tqc.registro_gasto', function (require) {
         _renderView: async function () {
             var self = this;
             await this._super(...arguments);
-            console.log("ENTRO CORECTO ");
             const result = await this._rpc({
                 model: 'tqc.liquidaciones',
                 method: 'get_expense_dashboard',
@@ -64,8 +63,6 @@ odoo.define('gastos_tqc.registro_gasto', function (require) {
          * @param {OdooEvent} e
          */
         _onDashboardOpenAction: function (e) {
-            console.log("ESEGUNDO ESTA")
-            console.log("esta es : ",e.data.action_name)
             return this.do_action(e.data.action_name,
                 {additional_context: JSON.parse(e.data.action_context)});
         },

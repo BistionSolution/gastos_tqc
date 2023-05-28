@@ -10,3 +10,4 @@ from . import search_client
 from . import hr_department
 from . import tqc_impuestos
 from . import cuenta_gastos_default
+from . import tqc_tipo_documento

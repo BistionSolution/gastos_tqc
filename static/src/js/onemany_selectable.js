@@ -19,6 +19,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             'click tbody .search_client': '_onClickClient'
         }),
         _updateSelection: function () {
+            const previousSelection = JSON.stringify(this.selection);
             this.selection = [];
             var self = this;
             var $inputs = this.$('tbody .o_list_record_selector input:visible:not(:disabled)');
@@ -38,7 +39,10 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 $('.button_select_order_lines').hide()
             }
             this.$('thead .o_list_record_selector input').prop('checked', allChecked);
-            this.trigger_up('selection_changed', {selection: this.selection});
+            if (JSON.stringify(this.selection) !== previousSelection) {
+                this.trigger_up('selection_changed', {allChecked, selection: this.selection});
+            }
+            // this.trigger_up('selection_changed', {selection: this.selection});
             this._updateFooter();
         },
         _renderRows: function () {
@@ -48,7 +52,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 // if (this.addCreateLine && this.__parentedParent.recordData.habilitado_state !== ['proceso','corregir']) {
                 let stado = ['proceso', 'corregir'];
                 if (this.addCreateLine && stado.indexOf(this.__parentedParent.recordData.habilitado_state) === -1) {
-                    console.log("her event")
                     var $tr = $('<tr>');
                     var colspan = this._getNumberOfCols();
 
@@ -106,45 +109,87 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             }
             return $rows;
         },
-        _onCellClick: function (event) {
-            // The special_click property explicitely allow events to bubble all
-            // the way up to bootstrap's level rather than being stopped earlier.
-            var $td = $(event.currentTarget);
-            var $tr = $td.parent();
-
-            // detecta si existe el widget one2many selecteable
-            // if ($tr.find('.o_list_record_selector').length > 0) {
-            //     var rowIndex = $tr.prop('rowIndex') - 1;
-            // } else {
-            //     var rowIndex = $tr.prop('rowIndex') - 1;
-            // }
-            var rowIndex = $tr.prop('rowIndex') - 1;
-
-            if (!this._isRecordEditable($tr.data('id')) || $(event.target).prop('special_click')) {
-                return;
-            }
-            var fieldIndex = Math.max($tr.find('.o_field_cell').index($td), 0);
-            this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
-                // add button with custom code bistion
-                // console.log("ESTE ES tr: ", &)
-                if ($td.hasClass('consult_ruc')) {
-                    $td.addClass('overnone');
-                    $td.append($('<button>', {
-                        'class': 'search_ruc fa fa-search', 'name': 'search',
-                    }))
-
-                } else {
-                    if ($td.hasClass('consult_client')) {
+        // _onCellClick: function (event) {
+        //     // this._super(...arguments);
+        //     console.log("GOES")
+        //     // The special_click property explicitely allow events to bubble all
+        //     // the way up to bootstrap's level rather than being stopped earlier.
+        //     var $td = $(event.currentTarget);
+        //     var $tr = $td.parent();
+        //
+        //     // detecta si existe el widget one2many selecteable
+        //     if ($tr.find('.o_list_record_selector').length > 0) {
+        //         var rowIndex = $tr.prop('rowIndex') - 2;
+        //     } else {
+        //         var rowIndex = $tr.prop('rowIndex') - 1;
+        //     }
+        //     // var rowIndex = $tr.prop('rowIndex') - 1;
+        //
+        //     if (!this._isRecordEditable($tr.data('id')) || $(event.target).prop('special_click')) {
+        //         return;
+        //     }
+        //     var fieldIndex = Math.max($tr.find('.o_field_cell').index($td), 0);
+        //
+        //     console.log("td: ", $td)
+        //
+        //     if ($tr.find('.o_list_record_selector').length > 0) {
+        //         this._selectCell(rowIndex, fieldIndex, {event: event});
+        //
+        //     } else {
+        //         this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
+        //             // add button with custom code bistion
+        //             if ($td.hasClass('consult_ruc')) {
+        //                 $td.addClass('overnone');
+        //                 $td.append($('<button>', {
+        //                     'class': 'search_ruc fa fa-search', 'name': 'search',
+        //                 }))
+        //
+        //             } else {
+        //                 if ($td.hasClass('consult_client')) {
+        //                     $td.addClass('overnone');
+        //                     $td.append($('<button>', {
+        //                         'class': 'search_client fa fa-search', 'name': 'search',
+        //                     }))
+        //                 } else {
+        //                     $('.search_ruc').remove()
+        //                     $('.search_client').remove()
+        //                 }
+        //             }
+        //         });
+        //     }
+        //
+        // },
+        _selectCell: function (rowIndex, fieldIndex, options) {
+            var selectCell = this._super.apply(this, arguments);
+            if (options && options.event?.currentTarget) {
+                var $td = $(options.event.currentTarget)
+                return selectCell.then(function () {
+                    if ($td.hasClass('consult_ruc')) {
                         $td.addClass('overnone');
+                        // var newButton = '<button class="search_ruc fa fa-search" name="search">new button</button>'
                         $td.append($('<button>', {
-                            'class': 'search_client fa fa-search', 'name': 'search',
+                            'class': 'search_ruc fa fa-search', 'name': 'search',
                         }))
-                    } else {
-                        $('.search_ruc').remove()
                         $('.search_client').remove()
+                        // $(options.event.target).append($('<button>', {
+                        //     'class': 'search_ruc fa fa-search', 'name': 'search',
+                        // }))
+                    } else {
+                        if ($td.hasClass('consult_client')) {
+                            $td.addClass('overnone');
+                            $td.append($('<button>', {
+                                'class': 'search_client fa fa-search', 'name': 'search',
+                            }))
+                            $('.search_ruc').remove()
+                        } else {
+                            $('.search_ruc').remove()
+                            $('.search_client').remove()
+                        }
                     }
-                }
-            });
+                })
+            }
+
+            return selectCell
         },
         _onClickRuc: function (event) {
             var changes = {}
@@ -222,14 +267,13 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             "click .button_delete_order_lines": "delete_selected_lines",
             "click .button_select_order_lines": "selected_lines",
         }),
-        init: function() {
-	        this._super.apply(this, arguments);
-	    },
-        start: function()
-	    {
-	    	this._super.apply(this, arguments);
-			var self=this;
-	    },
+        init: function () {
+            this._super.apply(this, arguments);
+        },
+        start: function () {
+            this._super.apply(this, arguments);
+            var self = this;
+        },
         // start: function () {
         // 	this._super.apply(this, arguments);
         // 	// $('.o_field_x2many_list_row_add').hide()
@@ -247,21 +291,25 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             var w_response = confirm("¿Seguro que deseas rechazar los documentos seleccionados?");
             if (w_response) {
                 rpc.query({
-                    'model': current_model, 'method': 'write', 'args': [selected_lines, {
-                        'revisado_state': 'rechazado_' + this.recordData.state, 'state': 'document'
+                    'model': current_model,
+                    'method': 'write',
+                    'args': [selected_lines, {
+                        'revisado_state': 'rechazado_' + this.recordData.state
                     }],
                 }).then(function (result) {
                     // console.log("VAMOS CON VAMOSS : ")
                     // console.log("VAMOS CON model : ", self.model)
-                    if (self.model === 'tqc.liquidaciones') {
-                        rpc.query({
-                            'model': self.model, 'method': 'write', 'args': [self.res_id, {
-                                'habilitado_state': 'corregir'
-                            }],
-                        }).then(function (e) {
-                            self.trigger_up('reload');
-                        });
-                    }
+                    // if (self.model === 'tqc.liquidaciones') {
+                    //     rpc.query({
+                    //         'model': self.model,
+                    //         'method': 'write',
+                    //         'args': [self.res_id, {
+                    //             'habilitado_state': 'corregir'
+                    //         }],
+                    //     }).then(function (e) {
+                    //         self.trigger_up('reload');
+                    //     });
+                    // }
                     self.trigger_up('reload');
                 });
             }
@@ -296,7 +344,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 return One2ManyKanbanRenderer;
             }
             if (self.view.arch.tag === 'tree') {
-                if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
+                if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3 && self.recordData.current_user == 1) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
                     return ListRenderer.extend({
                         init: function (parent, state, params) {
                             var self = this

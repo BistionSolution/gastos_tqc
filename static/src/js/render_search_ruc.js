@@ -56,7 +56,7 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
 
             self.$el.addClass('search_aument')
             $('.modal-footer').append('<button class="aceptar_ruc_button oe_highlight">Aceptar</button>')
-
+            $('.aceptar_ruc').click()
             // var $row = this._super(record);
             // // Add progress bar widget at the end of rows
             // var $td = $('<td/>', {class: 'o_data_cell o_skill_cell'});
@@ -97,20 +97,19 @@ odoo.define("gastos_tqc.js_search_ruc", function (require) {
             })
         },
         _onClickAccept: function () {
-            $("input[name='ruc']").val($('#clickruc').val())
-            $("input[name='ruc']").trigger("change");
-            $('.modal').remove()
+            $("input[name='ruc']").val($('#clickruc').val()).trigger("change");
         },
         _onClickCancel: function () {
-            $('.modal').remove()
         },
         _onOneClick: function (e) {
             $("#clickruc").val(e.currentTarget.cells[0].innerText)
         },
         _onDoubleClickRow: function (e) {
-            $("input[name='ruc']").val(e.currentTarget.cells[0].innerText)
-            $("input[name='ruc']").trigger("change");
-            $('.modal').remove()
+            $("input[name='ruc']").val(e.currentTarget.cells[0].innerText).trigger("change");
+            $(".cancelar_ruc_button").click()
+        },
+        _onClickTrue: function () {
+            console.log("acepto correctamente")
         }
     })
 

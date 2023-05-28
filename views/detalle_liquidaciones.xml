@@ -1,5 +1,12 @@
 <odoo>
     <data>
 
+        <record id="action_view_detalles_liquidaciones" model="ir.actions.act_window">
+            <field name="name">Registro de gasto</field>
+            <field name="res_model">tqc.detalle.liquidaciones</field>
+        </record>
+
+        <menuitem id="menu_detalles_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="6"
+                  name="Detalles liquidaciones" action="gastos_tqc.action_view_detalles_liquidaciones"/>
     </data>
 </odoo>

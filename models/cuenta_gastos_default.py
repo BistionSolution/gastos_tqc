@@ -17,7 +17,7 @@ class cuentaDefault(models.Model):
         result = []
         for rec in self:
             if rec.description:
-                name = str(rec.description)
+                name = rec.description
             else:
                 name = 'default description'
             result.append((rec.id, name))

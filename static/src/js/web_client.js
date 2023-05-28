@@ -16,9 +16,9 @@ odoo.define('gastos_tqc.WebClient', function (require) {
             var self = this;
             // return this._super.apply(this, arguments);
             return this.menu_dp.add(data_manager.load_action(ev.data.action_id))
-                .then(function (result) {
+                .then(async function (result) {
                     if (result.model_name === 'tqc.liquidaciones' || result.res_model === 'tqc.liquidaciones') {
-                        self._rpc({ //envia el modelo, parametos
+                        await self._rpc({ //envia el modelo, parametos
                             model: "tqc.liquidaciones",
                             method: "importar_exactus"
                         }).then(function (e) {

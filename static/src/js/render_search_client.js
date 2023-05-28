@@ -89,20 +89,16 @@ odoo.define("gastos_tqc.js_search_client", function (require) {
             })
         },
         _onClickAccept: function () {
-            $("input[name='cliente']").val($('#clickclient').val())
-            $("input[name='cliente']").trigger("change")
-            $('.modal').remove()
+            $("input[name='cliente']").val($('#clickclient').val()).trigger("change")
         },
         _onClickCancel: function () {
-            $('.modal').remove()
         },
         _onOneClick: function (e) {
             $("#clickclient").val(e.currentTarget.cells[0].innerText)
         },
         _onDoubleClickRow: function (e) {
-            $("input[name='cliente']").val(e.currentTarget.cells[0].innerText)
-            $("input[name='cliente']").trigger("change");
-            $('.modal').remove()
+            $("input[name='cliente']").val(e.currentTarget.cells[0].innerText).trigger("change");
+            $(".cancelar_ruc_button").click()
         }
     })
 

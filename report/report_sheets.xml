@@ -1,0 +1,42 @@
+<odoo>
+    <data>
+        <record id="gastos_tqc.papelformat_portrait_a5" model="report.paperformat">
+            <field name="name">Formato A5</field>
+            <field name="format">A5</field>
+            <field name="orientation">Portrait</field>
+            <field name="default" eval="False"/>
+            <field name="dpi" eval="90"/>
+            <field name="margin_top" eval="40"/>
+            <field name="margin_right" eval="7"/>
+            <field name="margin_bottom" eval="20"/>
+            <field name="margin_left" eval="7"/>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing" eval="35"/>
+        </record>
+
+        <record id="gastos_tqc.papelformat_landscape_a5" model="report.paperformat">
+            <field name="name">Formato A5</field>
+            <field name="format">A5</field>
+            <field name="orientation">Landscape</field>
+            <field name="default" eval="False"/>
+            <field name="dpi" eval="10"/>
+            <field name="margin_top" eval="10"/>
+            <field name="margin_right" eval="0"/>
+            <field name="margin_bottom" eval="7"/>
+            <field name="margin_left" eval="0"/>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing" eval="10"/>
+        </record>
+
+        <!-- UNIDAD-->
+        <report id="gastos_tqc.action_report_und_report_pendient"
+                string="Reporte liquidacion PDF"
+                model="tqc.liquidaciones"
+                report_type="qweb-pdf"
+                paperformat="gastos_tqc.papelformat_landscape_a5"
+                name="gastos_tqc.report_und_liquidacion"
+                print_report_name="'Reporte de Liquidacion %s' %(object.num_solicitud)"
+        />
+
+    </data>
+</odoo>

@@ -7,6 +7,10 @@ import datetime
 import re, pyodbc
 
 no_server = True
+database = 'TQCBKP2'
+userbd = "TQC"
+passbd = "extqc"
+
 
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
@@ -19,7 +23,7 @@ class detalleLiquidaciones(models.Model):
     numero = fields.Char(required=1)
     ruc = fields.Char(string='RUC', required=1)
     proveedor_razonsocial = fields.Char(string='Razón social')
-    razonsocial_invisible = fields.Char(string='Razón social')
+    razonsocial_invisible = fields.Boolean(string='RUC activo', default=True)
     moneda = fields.Char()
     tipocambio = fields.Float(required=1, digits=(12, 3))
     fechaemision = fields.Date(required=1)
@@ -30,8 +34,9 @@ class detalleLiquidaciones(models.Model):
     impuesto = fields.Many2one('tqc.impuestos', required=1)
     totaldocumento = fields.Monetary(currency_field='currency_id', required=1)
 
-    cuenta_contable = fields.Many2one('cuenta.contable.gastos', required=1)
+    cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
+    codetipo = fields.Char(compute="_depend_tipocode")
     observacionrepresentacion = fields.Text(string='Observacion representacion', required=1)
     nocliente = fields.Char()
 
@@ -74,18 +79,39 @@ class detalleLiquidaciones(models.Model):
         ('rechazado_jefatura', 'Rechazado jefatura'),
         ('rechazado_contable', 'Rechazado Contabilidad'),
         ('corregido', 'Corregido'),
+        ('liquidado', 'Liquidado'),
+        ('send_error', 'Error de envio')
     ], string='Estado', default='borrador',
         help="Tipo de de solicitud" +
              "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
     attachment = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id', string="Archivos",
                                   help='You can upload your document', copy=False)
+    current_user = fields.Integer(compute='_current_user')
+    uid_create = fields.Integer(compute='_get_current_user')
+    state_liqui = fields.Char(compute='_get_current_user')
+    message_error = fields.Char(String='Mensaje Error respuesta')
 
     @api.depends("moneda")
     def _compute_currency_id(self):
         for rec in self:
             if rec.moneda == 'USD':
                 rec.currency_id = 2
+
+    @api.depends()
+    def _current_user(self):
+        for record in self:
+            print("oje : ", record.state)
+            print("UID _: ", record.liquidacion_id.current_user)
+            record.current_user = record.liquidacion_id.current_user
+
+    @api.depends()
+    def _get_current_user(self):
+        for record in self:
+            print("oje : ", record.liquidacion_id.uid_create)
+            print("UID _: ", record.liquidacion_id.state)
+            record.uid_create = record.liquidacion_id.uid_create
+            record.state_liqui = record.liquidacion_id.state
 
     # @api.constrains('tipocambio')
     # def check_saldo(self):
@@ -102,21 +128,37 @@ class detalleLiquidaciones(models.Model):
     #             if sum_total > saldo_liqudacion:
     #                 raise UserError(_('Se paso del saldo'))
 
-    @api.onchange('base_afecta','base_inafecta','impuesto')
+    @api.onchange('base_afecta', 'base_inafecta', 'impuesto')
     def _onchange_base_afecta(self):
         for rec in self:
             rec.update(rec._get_price_total())
+
+    @api.onchange('tipodocumento')
+    def _onchange_tipodocumento(self):
+        for rec in self:
+            if rec.tipodocumento.tipo == 'B/V':
+                înafecto = self.env['tqc.impuestos'].search([('impuesto1', '=', 0)])
+                rec.impuesto = înafecto[0].id
+                rec.base_afecta = 0
+
+    @api.depends('tipodocumento')
+    def _depend_tipocode(self):
+        for rec in self:
+            if rec.tipodocumento:
+                rec.codetipo = rec.tipodocumento.tipo
+            else:
+                rec.codetipo = False
 
     def _get_price_total(self, liquidacion_id=None, base_afecta=None, impuesto=None, base_inafecta=None):
         self.ensure_one()
         res = {}
         # Compute 'price_subtotal'.
-        saldo_liqudacion = self.liquidacion_id.saldo
-        monto_igv = (self.base_afecta * self.impuesto.impuesto) / 100
+        # saldo_liqudacion = self.liquidacion_id.saldo
+        monto_igv = (self.base_afecta * self.impuesto.impuesto1) / 100
         totaldocumento = monto_igv + self.base_afecta + self.base_inafecta
-
+        res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
-        #In case of multi currency, round before it's use for computing debit credit
+        # In case of multi currency, round before it's use for computing debit credit
         return res
 
     # @api.onchange('base_inafecta')
@@ -137,9 +179,9 @@ class detalleLiquidaciones(models.Model):
                 cambio = 0
                 strfecha = rec.fechaemision
                 ip_conexion = "10.10.10.228"
-                data_base = "TQC"
-                user_bd = "vacaciones"
-                pass_bd = "exvacaciones"
+                data_base = database
+                user_bd = userbd
+                pass_bd = passbd
 
                 sql_prime = """SELECT FECHA, CONVERT(decimal(10,3),MONTO) FROM tqc.TIPO_CAMBIO_HIST WHERE CONVERT(DATE, FECHA) = '""" + strfecha.strftime(
                     '%Y-%m-%d') + """' AND TIPO_CAMBIO = 'TCV'"""
@@ -173,13 +215,13 @@ class detalleLiquidaciones(models.Model):
             if rec.ruc and no_server:
                 result = ""
                 ip_conexion = "10.10.10.228"
-                data_base = "TQC"
-                user_bd = "vacaciones"
-                pass_bd = "exvacaciones"
+                data_base = database
+                user_bd = userbd
+                pass_bd = passbd
                 table_bd = "tqc.liquidaciones"
                 table_relations = """empleado_name OF hr.employee"""
 
-                sql_prime = """SELECT TOP 1 * FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + rec.ruc + """'"""
+                sql_prime = """SELECT TOP 1 PROVEEDOR, NOMBRE, ACTIVO FROM tqc.PROVEEDOR WHERE PROVEEDOR = '""" + rec.ruc + """'"""
                 try:
                     connection = pyodbc.connect(
                         'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -187,14 +229,20 @@ class detalleLiquidaciones(models.Model):
                     cursor = connection.cursor()
                     cursor.execute(sql_prime)
                     proveedores = cursor.fetchall()
-
-                    for proveedor in proveedores:
-                        result = proveedor[2]
-
                 except Exception as e:
-                    result = ""
+                    raise UserError(_("Error de conexion con exactus"))
+
+                if not proveedores:
+                    raise UserError(_("RUC no existe"))
+
+                for proveedor in proveedores:
+                    result = proveedor[1]
                 rec.proveedor_razonsocial = result
-                rec.razonsocial_invisible = result
+
+                if proveedor[2] == 'S':
+                    rec.razonsocial_invisible = True
+                else:
+                    rec.razonsocial_invisible = False
 
     @api.onchange('cliente')
     def _onchange_cliente(self):
@@ -204,9 +252,9 @@ class detalleLiquidaciones(models.Model):
                 result = ""
 
                 ip_conexion = "10.10.10.228"
-                data_base = "TQC"
-                user_bd = "vacaciones"
-                pass_bd = "exvacaciones"
+                data_base = database
+                user_bd = userbd
+                pass_bd = passbd
 
                 sql_prime = """SELECT TOP 1 * FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + rec.cliente + """'"""
                 try:
@@ -226,14 +274,14 @@ class detalleLiquidaciones(models.Model):
 
                 rec.cliente_razonsocial = result
 
-    def unlink(self):
-        # liquidaciones = self.sudo().env['tqc.liquidaciones'].search([('liquidacion_id', '=', self.id), ('habilitado_state', 'in', ['proceso', 'corregir'])])
-        if self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
-            raise UserError(_("No puedes eliminar registro si eres rol jefatura"))
-
-        if self.liquidacion_id.habilitado_state in ['proceso', 'corregir']:
-            raise UserError(_("No puedes eliminar registro en estado 'corregir' y 'proceso'"))
-        return super(detalleLiquidaciones, self).unlink()
+    # def unlink(self):
+    #     # liquidaciones = self.sudo().env['tqc.liquidaciones'].search([('liquidacion_id', '=', self.id), ('habilitado_state', 'in', ['proceso', 'corregir'])])
+    #     if self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
+    #         raise UserError(_("No puedes eliminar registro si eres rol jefatura"))
+    #
+    #     if self.liquidacion_id.habilitado_state in ['proceso', 'corregir']:
+    #         raise UserError(_("No puedes eliminar registro en estado 'corregir' y 'proceso'"))
+    #     return super(detalleLiquidaciones, self).unlink()
 
     def action_approve(self):
         pass
@@ -247,16 +295,18 @@ class detalleLiquidaciones(models.Model):
             info = []
 
             ip_conexion = "10.10.10.228"
-            data_base = "TQC"
-            user_bd = "vacaciones"
-            pass_bd = "exvacaciones"
+            data_base = database
+            user_bd = userbd
+            pass_bd = passbd
             table_bd = "tqc.liquidaciones"
             table_relations = """empleado_name OF hr.employee"""
 
-            sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args['ruc'] + """%' OR NOMBRE LIKE '%"""+ args['ruc'] +"""%'"""
+            sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args[
+                'ruc'] + """%' OR NOMBRE LIKE '%""" + args['ruc'] + """%'"""
             try:
-                connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                            data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+                connection = pyodbc.connect(
+                    'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                    data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                 cursor = connection.cursor()
                 cursor.execute(sql_prime)
                 proveedores = cursor.fetchall()
@@ -274,16 +324,17 @@ class detalleLiquidaciones(models.Model):
     @api.model
     def search_client(self, args):
         if no_server:
-
             info = []
             ip_conexion = "10.10.10.228"
-            data_base = "TQC"
-            user_bd = "vacaciones"
-            pass_bd = "exvacaciones"
-            sql_prime = """SELECT CLIENTE, NOMBRE FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args['client'] + """%' OR NOMBRE LIKE '%"""+args['client']+"""%'"""
+            data_base = database
+            user_bd = userbd
+            pass_bd = passbd
+            sql_prime = """SELECT CLIENTE, NOMBRE FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args[
+                'client'] + """%' OR NOMBRE LIKE '%""" + args['client'] + """%'"""
             try:
-                connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                            data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+                connection = pyodbc.connect(
+                    'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                    data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                 cursor = connection.cursor()
                 cursor.execute(sql_prime)
                 clientes = cursor.fetchall()
@@ -320,32 +371,13 @@ class depositos(models.Model):
     cuenta_bancaria = fields.Char()
     fecha_contable = fields.Date()
 
-class tipoLiquidaciones(models.Model):
-    _name = 'tqc.tipo.liquidaciones'
-    _description = 'Tipo de Liquidaciones'
-
-    name = fields.Char()
-
-class tipoDocumento(models.Model):
-    _name = 'tqc.tipo.documentos'
-    _description = 'Tipo de Documentos'
-
-    name = fields.Char(required=1)
-    code = fields.Char(required=1)
-
-    def name_get(self):  # agrega nombre al many2one relacionado
-        result = []
-        for rec in self:
-            if rec.code:
-                name = str(rec.code + ' - ' + rec.name)
-            else:
-                name = rec.name
-            result.append((rec.id, name))
-        return result
 
 class cuentaAttachment(models.Model):
     _inherit = 'ir.attachment'
-    attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'attachment', 'attachment_id', 'document_id', string = "Attachment")
+    attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'attachment', 'attachment_id', 'document_id',
+                                  string="Attachment")
+
+
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'
     _description = 'Vamos'

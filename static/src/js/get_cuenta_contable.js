@@ -80,8 +80,7 @@ odoo.define("gastos_tqc.js_get_cuenta_contable", function (require) {
             });
         },
         _onClickAccept: function () {
-            $("input[name='cliente']").val($('#rruc2').text())
-            $("input[name='cliente']").trigger("change")
+            $("input[name='cliente']").val($('#rruc2').text()).trigger("change")
 
             // $("input[name='cliente_razonsocial']").val($('#result2').text())
             // $("input[name='cliente_razonsocial']").trigger("change");

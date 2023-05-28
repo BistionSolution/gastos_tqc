@@ -90,6 +90,7 @@ class TqcAuth(models.Model):
             TqcAuth.sicronizar_auth(self)
 
     def cal_all_auth(self):
+        print("que fuentes")
         # TRAE LOS NIVELES DE AUTHORIZATION
         # EMPIEZA EL CALCULO DE AUTORIZADORES
         all_employee = self.env["hr.employee"].search([])
@@ -98,9 +99,9 @@ class TqcAuth(models.Model):
             if superior:
 
                 ids_superior = superior.mapped('superior').mapped('id')
-                if rec.id == 452:
-                    print("name : ", rec.name)
-                    print(ids_superior)
+                if rec.id == 312:
+                    print("name 2 : ", rec.name)
+                    print("SUPERIORES 2  : ",ids_superior)
                 self.env["hr.employee"].browse(rec.id).sudo().write({'superior': [(6, 0, ids_superior)]})
                 self.env.cr.commit()
             else:
@@ -109,7 +110,13 @@ class TqcAuth(models.Model):
 
             subords = self.env["tqc.autorizadores"].search([('superior', '=', rec.id)])
             if subords:
+
+
                 ids_subord = subords.mapped('subordinados').mapped('id')
+                if rec.id == 312:
+                    print("name 2 : ", rec.name)
+                    print("SUPERIORES 2  : ",subords)
+                    print("supord 2  : ", ids_subord)
                 self.env["hr.employee"].browse(rec.id).sudo().write({'subordinados': [(6, 0, ids_subord)]})
                 self.env.cr.commit()
             else:

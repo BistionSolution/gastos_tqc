@@ -5,7 +5,7 @@
             <field name="name">view.tree.cuenta.gastos.default</field>
             <field name="model">cuenta.gastos.default</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree editable="bottom">
                     <field name="codigo"/>
                     <field name="description"/>
                 </tree>

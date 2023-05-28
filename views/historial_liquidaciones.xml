@@ -1,0 +1,264 @@
+<odoo>
+    <data>
+        <!--VISTA  TREE-->
+        <record id="view_tree_historial_liquidaciones" model="ir.ui.view">
+            <field name="name">view.tree.historial.liquidaciones</field>
+            <field name="model">tqc.liquidaciones</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="mode_view" force_save="1" invisible="1"/>
+
+                    <field name="num_solicitud"/>
+                    <field name="empleado_name"/>
+                    <field name="centro_costo"/>
+                    <field name="fecha_entrega" string="Fecha solicitud"/>
+                    <field name="fecha_contable" invisible="1"/>
+                    <field name="moneda"/>
+                    <field name="currency_id" string="Moneda" invisible="1"/>
+                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <!--                    <field name="observacionenvio"/>-->
+                    <!--                    <field name="numeroplaca"/>-->
+                    <!--                    <field name="glosa_entrega"/>-->
+                    <field name="fecha_generacion"/>
+
+                    <field name="state"/>
+                    <field name="tipo_documento"/>
+                    <field name="habilitado_state" widget="badge" decoration-success="habilitado_state == 'habilitado'"
+                           decoration-warning="habilitado_state == 'corregir'"
+                           decoration-info="habilitado_state == 'proceso'"
+                           string="Estado"
+                    />
+                    <!-- <field name="id_current" invisible="1"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <!--VISTA ATORIZACION FORM-->
+        <record id="view_form_historial_liquidaciones" model="ir.ui.view">
+            <field name="name">view.form.historial.liquidaciones</field>
+            <field name="model">tqc.liquidaciones</field>
+            <field name="arch" type="xml">
+                <form string="Liquidacion" create="0">
+                    <header>
+                        <button name="print_pdf" string="Imprimir pdf" type="object"
+                                class="oe_highlight"/>
+                        <field name="habilitado_state" widget="statusbar" statusbar_visible="habilitado,proceso,corregir,liquidado"/>
+                    </header>
+                    <group>
+                        <field name="name" readonly="1" invisible="1"/>
+                        <div style="display: flex;">
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Empleado :
+                                </span>
+                                <field name="empleado_name" class="oe_inline" readonly="1"/>
+                            </div>
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    N° Solicitud :
+                                </span>
+                                <field name="num_solicitud" class="oe_inline" readonly="1"/>
+                            </div>
+
+                        </div>
+                        <div style="display: flex;">
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Fch. entrega:
+                                </span>
+                                <field name="fecha_entrega" class="oe_inline" readonly="1"/>
+                            </div>
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Fch. Generación:
+                                </span>
+                                <field name="fecha_generacion" readonly="1" class="oe_inline"/>
+                            </div>
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Moneda :
+                                </span>
+                                <field name="moneda" class="oe_inline" readonly="1" string="Moneda"/>
+                            </div>
+
+                        </div>
+                        <div style="display: flex;">
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Centro de costo :
+                                </span>
+                                <field name="centro_costo" class="oe_inline" readonly="1"/>
+                            </div>
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Glosa entrega :
+                                </span>
+                                <field name="glosa_entrega" readonly="1"/>
+                            </div>
+                        </div>
+                        <div style="display: flex;">
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Monto entrega :
+                                </span>
+                                <field name="monto_entrega" class="oe_inline" readonly="1"
+                                />
+                            </div>
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Saldo :
+                                </span>
+                                <field name="saldo" class="oe_inline" readonly="1"/>
+                            </div>
+                            <div style="flex-grow: 1;flex-basis: 0;">
+                                <span class="oe_inline font-boldodo">
+                                    Total neto :
+                                </span>
+                                <field name="current_total" class="oe_inline" readonly="1" force_save="1"
+                                       string="current_total"/>
+                            </div>
+
+                        </div>
+                        <div>
+                            <span class="oe_inline font-boldodo">
+                                Fecha contable:
+                            </span>
+                            <field name="fecha_contable" readonly="1" class="oe_inline"/>
+                        </div>
+                    </group>
+                    <notebook>
+                        <page string="Detalle Liquidacioness">
+                            <field name="uid_create" invisible="1"/>
+                            <field name="detalleliquidaciones_id"
+                                   class="o_field_one2many custom-control custom-checkbox"
+                                   widget="select_onemany"
+                                   options="{'create':false ,'create_edit': false}"
+                                   readonly="1">
+                                <!--                                section_and_note_one2many-->
+                                <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
+                                      decoration-warning="revisado_state == 'corregido'"
+                                      decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']">
+                                    <field name="tipodocumento" string="Tipo doc."
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                           />
+                                    <field name="serie"
+                                           />
+                                    <field name="numero"
+                                           />
+                                    <field name="fechaemision" string="Fecha emisión"
+                                           />
+                                    <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
+                                    <field name="attachment"
+                                          />
+
+                                    <field name="ruc" string="Ruc proveedor" class="consult_ruc"
+                                           decoration-danger="proveedor_razonsocial == False"
+                                           />
+                                    <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
+                                           force_save="1"/>
+                                    <!--                                    <field name="state"/>-->
+                                    <!--                                    <field name="subtipo"/>-->
+                                    <field name="base_afecta" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"
+                                           />
+                                    <field name="base_inafecta" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"
+                                           />
+                                    <field name="impuesto"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                           />
+                                    <field name="montoigv" widget="monetary" string="Monto IGV"
+                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
+                                    <field name="totaldocumento" widget="monetary" string="Total Documento"
+                                           options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
+                                           sum="Total Documentos"/>
+                                    <field name="cuenta_contable"
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+
+                                    />
+                                    <!--                                    <field name="nocliente"/>-->
+                                    <field name="cliente" class="consult_client"
+                                           decoration-danger="cliente_razonsocial == False"
+                                           />
+                                    <field name="cliente_razonsocial" readonly="1" force_save="1"
+                                           string="Cliente razon social"/>
+                                    <field name="observacionrepresentacion" string="Obs. Presentacion"
+                                           />
+                                    <field name="observacionjefatura" string="Obs. Jefatura"
+                                           />
+                                    <field name="observacioncontabilidad" string="Obs. Contabilidad"
+                                           />
+                                    <field name="message_error"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="revisado_state" readonly="1" widget="badge"
+                                           decoration-success="revisado_state == 'aprobado'"
+                                           decoration-warning="revisado_state == 'corregido'"
+                                           decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"/>
+
+                                    <!--                                    <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up"/>-->
+                                    <!--                                    <button string="Rechazar" name="action_refuse" type="object" icon="fa-times"/>-->
+                                    <!--                                        attrs="{'invisible':['|',('current_user_uid','!=',1),('state','!=','aprobado1')]}"-->
+
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="tipo"/>
+                                        <field name="subtipo"/>
+                                        <field name="serie"/>
+                                        <field name="numero"/>
+                                        <field name="ruc"/>
+                                        <field name="revisado_state"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </form>
+
+            </field>
+        </record>
+
+        <record id="search_historial_filter" model="ir.ui.view">
+            <field name="name">filter.registro.gastos.tqc</field>
+            <field name="model">tqc.liquidaciones</field>
+            <field name="arch" type="xml">
+                <search string="Search Tqc">
+                    <field name="empleado_name"/>
+                    <field name="num_solicitud"/>
+                    <field name="fecha_entrega"/>
+                    <field name="tipo_documento" invisible="1"/>
+                    <filter name="filtro_rendir" string="A rendir" domain="[('tipo_documento', '=', 'a_rendir')]"/>
+                    <filter name="filtro_tarjeta" string="Tarjeta credito"
+                            domain="[('tipo_documento', '=', 'tarjeta_credito')]"/>
+                    <separator/>
+                    <filter name="jefatura" string="Sin visto jefe" domain="[('state', '=', 'jefatura')]"/>
+                    <filter name="contable" string="Sin visto contable" domain="[('state', '=', 'contable')]"/>
+                    <filter name="pendiente" string="Pendiente a procesar" domain="[('state', '=', 'pendiente')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_view_historial_liquidaciones" model="ir.actions.act_window">
+            <field name="name">Historial de liquidaciones</field>
+            <field name="res_model">tqc.liquidaciones</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="gastos_tqc.search_historial_filter"/>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_historial_liquidaciones')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_historial_liquidaciones')})]"/>
+            <field name="context">{'mode_view':'historial'}</field>
+            <field name="domain">[('fecha_generacion', '!=', False)]</field>
+            <field name="target">main</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No hay registros
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_historial_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="4"
+                  name="Historial" action="gastos_tqc.action_view_historial_liquidaciones"/>
+    </data>
+</odoo>

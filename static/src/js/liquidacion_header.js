@@ -50,11 +50,13 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
             _renderView: async function () {
                 var self = this;
                 this._super(...arguments);
+                console.log("user id : ", session.user_id)
                 await self._rpc({
                     model: 'tqc.liquidaciones',
-                    method: 'get_count_states'
+                    method: 'get_count_states',
+                    args: [{'user_id': session.user_id[0]}]
                     // context: this.context,
-                }).then(function (e) {
+                }).then(function (count_state) {
                     self._rpc({
                         model: 'hr.employee',
                         method: 'search_read',
@@ -63,13 +65,13 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                     }).then(function (employee) {
                         if (employee.length !== 0) {
                             self.$el.parent().prev().find('#mydata').remove()
-                            self.$el.parent().prev().prepend("<span id='mydata'>"+employee[0].name + " - " + employee[0].department_id[1]+"</span>");
+                            self.$el.parent().prev().prepend("<span id='mydata'>" + employee[0].name + " - " + employee[0].department_id[1] + "</span>");
                         }
                     });
 
                     // self.$el.parent().find('.o_expense_container').remove();
                     const elem = QWeb.render('gastos_tqc.dashboard_liquid_tqc', {
-                        expenses: e,
+                        expenses: count_state,
                         // render_monetary_field: self.render_monetary_field,
                     });
 
@@ -77,7 +79,10 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                     // console.log("VAMOS A VER ",dom)
                     self.$el.prepend(elem);
                 })
-                self.$el.find('.o_expense_container').children().find(`#${self.state.domain[2][2]}`).addClass('button_black')
+                if (self.state.domain[2]) {
+                    self.$el.find('.o_expense_container').children().find(`#${self.state.domain[2][2]}`).addClass('button_black')
+
+                }
 
 
             },
@@ -151,23 +156,17 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
         _renderView: async function () {
             var self = this;
             this._super(...arguments);
-            const result = await self._rpc({
-                model: 'tqc.liquidaciones',
-                method: 'get_count_states'
+            self._rpc({
+                model: 'hr.employee',
+                method: 'search_read',
+                domain: [['user_id', '=', session.user_id]],
                 // context: this.context,
-            }).then(function (e) {
-                self._rpc({
-                    model: 'hr.employee',
-                    method: 'search_read',
-                    domain: [['user_id', '=', session.user_id]],
-                    // context: this.context,
-                }).then(function (employee) {
-                    if (employee.length !== 0) {
-                        self.$el.parent().prev().find('#mydata').remove()
-                        self.$el.parent().prev().prepend("<span id='mydata'>"+employee[0].name + " - " + employee[0].department_id[1]+"</span>")
-                    }
-                });
-            })
+            }).then(function (employee) {
+                if (employee.length !== 0) {
+                    self.$el.parent().prev().find('#mydata').remove()
+                    self.$el.parent().prev().prepend("<span id='mydata'>" + employee[0].name + " - " + employee[0].department_id[1] + "</span>")
+                }
+            });
 
         }
     });

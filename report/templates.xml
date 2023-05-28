@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="gastos_tqc.gastos_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+
+        <!--        <t t-if="company.external_report_layout_id" t-call="{{company.external_report_layout_id.sudo().key}}"><t t-raw="0"/></t>-->
+        <div class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 45px;"
+                         alt="Logo"/>
+                </div>
+                <div class="col-9 text-right" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
+            </div>
+            <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="col-12">
+                    <div style="border-bottom: 1px solid black;"/>
+                </div>
+            </div>
+
+        </div>
+        <div class="article o_report_layout_standard">
+            <t t-raw="0"/>
+        </div>
+        <div class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page:
+                    <span class="page"/>
+                    /
+                    <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="gastos_tqc.report_und_liquidacion">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="gt">
+                <!--                web.external_layout-->
+                <t t-call="gastos_tqc.gastos_layout">
+                    <table class="table table-sm table-borderless m-0" style="font-size: 10px; ">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    EMPLEADO:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.empleado_name.name"/>
+                                </td>
+                                <td>
+                                    CENTRO DE COSTO:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.centro_costo.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    NUMERO DE SOLICITUD:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.num_solicitud"/>
+                                </td>
+                                <td>
+                                    FECHA:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.fecha_contable"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    FECHA DE SOLICITUD:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.fecha_generacion"/>
+                                </td>
+                                <td>
+                                    TIPO DOCUMENTO:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.tipo_documento"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    MONTO SOLICITADO:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.monto_entrega"/>
+                                </td>
+                                <td>
+                                    OBSERVACION ENVIO:
+                                </td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    MONEDA:
+                                </td>
+                                <td>
+                                    <span t-esc="gt.moneda"/>
+                                </td>
+                                <td>
+                                    GLOSA DE SOLICITUD
+                                </td>
+                                <td>
+                                    <span t-esc="gt.glosa_entrega"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table class="table table-sm table-bordered m-0 p-0" style="font-size: 7px;">
+                        <thead>
+                            <tr>
+                                <th>TIPO DOC</th>
+                                <th>SERIE</th>
+                                <th>NÚMERO</th>
+                                <th>FECHA DE EMISIÓN</th>
+                                <th>PROVEEDOR</th>
+                                <th>RAZÓN SOCIAL</th>
+                                <th>BASE AFECTA</th>
+                                <th>BASE INAFECTA</th>
+                                <th>IGV</th>
+                                <th>TOTAL</th>
+                                <th>CTA. CONTABLE</th>
+                                <th>OBSERVACIÓN PRESENTACIÓN.</th>
+                                <th>RAZÓN SOCIAL CLIENTE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach='gt.detalleliquidaciones_id' t-as='doc'>
+                                <td>
+                                    <span t-esc="doc.tipodocumento.descripcion"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.serie"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.numero"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.fechaemision"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.ruc"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.proveedor_razonsocial"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.base_afecta"/>
+                                </td>
+
+                                <td>
+                                    <span t-esc="doc.base_inafecta"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.montoigv"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.totaldocumento"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.cuenta_contable.description"/>
+                                </td>
+
+                                <td>
+                                    <span t-esc="doc.observacionrepresentacion"/>
+                                </td>
+                                <td>
+                                    <span t-esc="doc.cliente_razonsocial"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

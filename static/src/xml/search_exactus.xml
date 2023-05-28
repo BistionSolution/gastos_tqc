@@ -8,6 +8,7 @@
             <button type="button" class="btn button_search_ruc btn-primary" data-original-title="" title=""><i class="fa fa-fw o_button_icon fa-search"></i>
                 <span>Buscar</span>
             </button>
+
         </div>
 
         <div class="o_field_one2many o_field_x2many_list custom-checkbox">
@@ -42,12 +43,13 @@
         </div>
 
         <div>
-            <button class="aceptar_ruc_button oe_highlight">
+            <button data-dismiss="modal" class="aceptar_ruc_button oe_highlight">
                 Aceptar
             </button>
-            <button class="cancelar_ruc_button">
-                Cancelar
-            </button>
+            <button data-dismiss="modal" string="Close my modal" class="cancelar_ruc_button">Cancelar</button>
+<!--            <button class="cancelar_ruc_button">-->
+<!--                Cancelar-->
+<!--            </button>-->
         </div>
     </t>
 
@@ -92,12 +94,10 @@
         </div>
 
         <div>
-            <button class="aceptar_client_button oe_highlight">
+            <button data-dismiss="modal"  class="aceptar_client_button oe_highlight">
                 Aceptar
             </button>
-            <button class="cancelar_client_button">
-                Cancelar
-            </button>
+            <button data-dismiss="modal" string="Close my modal" class="cancelar_ruc_button">Cancelar</button>
         </div>
     </t>
 </templates>

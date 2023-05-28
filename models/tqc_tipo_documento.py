@@ -8,35 +8,42 @@ import re, pyodbc
 database = 'TQCBKP2'
 userbd = "TQC"
 passbd = "extqc"
-class tqcImpuesto(models.Model):
-    _name = 'tqc.impuestos'
-    _description = 'Impuestos de TQC'
 
-    impuesto = fields.Char(string='Codigo')
-    descripcion = fields.Char(string="Descripcion")
-    impuesto1 = fields.Float(string="Valor")
+class tipoDocumento(models.Model):
+    _name = 'tqc.tipo.documentos'
+    _description = 'Tipo de Documentos'
+
+    tipo = fields.Char(string='Tipo')
+    subtipo = fields.Integer(string='Tipo')
+    descripcion = fields.Char(default="Vacio")
+    # impuesto = fields.Float(string='Impuesto')
+
     def name_get(self):  # agrega nombre al many2one relacionado
         result = []
         for rec in self:
-            name = rec.descripcion
+            if rec.descripcion:
+                name = rec.descripcion
+            else:
+                name = rec.descripcion
             result.append((rec.id, name))
         return result
 
     def load_impuestos(self):
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         if data_base:
-            sql = """SELECT IMPUESTO AS external_id, 
-                    IMPUESTO AS impuesto,
-                    DESCRIPCION AS descripcion,
-                    IMPUESTO1 AS impuesto1
-                    FROM """ + data_base + """.IMPUESTO"""
+            sql = """SELECT ROWPOINTER AS external_id, 
+                    TIPO AS tipo,
+                    SUBTIPO AS subtipo,
+                    DESCRIPCION AS descripcion                    
+                    FROM """ + data_base + """.SUBTIPO_DOC_CAJA 
+                    WHERE TIPO IN ('B/V','RHP') OR (TIPO='VOG' AND SUBTIPO IN (17,18)) OR (TIPO='FAC' AND SUBTIPO IN (0,1,2,3,9,19))"""
 
             ip_conexion = "10.10.10.228"
             data_base = database
             user_bd = userbd
             pass_bd = passbd
 
-            table_bd = 'tqc.impuestos'
+            table_bd = 'tqc.tipo.documentos'
 
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)

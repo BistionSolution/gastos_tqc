@@ -10,8 +10,8 @@
         Long description of module's purpose
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Millenium",
+    'website': "https://www.mbcorpsa.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -28,17 +28,20 @@
         'security/res_group.xml',
         'security/ir_rules.xml',
 
+        'report/templates.xml',
+        'report/report_sheets.xml',
+
         'views/liquidaciones.xml',
-        'views/templates.xml',
         'views/registrar_gasto.xml',
         'views/res_config_settings.xml',
         'views/cuenta_contable.xml',
-        'views/tipo_liquidaciones.xml',
         'views/tipo_documentos.xml',
         'views/tqc_autorizadores.xml',
         'views/hr_employee.xml',
         'views/tqc_impuestos.xml',
         'views/cuenta_gastos_default.xml',
+        'views/detalle_liquidaciones.xml',
+        'views/historial_liquidaciones.xml',
 
         'wizard/search_ruc.xml',
         'wizard/search_client.xml',

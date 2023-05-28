@@ -2,8 +2,12 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import datetime, date, timedelta, time
+import datetime
 import re, pyodbc
+
+database = 'TQCBKP2'
+userbd = "TQC"
+passbd = "extqc"
 
 
 class Liquidaciones(models.Model):
@@ -14,7 +18,7 @@ class Liquidaciones(models.Model):
 
     num_solicitud = fields.Char()
     empleado_name = fields.Many2one('hr.employee')
-    centro_costo = fields.Many2one('hr.department')
+    centro_costo = fields.Many2one('hr.department', compute='_get_department')
     observacionenvio = fields.Text()
     numeroplaca = fields.Char()
 
@@ -38,10 +42,11 @@ class Liquidaciones(models.Model):
     ingresocompletado = fields.Boolean()
 
     muestreocontabilidad = fields.Boolean()
-    tipoliquidacion_id = fields.Many2one('tqc.tipo.liquidaciones',
-                                         default=lambda self: self.env['tqc.tipo.liquidaciones'].search(
-                                             [('name', '=', 'A rendir')]))
-    detalleliquidaciones_id = fields.One2many('tqc.detalle.liquidaciones', 'liquidacion_id')
+
+    detalleliquidaciones_id = fields.One2many('tqc.detalle.liquidaciones', 'liquidacion_id', 'Detalles',
+                                              domain=lambda self: self._get_document_domain())
+    detalle_historial = fields.One2many('tqc.detalle.liquidaciones', 'liquidacion_id', 'Detalles',
+                                        domain=[('state', '=', 'historial')])
 
     entrega_a_rendir = fields.Char()
     fecha_entrega = fields.Date()
@@ -72,7 +77,8 @@ class Liquidaciones(models.Model):
 
     habilitado_state = fields.Selection([('habilitado', 'Habilitado para liquidar'),
                                          ('proceso', 'Proceso de liquidacion'),
-                                         ('corregir', 'Corregir y seguir')],
+                                         ('corregir', 'Corregir y seguir'),
+                                         ('liquidado', 'Liquidado')],
                                         default='habilitado', string='Proceso')
     mode_view = fields.Selection([('registro', 'Registro'),
                                   ('flujo', 'Flujo')],
@@ -80,45 +86,69 @@ class Liquidaciones(models.Model):
 
     table_depositos = fields.Html()
 
-    current_user_uid = fields.Integer()  # compute='_get_current_user', default=0
+    current_user = fields.Integer(compute='_current_user')  # compute='_get_current_user', default=0
     uid_create = fields.Integer(compute='_get_current_user')
     current_total = fields.Float(string='Current Total', compute='_compute_amount')
 
     @api.depends('detalleliquidaciones_id')
     def _compute_amount(self):
         for rec in self:
-            print("provando ")
             total = 0.0
             for line in rec.detalleliquidaciones_id:
-                total += line.totaldocumento
+                if line.revisado_state != 'liquidado':
+                    total += line.totaldocumento
             if total > rec.saldo:
                 raise UserError(_('Se paso del saldo'))
             rec.current_total = total
 
-    # @api.onchange('detalleliquidaciones_id')
-    # def _onchange_amount(self):
-    #     for rec in self:
-    #         print("provando ")
-    #         total = 0.0
-    #         for line in rec.detalleliquidaciones_id:
-    #             total += line.totaldocumento
-    #         rec.current_total = total
+    def _get_document_domain(self):
+        context = self._context.copy() or {}
+        print("context get : ", context.get("mode_view", False))
+        if context.get("mode_view", False) == 'flujo':
+            domain = [('revisado_state', '!=', 'liquidado')]
+        elif context.get("mode_view", False) == 'historial':
+            domain = []
+        elif context.get("mode_view", False) == 'registro':
+            domain = [('state', '!=', 'historial')]
+        else:
+            domain = []
+            # domain = [('state', '!=', 'historial')]
+
+        print("DOMAIN ES : ", domain)
+        return domain
+
+    @api.depends('empleado_name')
+    def _get_department(self):
+        for record in self:
+            if record.empleado_name.department_id:
+                record.centro_costo = record.empleado_name.department_id.id
+            else:
+                record.centro_costo = False
+
+    @api.depends()
+    def _current_user(self):
+        for record in self:
+            if self.env.uid in record.empleado_name.superior.user_id.mapped('id'):
+                record.current_user = 1
+            else:
+                record.current_user = 0
 
     @api.depends()
     def _get_current_user(self):
-        active_ids = self.env.context.get('active_ids', [])
-        print("model ", active_ids)
         # data_id = model_obj._get_id('module_name', 'view_id_which_you_want_refresh')
-
         # view_id = model_obj.browse(data_id).res_id
         user_now = self.env.uid
+        # ['|', ('empleado_name.superior.user_id', 'in', [self.env.uid]), ('empleado_name.user_id', '=', self.env.uid)]
         for record in self:
             # record.sudo().empleado_name.user_id.id == user_now) or
             if self.env.user.has_group('gastos_tqc.res_groups_administrator'):
+                print("PERTENECE 1")
                 record.uid_create = 1
             elif self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
+                print("PERTENECE 3")
                 record.uid_create = 3
             elif self.env.user.has_group('gastos_tqc.res_groups_contador_gastos'):
+                print("PERTENECE 2")
                 record.uid_create = 2
             else:
                 record.uid_create = 0
@@ -146,13 +176,15 @@ class Liquidaciones(models.Model):
     def default_get(self, default_fields):
         return super(Liquidaciones, self).default_get(default_fields)
 
+    def print_pdf(self):
+        return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
+
     @api.model
     def importar_exactus(self):
-        print("lee o no")
         ip_conexion = "10.10.10.228"
-        data_base = "TQC"
-        user_bd = "vacaciones"
-        pass_bd = "exvacaciones"
+        data_base = database
+        user_bd = userbd
+        pass_bd = passbd
         table_bd = "tqc.liquidaciones"
         table_relations = """empleado_name OF hr.employee"""
 
@@ -184,38 +216,72 @@ class Liquidaciones(models.Model):
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
-            if "SELECT" in sql:
-                campList = self.convert_sql(sql)  # lista de campos odoo
-                company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
-                # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
-                posiUser = []
-                nom_module = table_bd.replace(".", "_")
-                if table_relations:
-                    dataExternalSQL = self.get_external_field(
-                        table_relations)  # Devuelve un arreglo de los nombres de las tablas relacionadas
-                    for data in dataExternalSQL[0]:
-                        posiUser.append(campList.index(data))  # inicia posicion de elemento
 
-                cursor = connection.cursor()
-                cursor.execute(sql_prime)
-                idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
+            campList = self.convert_sql(sql)  # lista de campos odoo
+            company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
+            # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
+            posiUser = []
+            nom_module = table_bd.replace(".", "_")
+            if table_relations:
+                dataExternalSQL = self.get_external_field(
+                    table_relations)  # Devuelve un arreglo de los nombres de las tablas relacionadas
+                for data in dataExternalSQL[0]:
+                    posiUser.append(campList.index(data))  # inicia posicion de elemento
 
-                for user in idusers:
-                    user[6] = (user[6]) / 100
-                    user[7] = (user[7]) / 100
-                    variJson = {}
-                    existId = True
+            cursor = connection.cursor()
+            cursor.execute(sql_prime)
+            idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
+            print("ALL IDUSRS : ", idusers)
+            for user in idusers:
+                # user[6] = (user[6]) / 100
+                # user[7] = (user[7]) / 100
+                variJson = {}
+                existId = True
 
-                    sumNom = "{}.{}".format(nom_module, user[0])  # (nombre modulo) + (id del sql)
-                    try:
-                        register = self.env.ref(sumNom)  # obtiene id de su respectivo modelo
-                        id_register = self.env.ref(sumNom).id
-                    except ValueError:
-                        existId = False
+                sumNom = "{}.{}".format(nom_module, user[0])  # (nombre modulo) + (id del sql)
+                try:
+                    # register = self.env.ref(sumNom)  # obtiene id de su respectivo modelo
+                    # id_register = self.env.ref(sumNom).id
+                    id_register = self.env["ir.model.data"].sudo().search(
+                        [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
+                    register = self.env['tqc.liquidaciones'].browse(id_register)
+                except ValueError:
+                    existId = False
 
-                    if existId:  # SI EXISTE ACTUALIZA
-                        print("existeeee")
-                        # ACTUALIZA REGISTRO
+                if id_register != 0:  # SI EXISTE ACTUALIZA
+                    if register.habilitado_state == 'liquidado':  # si ya se encuentra liquidado crea otra liquidacion
+                        print("SUM NAME: ", sumNom)
+                        print("register num soli : ", register.id)
+                        print("register num soli : ", register.num_solicitud)
+                        print("register prooooooooo : ", register.habilitado_state)
+                        cont = 0
+                        for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
+                            if i == 0:
+                                continue
+                            if i in posiUser:  # cambia los nombres por los id correspondientes
+                                if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
+                                    id_exField = False
+                                else:
+                                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
+                                    #
+                                    try:
+                                        # obtiene id de su respectivo modelo
+                                        id_exField = self.env.ref(searchId).id
+                                    except ValueError:
+                                        id_exField = False
+
+                                variJson['{}'.format(campList[i])] = id_exField
+                                cont += 1
+                                continue
+                            variJson['{}'.format(campList[i])] = user[i]
+
+                        original_id = self.env[table_bd].create(variJson).id
+                        # Si funciona
+                        self.env["ir.model.data"].sudo().search(
+                            [('name', '=', register.num_solicitud), ('model', '=', 'tqc.liquidaciones')]).write(
+                            {'res_id': original_id})
+                        self.env.cr.commit()
+                    else:
                         cont = 0
                         no_register = False
 
@@ -243,39 +309,35 @@ class Liquidaciones(models.Model):
                             variJson['{}'.format(campList[j])] = user[j]
 
                         if not no_register:  # si no cumple con los campos de usuarios no registra
-                            print("VARIJASON : ", variJson)
                             self.env[table_bd].browse(id_register).sudo().write(variJson)
                             self.env.cr.commit()
-
-                    else:  # CREA NUEVO REGISTRO
-                        cont = 0
-                        no_register = False  # PARA REGISTRAR
-                        for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
-                            if i == 0:
-                                continue
-                            if i in posiUser:  # cambia los nombres por los id correspondientes
-                                if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
+                else:  # CREA NUEVO REGISTRO
+                    cont = 0
+                    for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
+                        if i == 0:
+                            continue
+                        if i in posiUser:  # cambia los nombres por los id correspondientes
+                            if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
+                                id_exField = False
+                            else:
+                                searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
+                                #
+                                try:
+                                    # obtiene id de su respectivo modelo
+                                    id_exField = self.env.ref(searchId).id
+                                except ValueError:
                                     id_exField = False
-                                else:
-                                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
-                                    #
-                                    try:
-                                        # obtiene id de su respectivo modelo
-                                        id_exField = self.env.ref(searchId).id
-                                    except ValueError:
-                                        id_exField = False
 
-                                variJson['{}'.format(campList[i])] = id_exField
-                                cont += 1
-                                continue
-                            variJson['{}'.format(campList[i])] = user[i]
+                            variJson['{}'.format(campList[i])] = id_exField
+                            cont += 1
+                            continue
+                        variJson['{}'.format(campList[i])] = user[i]
 
-                        if not no_register:
-                            original_id = self.env[table_bd].create(variJson).id
-                            # Si funciona
-                            self.env["ir.model.data"].sudo().create(
-                                {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
-                            self.env.cr.commit()
+                    original_id = self.env[table_bd].create(variJson).id
+                    # Si funciona
+                    self.env["ir.model.data"].sudo().create(
+                        {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
+                    self.env.cr.commit()
         except Exception as e:
             print("NADA")
 
@@ -334,34 +396,34 @@ class Liquidaciones(models.Model):
             if rec.moneda == 'USD':
                 rec.currency_id = 2
 
-    def _action_import_gastos(self):
-        res = {
-            "name": "Flujo de aprobaciones",
-            "type": "ir.actions.act_window",
-            "res_model": "tqc.liquidaciones",
-            "view_type": "form",
-            "view_mode": "tree,form",
-
-            'views': [(self.env.ref("gastos_tqc.view_tree_tqc_liquidaciones").id, 'tree'),
-                      (self.env.ref("gastos_tqc.view_form_tqc_liquidaciones").id, 'form')],
-            "search_view_id": self.env.ref("gastos_tqc.search_register_filter").id,
-            "target": "current",
-            "context": {'search_default_draft': True,
-                        'create': False,
-                        'delete': False},
-            # "domain": [('warehouse_id.id', 'in', warehose_ids)],
-            'help': """
-                                            <p class="o_view_nocontent_smiling_face">
-                                                Create a new operation type
-                                              </p><p>
-                                                The operation type system allows you to assign each stock
-                                                operation a specific type which will alter its views accordingly.
-                                                On the operation type you could e.g. specify if packing is needed by default,
-                                                if it should show the customer.
-                                              </p>
-                                            """
-        }
-        return res
+    # def _action_import_gastos(self):
+    #     res = {
+    #         "name": "Flujo de aprobaciones",
+    #         "type": "ir.actions.act_window",
+    #         "res_model": "tqc.liquidaciones",
+    #         "view_type": "form",
+    #         "view_mode": "tree,form",
+    #
+    #         'views': [(self.env.ref("gastos_tqc.view_tree_tqc_liquidaciones").id, 'tree'),
+    #                   (self.env.ref("gastos_tqc.view_form_tqc_liquidaciones").id, 'form')],
+    #         "search_view_id": self.env.ref("gastos_tqc.search_register_filter").id,
+    #         "target": "current",
+    #         "context": {'search_default_draft': True,
+    #                     'create': False,
+    #                     'delete': False},
+    #         # "domain": [('warehouse_id.id', 'in', warehose_ids)],
+    #         'help': """
+    #                                         <p class="o_view_nocontent_smiling_face">
+    #                                             Create a new operation type
+    #                                           </p><p>
+    #                                             The operation type system allows you to assign each stock
+    #                                             operation a specific type which will alter its views accordingly.
+    #                                             On the operation type you could e.g. specify if packing is needed by default,
+    #                                             if it should show the customer.
+    #                                           </p>
+    #                                         """
+    #     }
+    #     return res
 
     def convert_sql(self, frase):
         variJson = []
@@ -407,52 +469,52 @@ class Liquidaciones(models.Model):
 
         return sumex
 
-    def _action_registro_gasto(self):
-        name_employee = "Registro gastos"
-        if (self.env.user.employee_id):
-            name_employee = name_employee + " : " + self.env.user.employee_id.name + " | Centro de costo: " + self.env.user.employee_id.department_id.id_integrador + " - " + self.env.user.employee_id.department_id.name
-        # employee_id
-
-        res = {
-            "name": name_employee,
-            "type": "ir.actions.act_window",
-            "res_model": "tqc.liquidaciones",
-            "sequence": 1,
-            "view_type": "form",
-            "view_mode": "form,tree",
-            "search_view_id": (self.env.ref("gastos_tqc.search_register_filter").id,),
-            'views': [[self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'],
-                      [self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form']],
-            "target": "current",
-            "nodestroy": False,
-            "context": {'search_default_filtro_rendir': True,
-                        },
-            # "domain": [('warehouse_id.id', 'in', warehose_ids)],
-            'help': """
-                                <p class="o_view_nocontent_smiling_face">
-                                    No hay registros para mostrar
-                                  </p><p>
-                                    
-                                  </p>
-                                """
-        }
-        return res
+    # def _action_registro_gasto(self):
+    #     name_employee = "Registro gastos"
+    #     if (self.env.user.employee_id):
+    #         name_employee = name_employee + " : " + self.env.user.employee_id.name + " | Centro de costo: " + self.env.user.employee_id.department_id.id_integrador + " - " + self.env.user.employee_id.department_id.name
+    #     # employee_id
+    #
+    #     res = {
+    #         "name": name_employee,
+    #         "type": "ir.actions.act_window",
+    #         "res_model": "tqc.liquidaciones",
+    #         "sequence": 1,
+    #         "view_type": "form",
+    #         "view_mode": "form,tree",
+    #         "search_view_id": (self.env.ref("gastos_tqc.search_register_filter").id,),
+    #         'views': [[self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'],
+    #                   [self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form']],
+    #         "target": "current",
+    #         "nodestroy": False,
+    #         "context": {'search_default_filtro_rendir': True,
+    #                     },
+    #         # "domain": [('warehouse_id.id', 'in', warehose_ids)],
+    #         'help': """
+    #                             <p class="o_view_nocontent_smiling_face">
+    #                                 No hay registros para mostrar
+    #                               </p><p>
+    #
+    #                               </p>
+    #                             """
+    #     }
+    #     return res
 
     def generate_liquidacion(self):
         if self.detalleliquidaciones_id:
-            ids = self.detalleliquidaciones_id.mapped('id')
-            print("VAMOSSS es :", datetime.today())
-            self.write({
+            vals = {
                 'habilitado_state': 'proceso',
                 'state': 'jefatura',
-                'fecha_generacion': datetime.today()
-            })
-
-            for id in ids:
-                self.env["tqc.detalle.liquidaciones"].browse(id).write(
-                    {
-                        'state': 'historial'
-                    })
+                'fecha_generacion': datetime.date.today(),
+                'detalleliquidaciones_id': []
+            }
+            for doc in self.detalleliquidaciones_id:
+                vals['detalleliquidaciones_id'].append([1, doc.id, {'state': 'historial'}])
+            self.write(vals)
+            # return {
+            #     'type': 'ir.actions.client',
+            #     'tag': 'reload',
+            # }
         else:
             raise UserError(_("Los documentos estan vacios"))
         # self.env["tqc.detalle.liquidaciones"].browse(self.id).write(
@@ -467,19 +529,26 @@ class Liquidaciones(models.Model):
     def button_contable(self):
         if self.state == 'contable':
             self.write({'state': 'pendiente'})
+            for doc in self.detalleliquidaciones_id:
+                if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable']:
+                    self.env['tqc.detalle.liquidaciones'].browse(doc.id).write({
+                        'revisado_state': 'aprobado_contable'
+                    })
 
     def send_exactus(self):
         vacio = None
         ip_conexion = "10.10.10.228"
-        data_base = "TQCBKP2"
-        user_bd = "TQC"
-        pass_bd = "extqc"
+        data_base = database
+        user_bd = userbd
+        pass_bd = passbd
 
-        datos = [321580,321581]
+        vals = {
+            'habilitado_state': 'liquidado',
+            'detalleliquidaciones_id': []
+        }
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
-
             sql = """
             DECLARE	@return_value int,
                     @psDocumento varchar(20),
@@ -537,69 +606,83 @@ class Liquidaciones(models.Model):
                     @psMensajeError as N'@psMensajeError'
             """
 
-            # connection.close()
             for document in self.detalleliquidaciones_id:
-                values = (
-                    document.numero,  # Numero factura
-                    'TQC',
-                    '000000013300',  # Numero de solicitud
-                    'FAC',  # Tipó DE DOCUMENTO
-                    0,  # Subtipo
-                    document.fechaemision,  # fecha de emision del documento, Obligatorio.
-                    document.fechaemision, # Fecha contable del documento. Si no se especifica, se asume igual que la fecha de emisión.
-                    '10200468011',  # Ruc proveedor
-                    'RAMON ALMONACID VICTOR LUIS',  # Razon social
-                    '10200468011',  # Código del contribuyente
-                    document.glosa,  # glosa
-                    'SOL',  # Moneda
-                    document.base_afecta + document.base_inafecta,  # Monto del subtotal.
-                    0,  # Monto del descuento.
-                    document.montoigv,  # Monto del impuesto 1.
-                    0,  # Monto del impuesto 2.
-                    0,  # Monto del rubro 1.
-                    0,  # Monto del rubro 2.
-                    document.totaldocumento,
-                    # Monto total del documento. Obligatorio. No puede ser cero. Total = Subtotal-Descuento+Impuesto1+Impuesto2+Rubro1+Rubro2-Retencion1-Retencion2-Retencion3-Retencion4.
-                    0,  # Monto de la retención 1 (sólo válido para RHP). Opcional.
-                    0,  # Monto de la retención 2 (sólo válido para RHP). Opcional.
-                    0,  # Monto de la retención 3 (sólo válido para RHP). Opcional.
-                    0,  # Monto de la retención 4 (RIGV) (sólo válido para FAC, B/V, N/D, N/C). Opcional.
-                    '42.03.99.99',  # Centro de costo de gasto.
-                    '63.8.1.0.0.00.00',  # Cuenta contable de gasto. Obligatorio si el subtipo no usa categoría de caja.
-                    None,  # Código de la categoría de caja. Obligatorio si el subtipo usa categoría de caja.
-                    None,
-                    # Consecutivo para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
-                    document.fechaemision,
-                    # Fecha para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
-                    None,  # Rubro 1 adicional del documento. Opcional.
-                    None,  # Rubro 2 adicional del documento. Opcional.
-                    None,  # Rubro 3 adicional del documento. Opcional.
-                    None,  # Rubro 4 adicional del documento. Opcional.
-                    None,  # Rubro 5 adicional del documento. Opcional.
-                    None,  # Rubro 6 adicional del documento. Opcional.
-                    None,  # Rubro 7 adicional del documento. Opcional.
-                    None,  # Rubro 8 adicional del documento. Opcional.
-                    None,  # Rubro 9 adicional del documento. Opcional.
-                    None,  # Rubro 10 adicional del documento. Opcional.
-                    None,  # Código de la cuenta bancaria. Obligatorio para depósito o devoluciones de efectivo.
-                    document.observacioncontabilidad,  # NOTAS
-                    'SA',  # Código del usuario de la transacción. Obligatorio. Por defecto: SA.
-                    # self.state,  # Código del asiento generado por el documento.
-                    # self.state  # Mensaje de error en caso ocurra un error en la transacción.
-                )
-                cursor = connection.cursor()
-                cursor.execute(sql, values)
-                idusers = cursor.fetchone()
-                print("GOES RESPUESTA : ", idusers)
-                cursor.commit()
-                # idusers = cursor.fetchval()
-                cursor.close()
-            for document in self.detalleliquidaciones_id:
-                print("DOCUMENT : ", document.tipocambio)
-                # GUARDA TODOS LOS REGISTROS DE SQL
+                if document.revisado_state == 'aprobado_contable':
+                    values = (
+                        document.numero,  # Numero factura
+                        'TQC',
+                        self.num_solicitud,  # Numero de solicitud
+                        document.tipodocumento.tipo,  # Tipó DE DOCUMENTO
+                        document.tipodocumento.subtipo,  # Subtipo
+                        document.fechaemision,  # fecha de emision del documento, Obligatorio.
+                        self.fecha_contable,
+                        # Fecha contable del documento. Si no se especifica, se asume igual que la fecha de emisión.
+                        document.ruc,  # Ruc proveedor
+                        document.proveedor_razonsocial,  # Razon social
+                        document.ruc,  # Código del contribuyente
+                        document.observacionrepresentacion,  # glosa
+                        self.moneda,  # Moneda
+                        document.base_afecta + document.base_inafecta,  # Monto del subtotal.
+                        0,  # Monto del descuento.
+                        document.montoigv,  # Monto del impuesto 1.
+                        0,  # Monto del impuesto 2.
+                        0,  # Monto del rubro 1.
+                        0,  # Monto del rubro 2.
+                        document.totaldocumento,
+                        # Monto total del documento. Obligatorio. No puede ser cero. Total = Subtotal-Descuento+Impuesto1+Impuesto2+Rubro1+Rubro2-Retencion1-Retencion2-Retencion3-Retencion4.
+                        0,  # Monto de la retención 1 (sólo válido para RHP). Opcional.
+                        0,  # Monto de la retención 2 (sólo válido para RHP). Opcional.
+                        0,  # Monto de la retención 3 (sólo válido para RHP). Opcional.
+                        0,  # Monto de la retención 4 (RIGV) (sólo válido para FAC, B/V, N/D, N/C). Opcional.
+                        self.centro_costo.id_integrador,  # Centro de costo de gasto.
+                        document.cuenta_contable.codigo,
+                        # Cuenta contable de gasto. Obligatorio si el subtipo no usa categoría de caja.
+                        None,  # Código de la categoría de caja. Obligatorio si el subtipo usa categoría de caja.
+                        None,
+                        # Consecutivo para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
+                        document.fechaemision,
+                        # Fecha para el comprobante de retención. Obligatorio sólo si la factura está afecta a retención de IGV.
+                        None,  # Rubro 1 adicional del documento. Opcional.
+                        None,  # Rubro 2 adicional del documento. Opcional.
+                        None,  # Rubro 3 adicional del documento. Opcional.
+                        None,  # Rubro 4 adicional del documento. Opcional.
+                        None,  # Rubro 5 adicional del documento. Opcional.
+                        None,  # Rubro 6 adicional del documento. Opcional.
+                        None,  # Rubro 7 adicional del documento. Opcional.
+                        None,  # Rubro 8 adicional del documento. Opcional.
+                        None,  # Rubro 9 adicional del documento. Opcional.
+                        None,  # Rubro 10 adicional del documento. Opcional.
+                        None,  # Código de la cuenta bancaria. Obligatorio para depósito o devoluciones de efectivo.
+                        document.observacionrepresentacion,  # NOTAS
+                        'SA',  # Código del usuario de la transacción. Obligatorio. Por defecto: SA.
+                        # self.state,  # Código del asiento generado por el documento.
+                        # self.state  # Mensaje de error en caso ocurra un error en la transacción.
+                    )
+                    cursor = connection.cursor()
+                    cursor.execute(sql, values)
+                    idusers = cursor.fetchone()
+                    print("GOES RESPUESTA : ", idusers)
+                    print("PRIMER DATA ", idusers[0])
+                    print("segundo DATA ", idusers[1])
+                    cursor.commit()
+                    # idusers = cursor.fetchval()
+                    cursor.close()
+
+                    # Si no hay error cambia estado a liquidado
+
+                    if idusers[1]:
+                        print("document liquidado")
+                        vals['detalleliquidaciones_id'].append([1, document.id, {'revisado_state': 'liquidado'}])
+
+                    else:
+                        vals['detalleliquidaciones_id'].append(
+                            [1, document.id, {'revisado_state': 'send_error', 'message_error': idusers[2]}])
+
+            self.write(vals)
+            self.importar_exactus
 
         except Exception as e:
-            print("error : ", e)
+            raise UserError(_(e))
 
     def volver_enviar(self):
         self.env['tqc.detalle.liquidaciones'].search([('liquidacion_id', '=', self.id)]).write({
@@ -611,10 +694,15 @@ class Liquidaciones(models.Model):
         })
 
     @api.model
-    def get_count_states(self):
-        jefatura = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['jefatura'])])
-        contable = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['contable'])])
-        pendiente = self.env['tqc.liquidaciones'].search_count([('state', 'in', ['pendiente'])])
+    def get_count_states(self, args):
+        # public = self.env.ref('gastos_tqc.res_groups_aprobador_gastos')
+        user_id = args['user_id']
+        jefatura = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+            [('state', 'in', ['jefatura']), ('habilitado_state', 'in', ['proceso'])])
+        contable = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+            [('state', 'in', ['contable']), ('habilitado_state', 'in', ['proceso'])])
+        pendiente = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+            [('state', 'in', ['pendiente']), ('habilitado_state', 'in', ['proceso'])])
         return [jefatura, contable, pendiente]
 
     def search_ruc(self):

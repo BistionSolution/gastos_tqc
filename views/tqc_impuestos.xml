@@ -5,9 +5,9 @@
             <field name="model">tqc.impuestos</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name"/>
-                    <field name="descripcion"/>
                     <field name="impuesto"/>
+                    <field name="descripcion"/>
+                    <field name="impuesto1"/>
                 </tree>
             </field>
         </record>
@@ -18,10 +18,10 @@
             <field name="arch" type="xml">
                 <form string="Superior">
                     <sheet>
-                        <group string="Impuestos">
-                            <field name="name"/>
-                            <field name="descripcion"/>
+                        <group string="Ripo de documento">
                             <field name="impuesto"/>
+                            <field name="descripcion"/>
+                            <field name="impuesto1"/>
                         </group>
                     </sheet>
                 </form>
