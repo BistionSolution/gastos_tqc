@@ -398,7 +398,7 @@
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="razonsocial_invisible == False"/>
+                                           decoration-danger="razonsocial_invisible == 'no_existe'" decoration-warning="razonsocial_invisible == 'no_activo'"/>
                                     <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                     <!--                                    <field name="state"/>-->
@@ -462,7 +462,7 @@
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="razonsocial_invisible == False"/>
+                                           decoration-danger="razonsocial_invisible == 'no_existe'" decoration-warning="razonsocial_invisible == 'no_activo'"/>
                                     <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                     <!--                                    <field name="state"/>-->

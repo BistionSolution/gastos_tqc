@@ -23,7 +23,11 @@ class detalleLiquidaciones(models.Model):
     numero = fields.Char(required=1)
     ruc = fields.Char(string='RUC', required=1)
     proveedor_razonsocial = fields.Char(string='Razón social')
-    razonsocial_invisible = fields.Boolean(string='RUC activo', default=True)
+    razonsocial_invisible = fields.Selection([
+        ('activo', 'acti'),
+        ('no_activo', 'No activo'),
+        ('no_existe', 'Historial ERC')
+    ], default='activo')
     moneda = fields.Char()
     tipocambio = fields.Float(required=1, digits=(12, 3))
     fechaemision = fields.Date(required=1)
@@ -55,7 +59,7 @@ class detalleLiquidaciones(models.Model):
     aprobacioncontabilidad = fields.Boolean()
     observacioncontabilidad = fields.Text()
 
-    cliente = fields.Char(required=1)
+    cliente = fields.Char()
     totaldocumento_soles = fields.Float()
     cliente_razonsocial = fields.Char()
     cuenta_contable_descripcion = fields.Char()
@@ -221,28 +225,44 @@ class detalleLiquidaciones(models.Model):
                 table_bd = "tqc.liquidaciones"
                 table_relations = """empleado_name OF hr.employee"""
 
+                sql_habido = """SELECT RUC FROM tqc.PROV_NO_HABIDO WHERE RUC = '""" + rec.ruc + """'"""
+
                 sql_prime = """SELECT TOP 1 PROVEEDOR, NOMBRE, ACTIVO FROM tqc.PROVEEDOR WHERE PROVEEDOR = '""" + rec.ruc + """'"""
                 try:
                     connection = pyodbc.connect(
                         'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                     cursor = connection.cursor()
+                    cursor.execute(sql_habido)
+                    proveedor_habido = cursor.fetchall()
+                    print("GAAAAAAAAA", proveedor_habido)
+                    if proveedor_habido:
+                        raise ValueError(
+                            _("RUC " + rec.ruc + " esta no habido, ingresa otro para poder crear documento"))
+                    cursor.close()
+                    print("GAAAAAAAAA 22 : ", sql_prime)
+                    cursor = connection.cursor()
                     cursor.execute(sql_prime)
                     proveedores = cursor.fetchall()
+                    print("GAAAAAAAAA 22", proveedores)
+                    cursor.close()
+                    connection.close()
+                except ValueError as err:
+                    raise UserError(_(err))
                 except Exception as e:
-                    raise UserError(_("Error de conexion con exactus"))
+                    raise UserError(_('Error conexion exactus'))
 
                 if not proveedores:
-                    raise UserError(_("RUC no existe"))
-
-                for proveedor in proveedores:
-                    result = proveedor[1]
-                rec.proveedor_razonsocial = result
-
-                if proveedor[2] == 'S':
-                    rec.razonsocial_invisible = True
+                    rec.razonsocial_invisible = 'no_existe'
                 else:
-                    rec.razonsocial_invisible = False
+                    for proveedor in proveedores:
+                        result = proveedor[1]
+                    rec.proveedor_razonsocial = result
+
+                    if proveedor[2] == 'S':
+                        rec.razonsocial_invisible = 'activo'
+                    else:
+                        rec.razonsocial_invisible = 'no_activo'
 
     @api.onchange('cliente')
     def _onchange_cliente(self):
@@ -303,6 +323,7 @@ class detalleLiquidaciones(models.Model):
 
             sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args[
                 'ruc'] + """%' OR NOMBRE LIKE '%""" + args['ruc'] + """%'"""
+
             try:
                 connection = pyodbc.connect(
                     'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +

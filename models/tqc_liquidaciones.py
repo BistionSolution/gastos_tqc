@@ -103,7 +103,6 @@ class Liquidaciones(models.Model):
 
     def _get_document_domain(self):
         context = self._context.copy() or {}
-        print("context get : ", context.get("mode_view", False))
         if context.get("mode_view", False) == 'flujo':
             domain = [('revisado_state', '!=', 'liquidado')]
         elif context.get("mode_view", False) == 'historial':
@@ -114,7 +113,6 @@ class Liquidaciones(models.Model):
             domain = []
             # domain = [('state', '!=', 'historial')]
 
-        print("DOMAIN ES : ", domain)
         return domain
 
     @api.depends('empleado_name')
@@ -680,6 +678,7 @@ class Liquidaciones(models.Model):
 
             self.write(vals)
             self.importar_exactus
+            return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
 
         except Exception as e:
             raise UserError(_(e))

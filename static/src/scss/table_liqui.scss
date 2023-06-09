@@ -9,3 +9,87 @@
 .table-pro thead{
   background: #5D737E;
 }
+
+.o_list_gastos .o_list_table .text-danger, .o_list_gastos .o_list_table .text-warning{
+  color: #fff !important;
+}
+
+.o_list_gastos .text-warning{
+  background: #a58202;
+  background-color: #a58202 !important;
+}
+
+.o_list_gastos .text-warning{
+  position: relative;
+}
+.o_list_gastos .text-warning:hover:after {
+  background: #111;
+  background: rgba(0, 0, 0, .8);
+  border-radius: .5em;
+  bottom: 2em;
+  color: #fff;
+  content: 'No habido';
+  display: block;
+  left: 4em;
+  padding: .3em 1em;
+  position: absolute;
+  text-shadow: 0 1px 0 #000;
+  white-space: nowrap;
+  z-index: 1000;
+  user-select: none;
+}
+.o_list_gastos .text-warning:hover:before {
+  border: solid;
+  border-color: #111 transparent;
+  border-color: rgba(0, 0, 0, .8) transparent;
+  border-width: .4em .4em 0 .4em;
+  bottom: 1.6em;
+  content: "";
+  display: block;
+  left: 5em;
+  position: absolute;
+  user-select: none;
+  z-index: 99;
+}
+.consult_ruc{
+  overflow: visible !important;
+}
+
+.o_list_gastos .text-danger{
+  background: #F20B0D;
+  background-color: #F20B0D !important;
+}
+
+.o_list_gastos .text-danger{
+  position: relative;
+}
+
+.o_list_gastos .text-danger:hover:after {
+  background: #111;
+  background: rgba(0, 0, 0, .8);
+  border-radius: .5em;
+  bottom: 2em;
+  color: #fff;
+  content: 'No existe';
+  display: block;
+  left: 4em;
+  padding: .3em 1em;
+  position: absolute;
+  text-shadow: 0 1px 0 #000;
+  white-space: nowrap;
+  z-index: 1000;
+  user-select: none;
+}
+.o_list_gastos .text-danger:hover:before {
+  border: solid;
+  border-color: #111 transparent;
+  border-color: rgba(0, 0, 0, .8) transparent;
+  border-width: .4em .4em 0 .4em;
+  bottom: 1.6em;
+  content: "";
+  display: block;
+  left: 5em;
+  position: absolute;
+  user-select: none;
+  z-index: 99;
+}
