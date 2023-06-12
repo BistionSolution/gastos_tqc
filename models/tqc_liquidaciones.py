@@ -513,6 +513,7 @@ class Liquidaciones(models.Model):
             #     'type': 'ir.actions.client',
             #     'tag': 'reload',
             # }
+            return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
         else:
             raise UserError(_("Los documentos estan vacios"))
         # self.env["tqc.detalle.liquidaciones"].browse(self.id).write(
@@ -678,7 +679,30 @@ class Liquidaciones(models.Model):
 
             self.write(vals)
             self.importar_exactus
-            return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
+            res = {
+                "name": "Historial de liquidaciones",
+                "type": "ir.actions.act_window",
+                "res_model": "tqc.liquidaciones",
+                "view_type": "form",
+                "view_mode": "tree, form",
+                "res_id": self.id,
+                "search_view_id": (self.env.ref("gastos_tqc.search_historial_filter").id,),
+                'views': [
+                    [self.env.ref("gastos_tqc.view_form_historial_liquidaciones").id, 'form'],
+                    [self.env.ref("gastos_tqc.view_tree_historial_liquidaciones").id, 'tree']],
+                "target": "main",
+                # "context": {'no_breadcrumbs': True},
+                'clear_breadcrumb': True,
+                "nodestroy": True,
+                'help': """
+                                        <p class="o_view_nocontent_smiling_face">
+                                            No hay registros para mostrar
+                                          </p><p>
+
+                                          </p>
+                                        """
+            }
+            return res
 
         except Exception as e:
             raise UserError(_(e))
@@ -691,6 +715,32 @@ class Liquidaciones(models.Model):
         self.write({
             'habilitado_state': 'proceso'
         })
+
+    def historial_go(self):
+        res = {
+            "name": "Historial de liquidaciones",
+            "type": "ir.actions.act_window",
+            "res_model": "tqc.liquidaciones",
+            "view_type": "form",
+            "view_mode": "tree, form",
+            "res_id": self.id,
+            "search_view_id": (self.env.ref("gastos_tqc.search_historial_filter").id,),
+            'views': [
+                [self.env.ref("gastos_tqc.view_form_historial_liquidaciones").id, 'form'],
+                [self.env.ref("gastos_tqc.view_tree_historial_liquidaciones").id, 'tree']],
+            "target": "main",
+            # "context": {'no_breadcrumbs': True},
+            'clear_breadcrumb': True,
+            "nodestroy": True,
+            'help': """
+                            <p class="o_view_nocontent_smiling_face">
+                                No hay registros para mostrar
+                              </p><p>
+
+                              </p>
+                            """
+        }
+        return res
 
     @api.model
     def get_count_states(self, args):

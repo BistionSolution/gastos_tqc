@@ -43,7 +43,8 @@
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
-                        <field name="habilitado_state" widget="statusbar" statusbar_visible="habilitado,proceso,corregir,liquidado"/>
+                        <field name="habilitado_state" widget="statusbar"
+                               statusbar_visible="habilitado,proceso,liquidado"/>
                     </header>
                     <group>
                         <field name="name" readonly="1" invisible="1"/>
@@ -140,34 +141,27 @@
                                       decoration-warning="revisado_state == 'corregido'"
                                       decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']">
                                     <field name="tipodocumento" string="Tipo doc."
-                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                                           />
-                                    <field name="serie"
-                                           />
-                                    <field name="numero"
-                                           />
-                                    <field name="fechaemision" string="Fecha emisión"
-                                           />
+                                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                                    <field name="serie"/>
+                                    <field name="numero"/>
+                                    <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
-                                    <field name="attachment"
-                                          />
-
+                                    <field name="attachment"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="proveedor_razonsocial == False"
-                                           />
+                                           decoration-danger="proveedor_razonsocial == False"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
                                            force_save="1"/>
                                     <!--                                    <field name="state"/>-->
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
-                                           />
+                                    />
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
-                                           />
+                                    />
                                     <field name="impuesto"
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                                           />
+                                    />
                                     <field name="montoigv" widget="monetary" string="Monto IGV"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
                                     <field name="totaldocumento" widget="monetary" string="Total Documento"
@@ -178,17 +172,15 @@
 
                                     />
                                     <!--                                    <field name="nocliente"/>-->
-                                    <field name="cliente" class="consult_client"
-                                           decoration-danger="cliente_razonsocial == False"
-                                           />
+                                    <field name="cliente" class="consult_client"/>
                                     <field name="cliente_razonsocial" readonly="1" force_save="1"
                                            string="Cliente razon social"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"
-                                           />
+                                    />
                                     <field name="observacionjefatura" string="Obs. Jefatura"
-                                           />
+                                    />
                                     <field name="observacioncontabilidad" string="Obs. Contabilidad"
-                                           />
+                                    />
                                     <field name="message_error"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"

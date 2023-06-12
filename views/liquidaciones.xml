@@ -5,7 +5,7 @@
             <field name="name">view.tree.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <tree js_class="gastos_tqc_tree_selections" class="gastos_tqc">
+                <tree js_class="gastos_tqc_tree_selections" class="gastos_tqc" create="0" delete="0">
                     <field name="habilitado_state" invisible="1"/>
                     <field name="mode_view" force_save="1" invisible="1"/>
 
@@ -35,7 +35,7 @@
             <field name="name">view.form.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion" create="0">
+                <form string="Liquidacion" create="0" delete="0">
                     <header>
                         <button string="Enviar a contabilidad" name="button_jefatura" type="object"
                                 attrs="{'invisible':['|',('uid_create', '!=', 1),('state','!=','jefatura'),'|',('current_user','not in',[1]),('state','!=','jefatura')]}"
@@ -154,6 +154,7 @@
                                     <field name="liquidacion_id" invisible="1"/>
                                     <field name="uid_create" invisible="1"/>
                                     <field name="state_liqui" invisible="1"/>
+                                    <field name="codetipo" invisible="1"/>
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
@@ -164,24 +165,27 @@
                                     <field name="fechaemision" string="Fecha emisión"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
+                                    <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="attachment"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="proveedor_razonsocial == False"
+                                           decoration-danger="razonsocial_invisible == 'no_existe'"
+                                           decoration-warning="razonsocial_invisible == 'no_activo'"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
-                                    <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
-                                           force_save="1"/>
+                                    <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                     <!--                                    <field name="state"/>-->
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
-                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
+                                           attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','=','B/V')]}"
+                                           force_save="1"/>
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="impuesto"
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
+                                           attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','=','B/V')]}"
+                                           force_save="1"/>
                                     <field name="montoigv" widget="monetary" string="Monto IGV"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
                                     <field name="totaldocumento" widget="monetary" string="Total Documento"
@@ -193,7 +197,6 @@
                                     />
                                     <!--                                    <field name="nocliente"/>-->
                                     <field name="cliente" class="consult_client"
-                                           decoration-danger="cliente_razonsocial == False"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="cliente_razonsocial" readonly="1" force_save="1"
                                            string="Cliente razon social"/>
@@ -242,7 +245,7 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <!-- Colocar esto dentro de tree atrributo: js_class="gastos_view_name"-->
-                <tree js_class="gastos_view_name">
+                <tree js_class="gastos_view_name" create="0" delete="0">
                     <field name="empleado_name"
                            groups="gastos_tqc.res_groups_administrator,gastos_tqc.res_groups_aprobador_gastos"/>
                     <field name="num_solicitud"/>
@@ -279,7 +282,7 @@
             <field name="model">tqc.liquidaciones</field>
             <!--            <field name="priority" eval="1"/>-->
             <field name="arch" type="xml">
-                <form string="Liquidacion">
+                <form string="Liquidacion" create="0" delete="0">
                     <header>
                         <!--                        <field name="habilitado_state" invisible="1"/>-->
                         <field name="uid_create" invisible="1"/>
@@ -289,8 +292,11 @@
                         <button name="volver_enviar" string="Volver a enviar" type="object"
                                 class="oe_highlight"
                                 attrs="{'invisible': [('habilitado_state','not in',['corregir'])]}"/>
+<!--                        <button name="historial_go" string="Historial" type="object"-->
+<!--                                class="oe_highlight"-->
+<!--                              />-->
                         <field name="habilitado_state" widget="statusbar"
-                               statusbar_visible="habilitado,proceso,corregir"/>
+                               statusbar_visible="habilitado,proceso"/>
                     </header>
                     <!--                    <header>-->
                     <!--&lt;!&ndash;                        <button string="Enviar a aprobacion" name="action_confirm" states="a_enviar" type="object" class="oe_highlight"/>&ndash;&gt;-->
@@ -398,19 +404,22 @@
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="razonsocial_invisible == 'no_existe'" decoration-warning="razonsocial_invisible == 'no_activo'"/>
+                                           decoration-danger="razonsocial_invisible == 'no_existe'"
+                                           decoration-warning="razonsocial_invisible == 'no_activo'"/>
                                     <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                     <!--                                    <field name="state"/>-->
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
-                                           attrs="{'readonly':[('codetipo','=','B/V')]}"/>
+                                           attrs="{'readonly':[('codetipo','=','B/V')]}"
+                                           force_save="1"/>
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"/>
                                     <field name="impuesto"
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                                           attrs="{'readonly':[('codetipo','=','B/V')]}"/>
+                                           attrs="{'readonly':[('codetipo','=','B/V')]}"
+                                           force_save="1"/>
                                     <field name="montoigv" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                            string="Monto IGV"/>
@@ -424,7 +433,7 @@
                                     <field name="cliente" class="consult_client"/>
                                     <field name="cliente_razonsocial" string="Cliente razon social"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
-                                    <field name="state" readonly="1"/>
+                                    <field name="state" readonly="1" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"
                                            decoration-warning="revisado_state == 'corregido'"
@@ -457,12 +466,14 @@
 
                                     <field name="serie"/>
                                     <!--                                     widget="many2many_binary"-->
-                                    <field name="attachment" widget="many2many_binary"/>
                                     <field name="numero"/>
+                                    <field name="attachment" widget="many2many_binary"/>
+
                                     <field name="fechaemision" string="Fecha emisión"/>
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="razonsocial_invisible == 'no_existe'" decoration-warning="razonsocial_invisible == 'no_activo'"/>
+                                           decoration-danger="razonsocial_invisible == 'no_existe'"
+                                           decoration-warning="razonsocial_invisible == 'no_activo'"/>
                                     <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                     <!--                                    <field name="state"/>-->
@@ -484,8 +495,7 @@
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                     />
                                     <!--                                    <field name="nocliente"/>-->
-                                    <field name="cliente" class="consult_client"
-                                           decoration-danger="cliente_razonsocial == False"/>
+                                    <field name="cliente" class="consult_client"/>
                                     <field name="cliente_razonsocial" string="Cliente razon social"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"/>
                                     <field name="state" invisible="1"/>
