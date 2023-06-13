@@ -6,8 +6,7 @@ import datetime
 import re, pyodbc
 import logging
 import locale
-
-
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 _logger = logging.getLogger(__name__)
 
