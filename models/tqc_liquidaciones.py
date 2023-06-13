@@ -233,14 +233,13 @@ class Liquidaciones(models.Model):
                     posiUser.append(campList.index(data))  # inicia posicion de elemento
 
             cursor = connection.cursor()
-            cursor.execute("SET LANGUAGE 'English'")
             cursor.execute(sql_prime)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
             current_locale = locale.getlocale()
             print("LENGUAJE LOCAL : ",current_locale)
             _logger.info('LENGUAJE extraAAAAAA')
-            _logger.info('LENGUAJE LOCAL : %s' % (current_locale))
+            # _logger.info('LENGUAJE LOCAL : %s' % (current_locale))
 
             for user in idusers:
                 if user[1] == '000000013300':
