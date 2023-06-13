@@ -230,6 +230,7 @@ class Liquidaciones(models.Model):
             cursor.execute(sql_prime)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
             for user in idusers:
+                print("VALUE 1 ...  : ", user[1])
                 if user[1] == '000000013300':
                     print("VALOR 6 : ", user[6])
                 # user[6] = (user[6]) / 100
