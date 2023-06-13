@@ -196,7 +196,7 @@ class Liquidaciones(models.Model):
                           MONEDA AS moneda,
                           APLICACION AS glosa_entrega,
                           FECHA_ENTREGA AS fecha_entrega,
-                          CONVERT(decimal(10,2),MONTO) AS monto_entrega,
+                          MONTO AS monto_entrega,
                           CONVERT(decimal(10,2),SALDO) AS saldo
                         FROM
                           tqc.ENTREGA_A_RENDIR
