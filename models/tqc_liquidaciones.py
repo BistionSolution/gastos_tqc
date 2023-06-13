@@ -239,7 +239,7 @@ class Liquidaciones(models.Model):
             current_locale = locale.getlocale()
             print("LENGUAJE LOCAL : ",current_locale)
             _logger.info('LENGUAJE extraAAAAAA')
-            # _logger.info('LENGUAJE LOCAL : %s' % (current_locale))
+            _logger.info('LENGUAJE LOCAL : %s' % (current_locale))
 
             for user in idusers:
                 if user[1] == '000000013300':
