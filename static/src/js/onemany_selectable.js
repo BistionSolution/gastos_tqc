@@ -164,7 +164,9 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             if (options && options.event?.currentTarget) {
                 var $td = $(options.event.currentTarget)
                 return selectCell.then(function () {
+                    console.log("se", this)
                     if ($td.hasClass('consult_ruc')) {
+                        $('.search_ruc').remove()
                         $td.addClass('overnone');
                         // var newButton = '<button class="search_ruc fa fa-search" name="search">new button</button>'
                         $td.append($('<button>', {
@@ -176,6 +178,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                         // }))
                     } else {
                         if ($td.hasClass('consult_client')) {
+                            $('.search_client').remove()
                             $td.addClass('overnone');
                             $td.append($('<button>', {
                                 'class': 'search_client fa fa-search', 'name': 'search',

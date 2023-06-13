@@ -76,6 +76,6 @@
                   name="Todos Registros" action="gastos_tqc.action_view_todos_registro_liquidaciones"
                   groups="gastos_tqc.res_groups_administrator"/>
         <menuitem id="menu_flujo_configuraciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="5"
-                  name="Configuracion"/>
+                  name="Configuracion" groups="gastos_tqc.res_groups_administrator"/>
     </data>
 </odoo>

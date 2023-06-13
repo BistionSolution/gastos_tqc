@@ -30,7 +30,7 @@
             </field>
         </record>
 
-        <!--VISTA ATORIZACION FORM-->
+        <!--VISTA flujo FORM-->
         <record id="view_form_tqc_liquidaciones" model="ir.ui.view">
             <field name="name">view.form.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
@@ -172,7 +172,8 @@
                                            decoration-danger="razonsocial_invisible == 'no_existe'"
                                            decoration-warning="razonsocial_invisible == 'no_activo'"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
-                                    <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
+                                    <field name="proveedor_razonsocial" string="Proveedor Razon social"
+                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <!--                                    <field name="state"/>-->
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
@@ -276,7 +277,7 @@
             </field>
         </record>
 
-        <!--VISTA from TREE-->
+        <!--VISTA from registrar gasto-->
         <record id="view_form_registro_gasto" model="ir.ui.view">
             <field name="name">view.form.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
@@ -292,9 +293,9 @@
                         <button name="volver_enviar" string="Volver a enviar" type="object"
                                 class="oe_highlight"
                                 attrs="{'invisible': [('habilitado_state','not in',['corregir'])]}"/>
-<!--                        <button name="historial_go" string="Historial" type="object"-->
-<!--                                class="oe_highlight"-->
-<!--                              />-->
+                        <!--                        <button name="historial_go" string="Historial" type="object"-->
+                        <!--                                class="oe_highlight"-->
+                        <!--                              />-->
                         <field name="habilitado_state" widget="statusbar"
                                statusbar_visible="habilitado,proceso"/>
                     </header>

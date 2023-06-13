@@ -7,6 +7,6 @@
         </record>
 
         <menuitem id="menu_detalles_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="6"
-                  name="Detalles liquidaciones" action="gastos_tqc.action_view_detalles_liquidaciones"/>
+                  name="Detalles liquidaciones" action="gastos_tqc.action_view_detalles_liquidaciones" groups="gastos_tqc.res_groups_administrator"/>
     </data>
 </odoo>

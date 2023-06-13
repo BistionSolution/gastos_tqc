@@ -105,15 +105,11 @@ class detalleLiquidaciones(models.Model):
     @api.depends()
     def _current_user(self):
         for record in self:
-            print("oje : ", record.state)
-            print("UID _: ", record.liquidacion_id.current_user)
             record.current_user = record.liquidacion_id.current_user
 
     @api.depends()
     def _get_current_user(self):
         for record in self:
-            print("oje : ", record.liquidacion_id.uid_create)
-            print("UID _: ", record.liquidacion_id.state)
             record.uid_create = record.liquidacion_id.uid_create
             record.state_liqui = record.liquidacion_id.state
 
@@ -240,11 +236,11 @@ class detalleLiquidaciones(models.Model):
                         raise ValueError(
                             _("RUC " + rec.ruc + " esta no habido, ingresa otro para poder crear documento"))
                     cursor.close()
-                    print("GAAAAAAAAA 22 : ", sql_prime)
+                    # print("GAAAAAAAAA 22 : ", sql_prime)
                     cursor = connection.cursor()
                     cursor.execute(sql_prime)
                     proveedores = cursor.fetchall()
-                    print("GAAAAAAAAA 22", proveedores)
+                    # print("GAAAAAAAAA 22", proveedores)
                     cursor.close()
                     connection.close()
                 except ValueError as err:

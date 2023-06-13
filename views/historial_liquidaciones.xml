@@ -24,7 +24,7 @@
 
                     <field name="state"/>
                     <field name="tipo_documento"/>
-                    <field name="habilitado_state" widget="badge" decoration-success="habilitado_state == 'habilitado'"
+                    <field name="habilitado_state" widget="badge" decoration-success="habilitado_state in ['habilitado','liquidado']"
                            decoration-warning="habilitado_state == 'corregir'"
                            decoration-info="habilitado_state == 'proceso'"
                            string="Estado"
@@ -139,7 +139,9 @@
                                 <!--                                section_and_note_one2many-->
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
-                                      decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']">
+                                      decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"
+                                      >
+<!--                                    decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"-->
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="serie"/>
@@ -148,7 +150,8 @@
                                     <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
                                     <field name="attachment"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="proveedor_razonsocial == False"/>
+                                           decoration-danger="razonsocial_invisible == 'no_existe'"/>
+                                    <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
                                            force_save="1"/>
                                     <!--                                    <field name="state"/>-->
@@ -184,7 +187,7 @@
                                     <field name="message_error"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
-                                           decoration-success="revisado_state == 'aprobado'"
+                                           decoration-success="revisado_state in ['aprobado','liquidado']"
                                            decoration-warning="revisado_state == 'corregido'"
                                            decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"/>
 

@@ -229,7 +229,6 @@ class Liquidaciones(models.Model):
             cursor = connection.cursor()
             cursor.execute(sql_prime)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
-            print("ALL IDUSRS : ", idusers)
             for user in idusers:
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
@@ -237,21 +236,19 @@ class Liquidaciones(models.Model):
                 existId = True
 
                 sumNom = "{}.{}".format(nom_module, user[0])  # (nombre modulo) + (id del sql)
-                try:
-                    # register = self.env.ref(sumNom)  # obtiene id de su respectivo modelo
-                    # id_register = self.env.ref(sumNom).id
-                    id_register = self.env["ir.model.data"].sudo().search(
-                        [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
-                    register = self.env['tqc.liquidaciones'].browse(id_register)
-                except ValueError:
-                    existId = False
+
+                # register = self.env.ref(sumNom)  # obtiene id de su respectivo modelo
+                # id_register = self.env.ref(sumNom).id
+                id_register = self.env["ir.model.data"].sudo().search(
+                    [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
+
+                register = self.env['tqc.liquidaciones'].sudo().browse(id_register)
+
 
                 if id_register != 0:  # SI EXISTE ACTUALIZA
+
                     if register.habilitado_state == 'liquidado':  # si ya se encuentra liquidado crea otra liquidacion
-                        print("SUM NAME: ", sumNom)
-                        print("register num soli : ", register.id)
-                        print("register num soli : ", register.num_solicitud)
-                        print("register prooooooooo : ", register.habilitado_state)
+
                         cont = 0
                         for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                             if i == 0:
@@ -337,7 +334,7 @@ class Liquidaciones(models.Model):
                         {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
                     self.env.cr.commit()
         except Exception as e:
-            print("NADA")
+            print("Error : ",e)
 
     @api.model
     def create(self, vals):
