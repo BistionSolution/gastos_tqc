@@ -4,6 +4,9 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 import datetime
 import re, pyodbc
+import logging
+
+_logger = logging.getLogger(__name__)
 
 database = 'TQCBKP2'
 userbd = "TQC"
@@ -230,9 +233,9 @@ class Liquidaciones(models.Model):
             cursor.execute(sql_prime)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
             for user in idusers:
-                print("VALUE 1 ...  : ", user[1])
                 if user[1] == '000000013300':
-                    print("VALOR 6 : ", user[6])
+                    _logger.info('VALOR TODO: %s' % (user))
+                    _logger.info('VALOR 6: %s' % (user[6]))
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
                 variJson = {}
