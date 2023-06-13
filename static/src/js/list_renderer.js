@@ -12,7 +12,9 @@ odoo.define("gastos_tqc.restrict_list_view", function (require) {
             // });
         },
         _render: function () {
-            this.$el.addClass('o_list_gastos')
+            if (this.state.model === 'tqc.detalle.liquidaciones') {
+                this.$el.addClass('o_list_gastos')
+            }
             return this._super.apply(this, arguments);
         },
         // _renderRow: function (record) {
