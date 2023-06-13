@@ -6,7 +6,6 @@ import datetime
 import re, pyodbc
 import logging
 import locale
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 _logger = logging.getLogger(__name__)
 
@@ -198,7 +197,7 @@ class Liquidaciones(models.Model):
                           MONEDA AS moneda,
                           APLICACION AS glosa_entrega,
                           FECHA_ENTREGA AS fecha_entrega,
-                          MONTO AS monto_entrega,
+                          REPLACE(CAST(MONTO AS VARCHAR), '.', ',') AS monto_entrega,
                           CONVERT(decimal(10,2),SALDO) AS saldo
                         FROM
                           tqc.ENTREGA_A_RENDIR
