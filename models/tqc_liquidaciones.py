@@ -219,7 +219,7 @@ class Liquidaciones(models.Model):
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
 
             campList = self.convert_sql(sql)  # lista de campos odoo
-            company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
+            # company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
             # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
             posiUser = []
             nom_module = table_bd.replace(".", "_")
@@ -230,6 +230,7 @@ class Liquidaciones(models.Model):
                     posiUser.append(campList.index(data))  # inicia posicion de elemento
 
             cursor = connection.cursor()
+            cursor.execute("SET LANGUAGE 'English'")
             cursor.execute(sql_prime)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
             for user in idusers:
