@@ -230,6 +230,8 @@ class Liquidaciones(models.Model):
             cursor.execute(sql_prime)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
             for user in idusers:
+                if user[1] == '000000013300':
+                    print("VALOR 6 : ", user[6])
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
                 variJson = {}
@@ -243,7 +245,6 @@ class Liquidaciones(models.Model):
                     [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
 
                 register = self.env['tqc.liquidaciones'].sudo().browse(id_register)
-
 
                 if id_register != 0:  # SI EXISTE ACTUALIZA
 
@@ -334,7 +335,7 @@ class Liquidaciones(models.Model):
                         {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
                     self.env.cr.commit()
         except Exception as e:
-            print("Error : ",e)
+            print("Error : ", e)
 
     @api.model
     def create(self, vals):
