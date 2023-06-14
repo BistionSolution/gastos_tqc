@@ -14,6 +14,7 @@ class TqcAuth(models.Model):
 
     def load_autorizadores(self):
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
+        prefijo_database = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         if data_base:
             self.env['tqc.autorizadores'].search([]).unlink()
             self.env.cr.commit()
@@ -21,10 +22,11 @@ class TqcAuth(models.Model):
                       SUPERIOR AS external_id,
                       SUPERIOR AS superior,
                       SUBORDINADO AS subordinados
-                    FROM """ + data_base + """.EMPLEADO_JERARQUIA"""
+                    FROM """ + prefijo_database + """.EMPLEADO_JERARQUIA"""
 
             ip_conexion = "10.10.10.228"
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
+            print("DATA BASE: ", data_base)
             user_bd = "vacaciones"
             pass_bd = "exvacaciones"
 
