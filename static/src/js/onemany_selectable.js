@@ -338,35 +338,35 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 });
             }
         },
-        _getRenderer: function () {
-            var self = this
-            // console.log("data USER PRO : ", self.recordData.uid_create)
-            // var state = self.recordData.state
-            // var user = false
-            if (self.view.arch.tag === 'kanban') {
-                return One2ManyKanbanRenderer;
-            }
-            if (self.view.arch.tag === 'tree') {
-                console.log("self.recordData.state : ",self.recordData)
-                if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3 && self.recordData.current_user == 1) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
-                    return ListRenderer.extend({
-                        init: function (parent, state, params) {
-                            var self = this
-                            self._super.apply(self, arguments);
-                            self.hasSelectors = self;
-                        },
-                    });
-                }
-                // return ListRenderer.extend({
-                //         init: function (parent, state, params) {
-                //             var self = this
-                //             self._super.apply(self, arguments);
-                //             self.hasSelectors = self;
-                //         },
-                //     });
-            }
-            return this._super.apply(this, arguments);
-        },
+        // _getRenderer: function () {
+        //     var self = this
+        //     // console.log("data USER PRO : ", self.recordData.uid_create)
+        //     // var state = self.recordData.state
+        //     // var user = false
+        //     if (self.view.arch.tag === 'kanban') {
+        //         return One2ManyKanbanRenderer;
+        //     }
+        //     if (self.view.arch.tag === 'tree') {
+        //         console.log("self.recordData.state : ",self.recordData)
+        //         if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3 && self.recordData.current_user == 1) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
+        //             return ListRenderer.extend({
+        //                 init: function (parent, state, params) {
+        //                     var self = this
+        //                     self._super.apply(self, arguments);
+        //                     self.hasSelectors = self;
+        //                 },
+        //             });
+        //         }
+        //         // return ListRenderer.extend({
+        //         //         init: function (parent, state, params) {
+        //         //             var self = this
+        //         //             self._super.apply(self, arguments);
+        //         //             self.hasSelectors = self;
+        //         //         },
+        //         //     });
+        //     }
+        //     return this._super.apply(this, arguments);
+        // },
         find_deleted_lines: function () {
             var self = this;
             var selected_list = [];
@@ -377,7 +377,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             return selected_list;
         },
         find_selected_lines: function () {
-            console.log("select one")
             var self = this;
             var selected_list = [];
             var selected_list1 = [];
