@@ -39,7 +39,7 @@ class tipoDocumento(models.Model):
                     WHERE TIPO IN ('B/V','RHP') OR (TIPO='VOG' AND SUBTIPO IN (17,18)) OR (TIPO='FAC' AND SUBTIPO IN (0,1,2,3,9,19))"""
 
             ip_conexion = "10.10.10.228"
-            data_base = database
+            data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
             user_bd = userbd
             pass_bd = passbd
 

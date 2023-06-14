@@ -24,7 +24,7 @@ class TqcAuth(models.Model):
                     FROM """ + data_base + """.EMPLEADO_JERARQUIA"""
 
             ip_conexion = "10.10.10.228"
-            data_base = "TQC"
+            data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
             user_bd = "vacaciones"
             pass_bd = "exvacaciones"
 

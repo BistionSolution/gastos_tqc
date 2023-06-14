@@ -179,7 +179,7 @@ class detalleLiquidaciones(models.Model):
                 cambio = 0
                 strfecha = rec.fechaemision
                 ip_conexion = "10.10.10.228"
-                data_base = database
+                data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
                 user_bd = userbd
                 pass_bd = passbd
 
@@ -209,13 +209,24 @@ class detalleLiquidaciones(models.Model):
             # else:
             #     rec.tipocambio = 3.82
 
+    @api.onchange('serie')
+    def _onchange_serie(self):
+        for rec in self:
+            min_serie = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.min_serie')
+            max_serie = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.max_serie')
+
+            if rec.serie:
+                if not int(min_serie) <= len(rec.serie) <= int(max_serie):
+                    # raise UserError('error')
+                    raise UserError('La serie debe ser menor igual a %s y mayor igual a %s' % (min_serie, max_serie))
+
     @api.onchange('ruc')
     def _onchange_ruc(self):
         for rec in self:
             if rec.ruc and no_server:
                 result = ""
                 ip_conexion = "10.10.10.228"
-                data_base = database
+                data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
                 user_bd = userbd
                 pass_bd = passbd
                 table_bd = "tqc.liquidaciones"
@@ -231,9 +242,8 @@ class detalleLiquidaciones(models.Model):
                     cursor = connection.cursor()
                     cursor.execute(sql_habido)
                     proveedor_habido = cursor.fetchall()
-                    print("GAAAAAAAAA", proveedor_habido)
                     if proveedor_habido:
-                        raise ValueError(
+                        raise UserError(
                             _("RUC " + rec.ruc + " esta no habido, ingresa otro para poder crear documento"))
                     cursor.close()
                     # print("GAAAAAAAAA 22 : ", sql_prime)
@@ -253,12 +263,11 @@ class detalleLiquidaciones(models.Model):
                 else:
                     for proveedor in proveedores:
                         result = proveedor[1]
+                        if proveedor[2] != 'S':
+                            raise UserError(_('Proveedor no activo'))
                     rec.proveedor_razonsocial = result
 
-                    if proveedor[2] == 'S':
-                        rec.razonsocial_invisible = 'activo'
-                    else:
-                        rec.razonsocial_invisible = 'no_activo'
+
 
     @api.onchange('cliente')
     def _onchange_cliente(self):
@@ -268,7 +277,7 @@ class detalleLiquidaciones(models.Model):
                 result = ""
 
                 ip_conexion = "10.10.10.228"
-                data_base = database
+                data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
                 user_bd = userbd
                 pass_bd = passbd
 
@@ -311,7 +320,7 @@ class detalleLiquidaciones(models.Model):
             info = []
 
             ip_conexion = "10.10.10.228"
-            data_base = database
+            data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
             user_bd = userbd
             pass_bd = passbd
             table_bd = "tqc.liquidaciones"
@@ -343,7 +352,7 @@ class detalleLiquidaciones(models.Model):
         if no_server:
             info = []
             ip_conexion = "10.10.10.228"
-            data_base = database
+            data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
             user_bd = userbd
             pass_bd = passbd
             sql_prime = """SELECT CLIENTE, NOMBRE FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args[

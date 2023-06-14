@@ -17,6 +17,23 @@
                             </div>
                         </div>
                     </div>
+                    <h2>Serie minimo y maximo caracteres</h2>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options">
+                            <div class="o_setting_right_pane">
+                                <label for="max_serie"/>
+                                <field name="max_serie"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options">
+                            <div class="o_setting_right_pane">
+                                <label for="min_serie"/>
+                                <field name="min_serie"/>
+                            </div>
+                        </div>
+                    </div>
                     <h2>Establecer contraseña</h2>
                     <div class="row mt16 o_settings_container" name="catalog_setting_container">
                         <div class="col-12 col-lg-6 o_setting_box" id="variant_options-2">

@@ -1,0 +1,92 @@
+<odoo>
+    <data>
+        <record id="cuenta_gastos_default0" model="cuenta.gastos.default">
+            <field name="codigo">63.1.1.1.1.11.00</field>
+            <field name="description">MOVILIDAD PERSONAL LOCAL</field>
+        </record>
+        <record id="cuenta_gastos_default1" model="cuenta.gastos.default">
+            <field name="codigo">63.1.1.1.1.12.00</field>
+            <field name="description">PASAJES INTERIOR</field>
+        </record>
+         <record id="cuenta_gastos_default2" model="cuenta.gastos.default">
+            <field name="codigo">63.1.2.1.0.00.00</field>
+            <field name="description">CORREOS</field>
+        </record>
+        <record id="cuenta_gastos_default3" model="cuenta.gastos.default">
+            <field name="codigo">63.1.3.1.0.00.00</field>
+            <field name="description">ALOJAMIENTO INTERIOR</field>
+        </record>
+        <record id="cuenta_gastos_default4" model="cuenta.gastos.default">
+            <field name="codigo">63.1.4.1.0.00.00</field>
+            <field name="description">ALIMENTACION INTERIOR</field>
+        </record>
+        <record id="cuenta_gastos_default5" model="cuenta.gastos.default">
+            <field name="codigo">63.4.3.3.0.00.00</field>
+            <field name="description">MNTO Y REPARACION EQUIPO DE TRANSPORTE</field>
+        </record>
+        <record id="cuenta_gastos_default6" model="cuenta.gastos.default">
+            <field name="codigo">63.9.1.1.1.10.00</field>
+            <field name="description">PEAJES Y ESTACIONAMIENTO</field>
+        </record>
+         <record id="cuenta_gastos_default7" model="cuenta.gastos.default">
+            <field name="codigo">65.6.1.1.1.03.00</field>
+            <field name="description">COMBUSTIBLES Y LUBRICANTES VEHICULOS</field>
+        </record>
+        <record id="cuenta_gastos_default8" model="cuenta.gastos.default">
+            <field name="codigo">65.6.1.1.1.05.00</field>
+            <field name="description">UTILES DE OFICINA</field>
+        </record>
+        <record id="cuenta_gastos_default9" model="cuenta.gastos.default">
+            <field name="codigo">65.6.1.1.1.12.00</field>
+            <field name="description">OTROS SUMNISTROS CONSUMO DIRECTO</field>
+        </record>
+        <record id="cuenta_gastos_default10" model="cuenta.gastos.default">
+            <field name="codigo">65.9.7.0.0.00.00</field>
+            <field name="description">REUNIONES DE TRABAJO</field>
+        </record>
+        <record id="cuenta_gastos_default11" model="cuenta.gastos.default">
+            <field name="codigo">63.7.1.1.0.00.00</field>
+            <field name="description">PUBLICIDAD Y PROPAGANDA</field>
+        </record>
+        <record id="cuenta_gastos_default12" model="cuenta.gastos.default">
+            <field name="codigo">63.7.1.4.0.00.00</field>
+            <field name="description">PUBLICIDAD - FOLLETERIA</field>
+        </record>
+        <record id="cuenta_gastos_default13" model="cuenta.gastos.default">
+            <field name="codigo">63.7.1.5.0.00.00</field>
+            <field name="description">PUBLICIDAD - RADIAL</field>
+        </record>
+        <record id="cuenta_gastos_default14" model="cuenta.gastos.default">
+            <field name="codigo">63.7.1.7.0.00.00</field>
+            <field name="description">PUBLICIDAD - DIARIOS Y REVISTAS</field>
+        </record>
+        <record id="cuenta_gastos_default15" model="cuenta.gastos.default">
+            <field name="codigo">63.7.1.8.0.00.00</field>
+            <field name="description">PUBILICIDAD - PANELES</field>
+        </record>
+        <record id="cuenta_gastos_default16" model="cuenta.gastos.default">
+            <field name="codigo">63.7.1.9.0.00.00</field>
+            <field name="description">PUBLICIDAD - FACHADAS</field>
+        </record>
+        <record id="cuenta_gastos_default17" model="cuenta.gastos.default">
+            <field name="codigo">63.7.3.5.0.00.00</field>
+            <field name="description">CHARLAS CLIENTES</field>
+        </record>
+        <record id="cuenta_gastos_default18" model="cuenta.gastos.default">
+            <field name="codigo">65.6.1.1.1.06.00</field>
+            <field name="description">FORMATOS IMPRESOS</field>
+        </record>
+        <record id="cuenta_gastos_default19" model="cuenta.gastos.default">
+            <field name="codigo">63.1.3.2.0.00.00</field>
+            <field name="description">ALOJAMIENTO EXTREIOR</field>
+        </record>
+         <record id="cuenta_gastos_default20" model="cuenta.gastos.default">
+            <field name="codigo">63.1.4.2.0.00.00</field>
+            <field name="description">ALIMENTACION EXTERIOR</field>
+        </record>
+        <record id="cuenta_gastos_default21" model="cuenta.gastos.default">
+            <field name="codigo">63.7.3.1.0.00.00</field>
+            <field name="description">GASTOS DE REPRESENTACION</field>
+        </record>
+    </data>
+</odoo>

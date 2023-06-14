@@ -32,7 +32,7 @@ class tqcImpuesto(models.Model):
                     FROM """ + data_base + """.IMPUESTO"""
 
             ip_conexion = "10.10.10.228"
-            data_base = database
+            data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
             user_bd = userbd
             pass_bd = passbd
 

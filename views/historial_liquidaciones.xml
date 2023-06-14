@@ -5,7 +5,7 @@
             <field name="name">view.tree.historial.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="0" delete="0" expand="1">
                     <field name="mode_view" force_save="1" invisible="1"/>
 
                     <field name="num_solicitud"/>
@@ -39,7 +39,7 @@
             <field name="name">view.form.historial.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion" create="0">
+                <form string="Liquidacion" create="0" delete="0">
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
@@ -221,7 +221,7 @@
             <field name="arch" type="xml">
                 <search string="Search Tqc">
                     <field name="empleado_name"/>
-                    <field name="num_solicitud"/>
+                    <field name="num_solicitud" invisible="1"/>
                     <field name="fecha_entrega"/>
                     <field name="tipo_documento" invisible="1"/>
                     <filter name="filtro_rendir" string="A rendir" domain="[('tipo_documento', '=', 'a_rendir')]"/>
@@ -231,6 +231,9 @@
                     <filter name="jefatura" string="Sin visto jefe" domain="[('state', '=', 'jefatura')]"/>
                     <filter name="contable" string="Sin visto contable" domain="[('state', '=', 'contable')]"/>
                     <filter name="pendiente" string="Pendiente a procesar" domain="[('state', '=', 'pendiente')]"/>
+                    <group expand="1" string="Group by ">
+                        <filter string="Num Solicitud" name="group_by_num_solicitud" context="{'group_by':'num_solicitud'}"/>
+                    </group>
                 </search>
             </field>
         </record>
@@ -243,7 +246,7 @@
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_historial_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_historial_liquidaciones')})]"/>
-            <field name="context">{'mode_view':'historial'}</field>
+            <field name="context">{'mode_view':'historial','search_default_group_by_num_solicitud':1}</field>
             <field name="domain">[('fecha_generacion', '!=', False)]</field>
             <field name="target">main</field>
             <field name="help" type="html">
