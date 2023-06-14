@@ -347,6 +347,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 return One2ManyKanbanRenderer;
             }
             if (self.view.arch.tag === 'tree') {
+                console.log("self.recordData.state : ",self.recordData)
                 if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3 && self.recordData.current_user == 1) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
                     return ListRenderer.extend({
                         init: function (parent, state, params) {
@@ -356,6 +357,13 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                         },
                     });
                 }
+                // return ListRenderer.extend({
+                //         init: function (parent, state, params) {
+                //             var self = this
+                //             self._super.apply(self, arguments);
+                //             self.hasSelectors = self;
+                //         },
+                //     });
             }
             return this._super.apply(this, arguments);
         },

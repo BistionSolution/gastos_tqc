@@ -131,6 +131,8 @@ class Liquidaciones(models.Model):
     @api.depends()
     def _current_user(self):
         for record in self:
+            print("record.empleado_name : ",record.empleado_name.name)
+            print("record.empleado_name : ",record.empleado_name.superior.name)
             if self.env.uid in record.empleado_name.superior.user_id.mapped('id'):
                 record.current_user = 1
             else:

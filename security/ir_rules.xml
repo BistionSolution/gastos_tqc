@@ -45,7 +45,7 @@
             <field name="model_id" ref="hr.model_hr_employee"/>
             <!--<field name="domain_force">[('vc_ctavacation.id_departa.member_ids.user_id','in',[user.id])]</field>-->
             <field name="domain_force">
-                [('superior.user_id','in',[user.id])]
+                ['|',('superior.user_id','in',[user.id]),('user_id','=',user.id)]
             </field>
             <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_aprobador_gastos'))]"/>
             <field name="perm_read" eval="True"/>
