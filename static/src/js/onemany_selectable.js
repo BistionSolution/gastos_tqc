@@ -260,150 +260,84 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
         }
     })
 
-    // var One2Manyble = FieldOne2Many.extend({
-    //     template: 'One2ManySelectable',
-    //     // supportedFieldTypes: ['one2many'], // multi_selection: true,
-    //     //button click
-    //     events: _.extend({}, fields.FieldOne2Many.prototype.events, {
-    //         "click .button_delete_order_lines": "delete_selected_lines",
-    //         "click .button_select_order_lines": "selected_lines",
-    //     }),
-    //     init: function () {
-    //         this._super.apply(this, arguments);
-    //     },
-    //     start: function () {
-    //         this._super.apply(this, arguments);
-    //         var self = this;
-    //     },
-    //     // start: function () {
-    //     // 	this._super.apply(this, arguments);
-    //     // 	// $('.o_field_x2many_list_row_add').hide()
-    //     // },
-    //     delete_selected_lines: function () {
-    //         var self = this;
-    //         var current_model = this.recordData[this.name].model;
-    //         var selected_lines = self.find_deleted_lines();
-    //
-    //         if (selected_lines.length === 0) {
-    //             this.do_warn(_t("Please Select at least One Record."));
-    //             return false;
-    //         }
-    //
-    //         var w_response = confirm("¿Seguro que deseas rechazar los documentos seleccionados?");
-    //         if (w_response) {
-    //             rpc.query({
-    //                 'model': current_model,
-    //                 'method': 'write',
-    //                 'args': [selected_lines, {
-    //                     'revisado_state': 'rechazado_' + this.recordData.state
-    //                 }],
-    //             }).then(function (result) {
-    //                 // console.log("VAMOS CON VAMOSS : ")
-    //                 // console.log("VAMOS CON model : ", self.model)
-    //                 // if (self.model === 'tqc.liquidaciones') {
-    //                 //     rpc.query({
-    //                 //         'model': self.model,
-    //                 //         'method': 'write',
-    //                 //         'args': [self.res_id, {
-    //                 //             'habilitado_state': 'corregir'
-    //                 //         }],
-    //                 //     }).then(function (e) {
-    //                 //         self.trigger_up('reload');
-    //                 //     });
-    //                 // }
-    //                 self.trigger_up('reload');
-    //             });
-    //         }
-    //     },
-    //     selected_lines: function () {
-    //         var self = this;
-    //         var current_model = this.recordData[this.name].model;
-    //         var selected_lines = self.find_selected_lines();
-    //         if (selected_lines.length === 0) {
-    //             this.do_warn(_t("Please Select at least One Record"));
-    //             return false;
-    //         }
-    //         var w_response = confirm("Dou You Want to Select ?");
-    //         if (w_response) {
-    //
-    //             rpc.query({
-    //                 'model': current_model, 'method': 'write', 'args': [selected_lines, {
-    //                     'revisado_state': 'aprobado',
-    //                 }],
-    //             }).then(function (result) {
-    //                 self.trigger_up('reload');
-    //             });
-    //         }
-    //     },
-    //     _getRenderer: function () {
-    //         var self = this
-    //         // console.log("data USER PRO : ", self.recordData.uid_create)
-    //         // var state = self.recordData.state
-    //         // var user = false
-    //         if (self.view.arch.tag === 'kanban') {
-    //             return One2ManyKanbanRenderer;
-    //         }
-    //         if (self.view.arch.tag === 'tree') {
-    //             console.log("self.recordData.state : ", self.recordData)
-    //             if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3 && self.recordData.current_user == 1) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
-    //                 return ListRenderer.extend({
-    //                     init: function (parent, state, params) {
-    //                         var self = this
-    //                         self._super.apply(self, arguments);
-    //                         self.hasSelectors = self;
-    //                     },
-    //                 });
-    //             }
-    //             // return ListRenderer.extend({
-    //             //         init: function (parent, state, params) {
-    //             //             var self = this
-    //             //             self._super.apply(self, arguments);
-    //             //             self.hasSelectors = self;
-    //             //         },
-    //             //     });
-    //         }
-    //         return this._super.apply(this, arguments);
-    //     },
-    //     find_deleted_lines: function () {
-    //         var self = this;
-    //         var selected_list = [];
-    //         this.$el.find('td.o_list_record_selector input:checked')
-    //             .closest('tr').each(function () {
-    //             selected_list.push(parseInt(self._getResId($(this).data('id'))));
-    //         });
-    //         return selected_list;
-    //     },
-    //     find_selected_lines: function () {
-    //         var self = this;
-    //         var selected_list = [];
-    //         var selected_list1 = [];
-    //         var selected_list2 = [];
-    //         this.$el.find('td.o_list_record_selector input:checked')
-    //             .closest('tr').each(function () {
-    //             selected_list.push(parseInt(self._getResId($(this).data('id'))));
-    //         });
-    //         if (selected_list.length != 0) {
-    //             this.$el.find('td.o_list_record_selector')
-    //                 .closest('tr').each(function () {
-    //                 selected_list1.push(parseInt(self._getResId($(this).data('id'))));
-    //             });
-    //             selected_list2 = selected_list1.filter(function (x) {
-    //                 return selected_list.indexOf(x) < 0
-    //             });
-    //         }
-    //         return selected_list2;
-    //     },
-    //     _getResId: function (recordId) {
-    //         var record;
-    //         utils.traverse_records(this.recordData[this.name], function (r) {
-    //             if (r.id === recordId) {
-    //                 record = r;
-    //             }
-    //         });
-    //         return record.res_id;
-    //     },
-    // });
-    // // register unique widget, because Odoo does not know anything about it
-    // //you can use <field name="One2many_ids" widget="x2many_selectable"> for call this widget
-    // field_registry.add("select_onemany", One2Manyble);
+    var One2Manyble = FieldOne2Many.extend({
+        template: 'One2ManySelectable',
+        // supportedFieldTypes: ['one2many'], // multi_selection: true,
+        //button click
+        events: _.extend({}, fields.FieldOne2Many.prototype.events, {
+            "click .button_delete_order_lines": "delete_selected_lines",
+            "click .button_select_order_lines": "selected_lines",
+        }),
+        init: function () {
+            this._super.apply(this, arguments);
+        },
+        start: function () {
+            this._super.apply(this, arguments);
+            var self = this;
+        },
+        // start: function () {
+        // 	this._super.apply(this, arguments);
+        // 	// $('.o_field_x2many_list_row_add').hide()
+        // },
+        delete_selected_lines: function () {
+            var self = this;
+            var current_model = this.recordData[this.name].model;
+            var selected_lines = self.find_deleted_lines();
+
+            if (selected_lines.length === 0) {
+                this.do_warn(_t("Please Select at least One Record."));
+                return false;
+            }
+
+            var w_response = confirm("¿Seguro que deseas rechazar los documentos seleccionados?");
+            if (w_response) {
+                rpc.query({
+                    'model': current_model,
+                    'method': 'write',
+                    'args': [selected_lines, {
+                        'revisado_state': 'rechazado_' + this.recordData.state
+                    }],
+                }).then(function (result) {
+                    // console.log("VAMOS CON VAMOSS : ")
+                    // console.log("VAMOS CON model : ", self.model)
+                    // if (self.model === 'tqc.liquidaciones') {
+                    //     rpc.query({
+                    //         'model': self.model,
+                    //         'method': 'write',
+                    //         'args': [self.res_id, {
+                    //             'habilitado_state': 'corregir'
+                    //         }],
+                    //     }).then(function (e) {
+                    //         self.trigger_up('reload');
+                    //     });
+                    // }
+                    self.trigger_up('reload');
+                });
+            }
+        },
+        selected_lines: function () {
+            var self = this;
+            var current_model = this.recordData[this.name].model;
+            var selected_lines = self.find_selected_lines();
+            if (selected_lines.length === 0) {
+                this.do_warn(_t("Please Select at least One Record"));
+                return false;
+            }
+            var w_response = confirm("Dou You Want to Select ?");
+            if (w_response) {
+
+                rpc.query({
+                    'model': current_model, 'method': 'write', 'args': [selected_lines, {
+                        'revisado_state': 'aprobado',
+                    }],
+                }).then(function (result) {
+                    self.trigger_up('reload');
+                });
+            }
+        },
+
+    });
+    // register unique widget, because Odoo does not know anything about it
+    //you can use <field name="One2many_ids" widget="x2many_selectable"> for call this widget
+    field_registry.add("select_onemany", One2Manyble);
 });
