@@ -30,12 +30,13 @@ class tipoDocumento(models.Model):
 
     def load_impuestos(self):
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         if data_base:
             sql = """SELECT ROWPOINTER AS external_id, 
                     TIPO AS tipo,
                     SUBTIPO AS subtipo,
                     DESCRIPCION AS descripcion                    
-                    FROM """ + data_base + """.SUBTIPO_DOC_CAJA 
+                    FROM """ + prefix_table + """.SUBTIPO_DOC_CAJA 
                     WHERE TIPO IN ('B/V','RHP') OR (TIPO='VOG' AND SUBTIPO IN (17,18)) OR (TIPO='FAC' AND SUBTIPO IN (0,1,2,3,9,19))"""
 
             ip_conexion = "10.10.10.228"
@@ -109,3 +110,8 @@ class tipoDocumento(models.Model):
         # AHORA PARA CADA BASE DE DATOS, CADA EMPRESA
         empresa_bd = parte_frase[1].replace(" ", "")
         return variJson
+
+    def all_sincronizar(self):
+        tipoDocumento.load_impuestos(self)
+        self.env['tqc.impuestos'].load_impuestos()
+        self.env['tqc.autorizadores'].load_autorizadores()

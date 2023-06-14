@@ -224,6 +224,7 @@ class Liquidaciones(models.Model):
             # company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
             # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
             posiUser = []
+            print("table_bd : ",table_bd)
             nom_module = table_bd.replace(".", "_")
             if table_relations:
                 dataExternalSQL = self.get_external_field(

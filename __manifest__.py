@@ -44,6 +44,7 @@
         'views/cuenta_gastos_default.xml',
         'views/detalle_liquidaciones.xml',
         'views/historial_liquidaciones.xml',
+        'views/sincronizar_tqc.xml',
 
         'wizard/search_ruc.xml',
         'wizard/search_client.xml',

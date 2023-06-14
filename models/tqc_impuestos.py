@@ -24,12 +24,13 @@ class tqcImpuesto(models.Model):
 
     def load_impuestos(self):
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         if data_base:
             sql = """SELECT IMPUESTO AS external_id, 
                     IMPUESTO AS impuesto,
                     DESCRIPCION AS descripcion,
                     IMPUESTO1 AS impuesto1
-                    FROM """ + data_base + """.IMPUESTO"""
+                    FROM """ + prefix_table + """.IMPUESTO"""
 
             ip_conexion = "10.10.10.228"
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')

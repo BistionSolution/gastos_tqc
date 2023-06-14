@@ -92,7 +92,6 @@ class TqcAuth(models.Model):
             TqcAuth.sicronizar_auth(self)
 
     def cal_all_auth(self):
-        print("que fuentes")
         # TRAE LOS NIVELES DE AUTHORIZATION
         # EMPIEZA EL CALCULO DE AUTORIZADORES
         all_employee = self.env["hr.employee"].search([])
@@ -216,6 +215,25 @@ class TqcAuthConta(models.Model):
         # QUITAR EN APROBADORES
         self.env['res.groups'].search([('id', '=', id_group_aprob)]).sudo().write(
             {'users': [(3, i) for i in list_new_emple]})
+
+    def write(self, vals):
+        # EJECUTA ANTES DE MODIFICAR
+        res = super().write(vals)
+        TqcAuthConta.masive_auth(self)
+        return res
+
+    @api.model
+    def create(self, vals):
+        res = super().create(vals)
+        TqcAuthConta.masive_auth(self)
+        return res
+
+    def unlink(self):
+        for record in self:
+            res = super(TqcAuthConta, record).unlink()
+        TqcAuthConta.masive_auth(self)
+        return res
+
 
 class gastosEmployee(models.Model):
     _inherit = "hr.employee"

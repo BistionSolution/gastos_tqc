@@ -59,11 +59,14 @@
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
         </record>
 
+
         <menuitem id="menu_autorizadores_gasto" parent="gastos_tqc.menu_flujo_configuraciones" name="Autorizadores" sequence="4"/>
-        <menuitem id="menu_autorizadores_jefartura" parent="gastos_tqc.menu_autorizadores_gasto" name="Jefatura"
+        <menuitem id="menu_autorizadores_jefatura" parent="gastos_tqc.menu_autorizadores_gasto" name="Jefatura"
                   action="gastos_tqc.action_auth_gastos" sequence="1"/>
+
+
         <menuitem id="menu_autorizadores_contabilidad" parent="gastos_tqc.menu_autorizadores_gasto" name="Contabilidad"
-                  action="gastos_tqc.action_auth_conta_gastos" sequence="2"/>
+                  action="gastos_tqc.action_auth_conta_gastos" sequence="3"/>
 
     </data>
 

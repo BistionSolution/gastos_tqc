@@ -47,8 +47,7 @@
             </field>
         </record>
 
-
-        <menuitem id="menu_cuenta_contable" parent="gastos_tqc.menu_flujo_configuraciones" sequence="1"
-                  name="Cuenta Contables" action="gastos_tqc.action_view_import_cuenta"/>
+<!--        <menuitem id="menu_cuenta_contable" parent="gastos_tqc.menu_flujo_configuraciones" sequence="1"-->
+<!--                  name="Cuenta Contables" action="gastos_tqc.action_view_import_cuenta"/>-->
     </data>
 </odoo>
