@@ -49,7 +49,7 @@
                                 <label for="pass_user_gastos"/>
                                 <field name="pass_user_gastos"/>
                             </div>
-                            <button string="Cambiar contraseña" name="action_calcular" type="object" class="oe_highlight"/>
+                            <button string="Cambiar contraseña" name="action_changes_pass" type="object" class="oe_highlight"/>
                         </div>
                     </div>
                 </div>

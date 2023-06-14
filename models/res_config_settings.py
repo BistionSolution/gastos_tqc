@@ -33,9 +33,10 @@ class ResConfigSettings(models.TransientModel):
         res['min_serie'] = val.get_param('gastos_tqc.min_serie')
         return res
 
-    def action_calcular(self):
+    def action_changes_pass(self):
         val = self.env['ir.config_parameter'].sudo()
         new_pass = val.get_param('gastos_tqc.pass_user_gastos')
+        print("NUEVO PASS : ", new_pass)
         users = self.env['res.users'].search([])
         for user in users:
             if user.has_group("gastos_tqc.res_groups_employee_gastos"):

@@ -680,7 +680,8 @@
         <!--    <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_main_liquidaciones" name="Web de gastos"
                   action="gastos_tqc.action_view_registro_liquidaciones"
-                  web_icon="gastos_tqc,static/description/icon.png"/>
+                  web_icon="gastos_tqc,static/description/icon.png"
+                  groups="gastos_tqc.res_groups_administrator,res_groups_employee_gastos,res_groups_aprobador_gastos,res_groups_contador_gastos"/>
         <!--    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Flujo aprobaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>
