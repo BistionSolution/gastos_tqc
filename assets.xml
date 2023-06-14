@@ -22,7 +22,7 @@
 
             <script type="text/javascript" src="/gastos_tqc/static/src/js/list_renderer.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/web_client.js"/>
-            <script type="text/javascript" src="/gastos_tqc/static/src/js/onemany_selectable.js"/>
+<!--            <script type="text/javascript" src="/gastos_tqc/static/src/js/onemany_selectable.js"/>-->
         </xpath>
     </template>
     <!--        <template id="assets_tests" name="HR Expense Assets Tests" inherit_id="web.assets_tests">-->
