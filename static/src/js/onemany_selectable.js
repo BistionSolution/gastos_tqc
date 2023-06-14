@@ -264,10 +264,10 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
         template: 'One2ManySelectable',
         supportedFieldTypes: ['one2many'], // multi_selection: true,
         //button click
-        events: _.extend({}, fields.FieldOne2Many.prototype.events, {
-            "click .button_delete_order_lines": "delete_selected_lines",
-            "click .button_select_order_lines": "selected_lines",
-        }),
+        // events: _.extend({}, fields.FieldOne2Many.prototype.events, {
+        //     "click .button_delete_order_lines": "delete_selected_lines",
+        //     "click .button_select_order_lines": "selected_lines",
+        // }),
         init: function () {
             this._super.apply(this, arguments);
         },
