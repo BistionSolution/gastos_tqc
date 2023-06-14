@@ -268,13 +268,9 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             "click .button_delete_order_lines": "delete_selected_lines",
             "click .button_select_order_lines": "selected_lines",
         }),
-        // init: function () {
-        //     this._super.apply(this, arguments);
-        // },
-        // start: function () {
-        //     this._super.apply(this, arguments);
-        //     // var self = this;
-        // },
+        init: function () {
+            this._super.apply(this, arguments);
+        },
         // start: function () {
         // 	this._super.apply(this, arguments);
         // 	// $('.o_field_x2many_list_row_add').hide()
