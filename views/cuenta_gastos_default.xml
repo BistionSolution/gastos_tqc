@@ -73,7 +73,7 @@
         <!--            </field>-->
         <!--        </record>-->
 
-        <menuitem id="menu_cuenta_default" action="gastos_tqc.action_view_cuenta_gastos_default" parent="gastos_tqc.menu_flujo_configuraciones" sequence="4"
-                  name="Cuentas defecto"/>
+        <menuitem id="menu_cuenta_default" action="gastos_tqc.action_view_cuenta_gastos_default" parent="gastos_tqc.menu_flujo_configuraciones" sequence="3"
+                  name="Cuentas contables"/>
     </data>
 </odoo>

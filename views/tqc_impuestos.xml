@@ -4,7 +4,7 @@
             <field name="name">view.tree.tqc.impuestos</field>
             <field name="model">tqc.impuestos</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="0" edit="0" delete="0">
                     <field name="impuesto"/>
                     <field name="descripcion"/>
                     <field name="impuesto1"/>
@@ -16,7 +16,7 @@
             <field name="name">view.form.tqc.impuestos</field>
             <field name="model">tqc.impuestos</field>
             <field name="arch" type="xml">
-                <form string="Superior">
+                <form string="Superior" create="0" edit="0" delete="0">
                     <sheet>
                         <group string="Ripo de documento">
                             <field name="impuesto"/>
