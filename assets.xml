@@ -5,7 +5,7 @@
     <!--        'gastos_tqc/static/src/scss/gastos_tqc.scss',-->
     <template id="assets_backend" name="Wbsite assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-<!--            <script type="text/javascript" src="/gastos_tqc/static/src/js/liquidacion_header.js"/>-->
+            <script type="text/javascript" src="/gastos_tqc/static/src/js/liquidacion_header.js"/>
             <script type="text/javascript" src="/gastos_tqc/static/src/js/registro_gasto.js"/>
 <!--            <script type="text/javascript" src="/gastos_tqc/static/src/js/list_editable_render.js"/>-->
         </xpath>

@@ -5,8 +5,7 @@
             <field name="name">view.tree.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-<!--                js_class="gastos_tqc_tree_selections"-->
-                <tree  class="gastos_tqc" create="0" delete="0">
+                <tree js_class="gastos_tqc_tree_selections" class="gastos_tqc" create="0" delete="0">
                     <field name="habilitado_state" invisible="1"/>
                     <field name="mode_view" force_save="1" invisible="1"/>
 
@@ -247,8 +246,7 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <!-- Colocar esto dentro de tree atrributo: js_class="gastos_view_name"-->
-<!--                js_class="gastos_view_name"-->
-                <tree  create="0" delete="0">
+                <tree js_class="gastos_view_name" create="0" delete="0">
                     <field name="empleado_name"
                            groups="gastos_tqc.res_groups_administrator,gastos_tqc.res_groups_aprobador_gastos"/>
                     <field name="num_solicitud"/>

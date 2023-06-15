@@ -47,7 +47,7 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                 'click .o_context_two': '_context_contable',
                 'click .o_context_three': '_context_pendientes',
             }),
-            _renderView: async function () {
+            _render: async function () {
                 var self = this;
                 this._super(...arguments);
                 console.log("user id : ", session.user_id)
@@ -77,7 +77,7 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
 
                     // $('.breadcrumb').append('<span>HOLA GA</span>');
                     // console.log("VAMOS A VER ",dom)
-                    self.$el.prepend(elem);
+                    self.$el.before(elem);
                 })
                 if (self.state.domain[2]) {
                     self.$el.find('.o_expense_container').children().find(`#${self.state.domain[2][2]}`).addClass('button_black')
@@ -153,7 +153,7 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
         init: function (parent, name, record, options) {
             this._super(parent, name, record, options)
         },
-        _renderView: async function () {
+        _render: async function () {
             var self = this;
             this._super(...arguments);
             self._rpc({
