@@ -147,13 +147,10 @@ class Liquidaciones(models.Model):
         for record in self:
             # record.sudo().empleado_name.user_id.id == user_now) or
             if self.env.user.has_group('gastos_tqc.res_groups_administrator'):
-                print("PERTENECE 1")
                 record.uid_create = 1
             elif self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
-                print("PERTENECE 3")
                 record.uid_create = 3
             elif self.env.user.has_group('gastos_tqc.res_groups_contador_gastos'):
-                print("PERTENECE 2")
                 record.uid_create = 2
             else:
                 record.uid_create = 0

@@ -107,91 +107,118 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             }
             return $rows;
         },
-        // _onCellClick: function (event) {
-        //     // this._super(...arguments);
-        //     console.log("GOES")
-        //     // The special_click property explicitely allow events to bubble all
-        //     // the way up to bootstrap's level rather than being stopped earlier.
-        //     var $td = $(event.currentTarget);
-        //     var $tr = $td.parent();
-        //
-        //     // detecta si existe el widget one2many selecteable
-        //     if ($tr.find('.o_list_record_selector').length > 0) {
-        //         var rowIndex = $tr.prop('rowIndex') - 2;
-        //     } else {
-        //         var rowIndex = $tr.prop('rowIndex') - 1;
-        //     }
-        //     // var rowIndex = $tr.prop('rowIndex') - 1;
-        //
-        //     if (!this._isRecordEditable($tr.data('id')) || $(event.target).prop('special_click')) {
-        //         return;
-        //     }
-        //     var fieldIndex = Math.max($tr.find('.o_field_cell').index($td), 0);
-        //
-        //     console.log("td: ", $td)
-        //
-        //     if ($tr.find('.o_list_record_selector').length > 0) {
-        //         this._selectCell(rowIndex, fieldIndex, {event: event});
-        //
-        //     } else {
-        //         this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
-        //             // add button with custom code bistion
+        _onCellClick: function (event) {
+            // The special_click property explicitely allow events to bubble all
+            // the way up to bootstrap's level rather than being stopped earlier.
+            var $td = $(event.currentTarget);
+            var $tr = $td.parent();
+            var self = this
+            // detecta si existe el widget one2many selecteable
+            var rowIndex = $tr.prop('rowIndex') - 1;
+            // // var rowIndex = $tr.prop('rowIndex') - 1;
+            //
+            if (!this._isRecordEditable($tr.data('id')) || $(event.target).prop('special_click')) {
+                return;
+            }
+            var fieldIndex = Math.max($tr.find('.o_field_cell').index($td), 0);
+            this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
+                if (self.state.model === "tqc.detalle.liquidaciones") {
+                    if (self.__parentedParent.recordData.uid_create !== 3) {
+                        if ($td.hasClass('consult_ruc')) {
+                            $('.search_ruc').remove()
+                            $td.addClass('overnone');
+                            // var newButton = '<button class="search_ruc fa fa-search" name="search">new button</button>'
+                            $td.append($('<button>', {
+                                'class': 'search_ruc fa fa-search', 'name': 'search',
+                            }))
+                            $('.search_client').remove()
+                            // $(options.event.target).append($('<button>', {
+                            //     'class': 'search_ruc fa fa-search', 'name': 'search',
+                            // }))
+                        } else {
+                            if ($td.hasClass('consult_client')) {
+                                $('.search_client').remove()
+                                $td.addClass('overnone');
+                                $td.append($('<button>', {
+                                    'class': 'search_client fa fa-search', 'name': 'search',
+                                }))
+                                $('.search_ruc').remove()
+                            } else {
+                                $('.search_ruc').remove()
+                                $('.search_client').remove()
+                            }
+                        }
+                    }
+                }
+            });
+
+            // if ($tr.find('.o_list_record_selector').length > 0) {
+            //     this._selectCell(rowIndex, fieldIndex, {event: event});
+            // } else {
+            //     this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
+            //         // add button with custom code bistion
+            //
+            //     });
+            // }
+            // if ($td.hasClass('consult_ruc')) {
+            //     $('.search_ruc').remove()
+            //     $td.addClass('overnone');
+            //     // var newButton = '<button class="search_ruc fa fa-search" name="search">new button</button>'
+            //     $td.append($('<button>', {
+            //         'class': 'search_ruc fa fa-search', 'name': 'search',
+            //     }))
+            //     $('.search_client').remove()
+            //     // $(options.event.target).append($('<button>', {
+            //     //     'class': 'search_ruc fa fa-search', 'name': 'search',
+            //     // }))
+            // } else {
+            //     if ($td.hasClass('consult_client')) {
+            //         $('.search_client').remove()
+            //         $td.addClass('overnone');
+            //         $td.append($('<button>', {
+            //             'class': 'search_client fa fa-search', 'name': 'search',
+            //         }))
+            //         $('.search_ruc').remove()
+            //     } else {
+            //         $('.search_ruc').remove()
+            //         $('.search_client').remove()
+            //     }
+            // }
+        },
+        // _selectCell: function (rowIndex, fieldIndex, options) {
+        //     var selectCell = this._super.apply(this, arguments);
+        //     if (options && options.event?.currentTarget) {
+        //         var $td = $(options.event.currentTarget)
+        //         return selectCell.then(function () {
         //             if ($td.hasClass('consult_ruc')) {
+        //                 $('.search_ruc').remove()
         //                 $td.addClass('overnone');
+        //                 // var newButton = '<button class="search_ruc fa fa-search" name="search">new button</button>'
         //                 $td.append($('<button>', {
         //                     'class': 'search_ruc fa fa-search', 'name': 'search',
         //                 }))
-        //
+        //                 $('.search_client').remove()
+        //                 // $(options.event.target).append($('<button>', {
+        //                 //     'class': 'search_ruc fa fa-search', 'name': 'search',
+        //                 // }))
         //             } else {
         //                 if ($td.hasClass('consult_client')) {
+        //                     $('.search_client').remove()
         //                     $td.addClass('overnone');
         //                     $td.append($('<button>', {
         //                         'class': 'search_client fa fa-search', 'name': 'search',
         //                     }))
+        //                     $('.search_ruc').remove()
         //                 } else {
         //                     $('.search_ruc').remove()
         //                     $('.search_client').remove()
         //                 }
         //             }
-        //         });
+        //         })
         //     }
         //
+        //     return selectCell
         // },
-        _selectCell: function (rowIndex, fieldIndex, options) {
-            var selectCell = this._super.apply(this, arguments);
-            if (options && options.event?.currentTarget) {
-                var $td = $(options.event.currentTarget)
-                return selectCell.then(function () {
-                    console.log("se", this)
-                    if ($td.hasClass('consult_ruc')) {
-                        $('.search_ruc').remove()
-                        $td.addClass('overnone');
-                        // var newButton = '<button class="search_ruc fa fa-search" name="search">new button</button>'
-                        $td.append($('<button>', {
-                            'class': 'search_ruc fa fa-search', 'name': 'search',
-                        }))
-                        $('.search_client').remove()
-                        // $(options.event.target).append($('<button>', {
-                        //     'class': 'search_ruc fa fa-search', 'name': 'search',
-                        // }))
-                    } else {
-                        if ($td.hasClass('consult_client')) {
-                            $('.search_client').remove()
-                            $td.addClass('overnone');
-                            $td.append($('<button>', {
-                                'class': 'search_client fa fa-search', 'name': 'search',
-                            }))
-                            $('.search_ruc').remove()
-                        } else {
-                            $('.search_ruc').remove()
-                            $('.search_client').remove()
-                        }
-                    }
-                })
-            }
-
-            return selectCell
-        },
         _onClickRuc: function (event) {
             var changes = {}
 
@@ -340,7 +367,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 return One2ManyKanbanRenderer;
             }
             if (self.view.arch.tag === 'tree') {
-                console.log("self.recordData.state : ", self.recordData)
                 if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3 && self.recordData.current_user == 1) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
                     return ListRenderer.extend({
                         init: function (parent, state, params) {
