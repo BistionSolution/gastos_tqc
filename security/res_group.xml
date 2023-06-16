@@ -26,18 +26,18 @@
 
 
         <!-- QUITO TODOS LOS USUARIOS QUE PERTENECENA UN MODULO MENUS -->
-<!--        <record model="ir.ui.menu" id="hr.menu_human_resources_configuration_employee">-->
-<!--            <field name="groups_id" eval="[(6,0,[ref('vacation_control.res_groups_administrator')])]"/>-->
-<!--        </record>-->
-<!--          <record model="ir.ui.menu" id="hr.menu_hr_employee">-->
-<!--            <field name="groups_id" eval="[(6,0,[ref('vacation_control.res_groups_administrator')])]"/>-->
-<!--        </record>-->
-<!--        <record model="ir.ui.menu" id="hr.menu_human_resources_configuration">-->
-<!--            <field name="groups_id" eval="[(6,0,[ref('vacation_control.res_groups_administrator')])]"/>-->
-<!--        </record>-->
-<!--        <record model="ir.ui.menu" id="hr.menu_hr_department_kanban">-->
-<!--            <field name="groups_id" eval="[(6,0,[ref('vacation_control.res_groups_administrator')])]"/>-->
-<!--        </record>-->
+        <record model="ir.ui.menu" id="hr.menu_human_resources_configuration_employee">
+            <field name="groups_id" eval="[(6,0,[ref('gastos_tqc.res_groups_administrator')])]"/>
+        </record>
+          <record model="ir.ui.menu" id="hr.menu_hr_employee">
+            <field name="groups_id" eval="[(6,0,[ref('gastos_tqc.res_groups_administrator')])]"/>
+        </record>
+        <record model="ir.ui.menu" id="hr.menu_human_resources_configuration">
+            <field name="groups_id" eval="[(6,0,[ref('gastos_tqc.res_groups_administrator')])]"/>
+        </record>
+        <record model="ir.ui.menu" id="hr.menu_hr_department_kanban">
+            <field name="groups_id" eval="[(6,0,[ref('gastos_tqc.res_groups_administrator')])]"/>
+        </record>
 
     </data>
 </odoo>
