@@ -297,7 +297,7 @@
                         <!--                                class="oe_highlight"-->
                         <!--                              />-->
                         <field name="habilitado_state" widget="statusbar"
-                               statusbar_visible="habilitado,proceso"/>
+                               statusbar_visible="habilitado,proceso,liquidado"/>
                     </header>
                     <!--                    <header>-->
                     <!--&lt;!&ndash;                        <button string="Enviar a aprobacion" name="action_confirm" states="a_enviar" type="object" class="oe_highlight"/>&ndash;&gt;-->

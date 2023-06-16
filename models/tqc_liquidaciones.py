@@ -690,30 +690,42 @@ class Liquidaciones(models.Model):
 
             self.write(vals)
             self.importar_exactus
-            res = {
-                "name": "Historial de liquidaciones",
-                "type": "ir.actions.act_window",
-                "res_model": "tqc.liquidaciones",
-                "view_type": "form",
-                "view_mode": "tree, form",
-                "res_id": self.id,
-                "search_view_id": (self.env.ref("gastos_tqc.search_historial_filter").id,),
-                'views': [
-                    [self.env.ref("gastos_tqc.view_form_historial_liquidaciones").id, 'form'],
-                    [self.env.ref("gastos_tqc.view_tree_historial_liquidaciones").id, 'tree']],
-                "target": "main",
-                # "context": {'no_breadcrumbs': True},
-                'clear_breadcrumb': True,
-                "nodestroy": True,
-                'help': """
-                                        <p class="o_view_nocontent_smiling_face">
-                                            No hay registros para mostrar
-                                          </p><p>
+            # res = {
+            #     "name": "Historial de liquidaciones",
+            #     "type": "ir.actions.act_window",
+            #     "res_model": "tqc.liquidaciones",
+            #     "view_type": "form",
+            #     "view_mode": "tree, form",
+            #     "res_id": self.id,
+            #     "search_view_id": (self.env.ref("gastos_tqc.search_historial_filter").id,),
+            #     'views': [
+            #         [self.env.ref("gastos_tqc.view_form_historial_liquidaciones").id, 'form'],
+            #         [self.env.ref("gastos_tqc.view_tree_historial_liquidaciones").id, 'tree']],
+            #     "target": "main",
+            #     # "context": {'no_breadcrumbs': True},
+            #     'clear_breadcrumb': True,
+            #     "nodestroy": True,
+            #     'help': """
+            #                             <p class="o_view_nocontent_smiling_face">
+            #                                 No hay registros para mostrar
+            #                               </p><p>
+            #
+            #                               </p>
+            #                             """
+            # }
+            # return res
 
-                                          </p>
-                                        """
+            title = _("¡Envio exitoso!")
+            message = _("Se envio correctamente los documentos")
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': title,
+                    'message': message,
+                    'sticky': False,
+                }
             }
-            return res
 
         except Exception as e:
             raise UserError(_(e))
