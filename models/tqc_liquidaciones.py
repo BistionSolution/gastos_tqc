@@ -202,7 +202,7 @@ class Liquidaciones(models.Model):
                           CONVERT(decimal(10,2),SALDO) AS saldo
                         FROM
                           tqc.ENTREGA_A_RENDIR
-                        WHERE LIQUIDADO = 'N'"""
+                        WHERE LIQUIDADO != 'S'"""
 
         sql = """SELECT
                   ENTREGA_A_RENDIR AS external_id,
@@ -215,7 +215,7 @@ class Liquidaciones(models.Model):
                   SALDO AS saldo
                 FROM
                   tqc.ENTREGA_A_RENDIR
-                WHERE LIQUIDADO = 'N'"""
+                WHERE LIQUIDADO != 'S'"""
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
