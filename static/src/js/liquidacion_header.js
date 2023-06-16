@@ -77,11 +77,10 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
 
                     // $('.breadcrumb').append('<span>HOLA GA</span>');
                     // console.log("VAMOS A VER ",dom)
-                    self.$el.before(elem);
+                    self.$el.prepend(elem);
                 })
                 if (self.state.domain[2]) {
                     self.$el.find('.o_expense_container').children().find(`#${self.state.domain[2][2]}`).addClass('button_black')
-
                 }
 
 
