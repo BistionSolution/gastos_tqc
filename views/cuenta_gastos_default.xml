@@ -48,7 +48,7 @@
         <!--        </record>-->
 
         <record id="action_view_cuenta_gastos_default" model="ir.actions.act_window">
-            <field name="name">Cuentas defecto</field>
+            <field name="name">Cuentas Contables</field>
             <field name="res_model">cuenta.gastos.default</field>
             <field name="view_mode">tree,form</field>
             <field name="target">main</field>

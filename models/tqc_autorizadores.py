@@ -132,11 +132,12 @@ class TqcAuth(models.Model):
     def masive_auth(self):
         id_group_emple = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Empleado')]).id
         id_group_aprob = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Aprobador')]).id
-        id_rrhh_group = self.env['ir.model.data'].xmlid_to_res_id('hr.group_hr_manager')
-        idall = self.env["hr.employee"].search([]).mapped("user_id").mapped("id")
-        print("id_rrhh_group : ", id_rrhh_group)
-        self.env['res.groups'].search([('id', '=', id_rrhh_group)]).sudo().write(
-            {'users': [(3, i) for i in idall]})
+        # Para cambiar
+        # id_rrhh_group = self.env['ir.model.data'].xmlid_to_res_id('hr.group_hr_manager')
+        # idall = self.env["hr.employee"].search([]).mapped("user_id").mapped("id")
+        # print("id_rrhh_group : ", id_rrhh_group)
+        # self.env['res.groups'].search([('id', '=', id_rrhh_group)]).sudo().write(
+        #     {'users': [(3, i) for i in idall]})
 
         # OBTENGO ID DE CUENTAS ERP DE LOS EMPLEADOS VINCULADOS COMO APROADORES, NOTE: ENVIE LIST1 - LISTA DE ID DE JOBS
         listsup = self.env["tqc.autorizadores"].search([]).mapped("superior").mapped("user_id").mapped("id")
