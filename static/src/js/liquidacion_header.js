@@ -58,14 +58,14 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
                     // context: this.context,
                 }).then(function (count_state) {
                     self._rpc({
-                        model: 'hr.employee',
-                        method: 'search_read',
-                        domain: [['user_id', '=', session.user_id]],
+                        model: 'tqc.liquidaciones',
+                        method: 'search_employee',
                         // context: this.context,
                     }).then(function (employee) {
-                        if (employee.length !== 0) {
+                        console.log(employee)
+                        if (employee) {
                             self.$el.parent().prev().find('#mydata').remove()
-                            self.$el.parent().prev().prepend("<span id='mydata'>" + employee[0].name + " - " + employee[0].department_id[1] + "</span>");
+                            self.$el.parent().prev().prepend("<span id='mydata'>" + employee[0] + " - " + employee[1] + "</span>")
                         }
                     });
 
@@ -157,16 +157,29 @@ odoo.define('gastos_tqc.liquidacion_tree', function (require) {
             var self = this;
             this._super(...arguments);
             self._rpc({
-                model: 'hr.employee',
-                method: 'search_read',
-                domain: [['user_id', '=', session.user_id]],
+                model: 'tqc.liquidaciones',
+                method: 'search_employee',
                 // context: this.context,
             }).then(function (employee) {
-                if (employee.length !== 0) {
+                console.log(employee)
+                if (employee) {
                     self.$el.parent().prev().find('#mydata').remove()
-                    self.$el.parent().prev().prepend("<span id='mydata'>" + employee[0].name + " - " + employee[0].department_id[1] + "</span>")
+                    self.$el.parent().prev().prepend("<span id='mydata'>" + employee[0] + " - " + employee[1] + "</span>")
                 }
             });
+            // self._rpc({
+            //     model: 'hr.employee',
+            //     method: 'search_read',
+            //     domain: [['user_id', '=', session.user_id]],
+            //     sudo: true,
+            //     // context: this.context,
+            // }).then(function (employee) {
+            //     if (employee.length !== 0) {
+            //         self.$el.parent().prev().find('#mydata').remove()
+            //         self.$el.parent().prev().prepend("<span id='mydata'>" + employee[0].name + " - " + employee[0].department_id[1] + "</span>")
+            //     }
+            // });
+
 
         }
     });

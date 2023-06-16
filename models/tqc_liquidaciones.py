@@ -6,6 +6,7 @@ import datetime
 import re, pyodbc
 import logging
 import locale
+
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 _logger = logging.getLogger(__name__)
@@ -131,8 +132,8 @@ class Liquidaciones(models.Model):
     @api.depends()
     def _current_user(self):
         for record in self:
-            print("record.empleado_name : ",record.empleado_name.name)
-            print("record.empleado_name : ",record.empleado_name.superior.name)
+            print("record.empleado_name : ", record.empleado_name.name)
+            print("record.empleado_name : ", record.empleado_name.superior.name)
             if self.env.uid in record.empleado_name.superior.user_id.mapped('id'):
                 record.current_user = 1
             else:
@@ -223,7 +224,7 @@ class Liquidaciones(models.Model):
             # company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
             # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
             posiUser = []
-            print("table_bd : ",table_bd)
+            print("table_bd : ", table_bd)
             nom_module = table_bd.replace(".", "_")
             if table_relations:
                 dataExternalSQL = self.get_external_field(
@@ -236,9 +237,9 @@ class Liquidaciones(models.Model):
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
             current_locale = locale.getlocale()
-            print("LENGUAJE LOCAL : ",current_locale)
+            print("LENGUAJE LOCAL : ", current_locale)
             _logger.info('LENGUAJE extraAAAAAA')
-            _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0],current_locale[1]))
+            _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
             for user in idusers:
                 if user[1] == '000000013300':
@@ -769,3 +770,13 @@ class Liquidaciones(models.Model):
 
     def search_cod_client(self):
         pass
+
+    @api.model
+    def search_employee(self):
+        user_now = self.env.uid
+        print(user_now)
+        employee = self.env['hr.employee'].sudo().search([('user_id', '=', user_now)])
+        if employee:
+            return [employee.name, employee.department_id.name]
+        else:
+            return False

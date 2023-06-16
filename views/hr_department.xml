@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+        <record id="inherited_gastos_department_kanban" model="ir.ui.view">
+            <field name="name">inherited.model.kanban.department.gastos</field>
+            <field name="model">hr.department</field> <!--MODULO NATIVO-->
+            <field name="inherit_id" ref="hr.hr_department_view_kanban"/>
+            <field name="arch" type="xml">
+                <!-- find field description and add the field
+                     new_field after it -->
+                <kanban position="attributes">
+                    <attribute name="create">false</attribute>
+                    <attribute name="delete">false</attribute>
+                    <attribute name="edit">false</attribute>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="inherited_gastos_department_tree" model="ir.ui.view">
+            <field name="name">inherited.model.tree.department.gastos</field>
+            <field name="model">hr.department</field> <!--MODULO NATIVO-->
+            <field name="inherit_id" ref="hr.view_department_tree"/>
+            <field name="arch" type="xml">
+                <!-- find field description and add the field
+                     new_field after it -->
+                <tree position="attributes">
+                    <attribute name="create">false</attribute>
+                    <attribute name="delete">false</attribute>
+                    <attribute name="edit">false</attribute>
+                    <button name="action_archive" attrs="{'invisible': True}"/>
+                    <field name="disable_archive" invisible="1"/>
+                    <button name="action_archive" attrs="{'invisible': [('disable_archive', '=', True)]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="inherited_gastos_form_department" model="ir.ui.view">
+            <field name="name">inherited.model.form.department.gastos</field>
+            <field name="model">hr.department</field> <!--MODULO NATIVO-->
+            <field name="inherit_id" ref="hr.view_department_form"/>
+            <field name="arch" type="xml">
+                <!-- find field description and add the field
+                     new_field after it -->
+                <form position="attributes">
+                    <attribute name="create">false</attribute>
+                    <attribute name="delete">false</attribute>
+                    <attribute name="edit">false</attribute>
+
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

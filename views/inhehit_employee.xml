@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <record id="inherited_model_employee_form" model="ir.ui.view">
+            <field name="name">inherited.model.form.employee.inherit</field>
+            <field name="model">hr.employee</field> <!--MODULO NATIVO-->
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <!-- find field description and add the field
+                     new_field after it -->
+                <xpath expr="//div[@id='o_work_employee_main']" position="inside">
+                    <group string="Aprobador Gastos">
+                       <field name="superior" widget="many2many_tags"/>
+                        <field name="subordinados" widget="many2many_tags"/>
+                    </group>
+
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

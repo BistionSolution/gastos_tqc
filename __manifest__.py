@@ -40,6 +40,7 @@
         'views/tipo_documentos.xml',
         'views/tqc_autorizadores.xml',
         'views/hr_employee.xml',
+        'views/hr_department.xml',
         'views/tqc_impuestos.xml',
         'views/cuenta_gastos_default.xml',
         'views/detalle_liquidaciones.xml',

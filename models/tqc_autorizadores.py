@@ -26,7 +26,6 @@ class TqcAuth(models.Model):
 
             ip_conexion = "10.10.10.228"
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-            print("DATA BASE: ", data_base)
             user_bd = "vacaciones"
             pass_bd = "exvacaciones"
 
@@ -102,7 +101,7 @@ class TqcAuth(models.Model):
                 ids_superior = superior.mapped('superior').mapped('id')
                 if rec.id == 312:
                     print("name 2 : ", rec.name)
-                    print("SUPERIORES 2  : ",ids_superior)
+                    print("SUPERIORES 2  : ", ids_superior)
                 self.env["hr.employee"].browse(rec.id).sudo().write({'superior': [(6, 0, ids_superior)]})
                 self.env.cr.commit()
             else:
@@ -112,11 +111,10 @@ class TqcAuth(models.Model):
             subords = self.env["tqc.autorizadores"].search([('superior', '=', rec.id)])
             if subords:
 
-
                 ids_subord = subords.mapped('subordinados').mapped('id')
                 if rec.id == 312:
                     print("name 2 : ", rec.name)
-                    print("SUPERIORES 2  : ",subords)
+                    print("SUPERIORES 2  : ", subords)
                     print("supord 2  : ", ids_subord)
                 self.env["hr.employee"].browse(rec.id).sudo().write({'subordinados': [(6, 0, ids_subord)]})
                 self.env.cr.commit()
@@ -134,6 +132,11 @@ class TqcAuth(models.Model):
     def masive_auth(self):
         id_group_emple = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Empleado')]).id
         id_group_aprob = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Aprobador')]).id
+        id_rrhh_group = self.env['ir.model.data'].xmlid_to_res_id('hr.group_hr_manager')
+        idall = self.env["hr.employee"].search([]).mapped("user_id").mapped("id")
+        print("id_rrhh_group : ", id_rrhh_group)
+        self.env['res.groups'].search([('id', '=', id_rrhh_group)]).sudo().write(
+            {'users': [(3, i) for i in idall]})
 
         # OBTENGO ID DE CUENTAS ERP DE LOS EMPLEADOS VINCULADOS COMO APROADORES, NOTE: ENVIE LIST1 - LISTA DE ID DE JOBS
         listsup = self.env["tqc.autorizadores"].search([]).mapped("superior").mapped("user_id").mapped("id")
