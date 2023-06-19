@@ -19,13 +19,19 @@
             <field name="format">A5</field>
             <field name="orientation">Landscape</field>
             <field name="default" eval="False"/>
-            <field name="dpi" eval="10"/>
+            <field name="dpi" eval="90"/>
             <field name="margin_top" eval="10"/>
             <field name="margin_right" eval="0"/>
             <field name="margin_bottom" eval="7"/>
             <field name="margin_left" eval="0"/>
             <field name="header_line" eval="False"/>
             <field name="header_spacing" eval="10"/>
+<!--            <field name="margin_top" eval="10"/>-->
+<!--            <field name="margin_right" eval="0"/>-->
+<!--            <field name="margin_bottom" eval="7"/>-->
+<!--            <field name="margin_left" eval="0"/>-->
+<!--            <field name="header_line" eval="False"/>-->
+<!--            <field name="header_spacing" eval="10"/>-->
         </record>
 
         <!-- UNIDAD-->
