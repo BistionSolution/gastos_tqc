@@ -19,7 +19,7 @@ class detalleLiquidaciones(models.Model):
     liquidacion_id = fields.Many2one('tqc.liquidaciones')
     tipo = fields.Char()
     subtipo = fields.Char()
-    serie = fields.Char(required=1, size=4)
+    serie = fields.Char(required=1)
     numero = fields.Char(required=1)
     ruc = fields.Char(string='RUC', required=1)
     proveedor_razonsocial = fields.Char(string='Razón social')
