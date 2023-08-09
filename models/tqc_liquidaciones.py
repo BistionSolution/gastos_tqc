@@ -197,12 +197,23 @@ class Liquidaciones(models.Model):
                           EMPLEADO AS empleado_name,
                           MONEDA AS moneda,
                           APLICACION AS glosa_entrega,
-                          FECHA_ENTREGA AS fecha_entrega,
-                          CONVERT(decimal(10,2),MONTO) AS monto_entrega,
-                          CONVERT(decimal(10,2),SALDO) AS saldo
+                          FECHA_ENTREGA AS fecha_entrega
                         FROM
                           tqc.ENTREGA_A_RENDIR
                         WHERE LIQUIDADO != 'S'"""
+
+        sql_prime_super = """SELECT
+                                  ENTREGA_A_RENDIR AS external_id,
+                                  ENTREGA_A_RENDIR AS num_solicitud,
+                                  EMPLEADO AS empleado_name,
+                                  MONEDA AS moneda,
+                                  APLICACION AS glosa_entrega,
+                                  FECHA_ENTREGA AS fecha_entrega,
+                                  CONVERT(decimal(10,2),MONTO) AS monto_entrega,
+                                  CONVERT(decimal(10,2),SALDO) AS saldo
+                                FROM
+                                  tqc.ENTREGA_A_RENDIR
+                                WHERE LIQUIDADO != 'S'"""
 
         sql = """SELECT
                   ENTREGA_A_RENDIR AS external_id,
@@ -233,7 +244,7 @@ class Liquidaciones(models.Model):
                     posiUser.append(campList.index(data))  # inicia posicion de elemento
 
             cursor = connection.cursor()
-            cursor.execute(sql_prime)
+            cursor.execute(sql_prime_super)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
             current_locale = locale.getlocale()
@@ -348,7 +359,7 @@ class Liquidaciones(models.Model):
                         {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
                     self.env.cr.commit()
         except Exception as e:
-            print("Error : ", e)
+            raise UserError(_(e))
 
     @api.model
     def create(self, vals):
