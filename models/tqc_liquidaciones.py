@@ -10,7 +10,7 @@ import locale
 import pandas as pd
 
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-print(locale.getlocale())
+
 _logger = logging.getLogger(__name__)
 
 database = 'TQC'
@@ -809,4 +809,4 @@ class Liquidaciones(models.Model):
         if employee:
             return [employee.name, employee.department_id.name]
         else:
-          return False
+            return False
