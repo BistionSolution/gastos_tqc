@@ -3,17 +3,20 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 import datetime
-import re, pyodbc
+import re
+import pyodbc
 import logging
 import locale
+import pandas as pd
 
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-
+print(locale.getlocale())
 _logger = logging.getLogger(__name__)
 
-database = 'TQCBKP2'
-userbd = "TQC"
-passbd = "extqc"
+database = 'TQC'
+# userbd = "TQC"
+userbd = "vacaciones"
+passbd = "exvacaciones"
 
 
 class Liquidaciones(models.Model):
@@ -185,12 +188,13 @@ class Liquidaciones(models.Model):
     @api.model
     def importar_exactus(self):
         ip_conexion = "10.10.10.228"
-        data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
+        data_base = "TQC"
+        print("THIS DATA BASE : ", data_base)
         user_bd = userbd
         pass_bd = passbd
         table_bd = "tqc.liquidaciones"
         table_relations = """empleado_name OF hr.employee"""
-
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         sql_prime = """SELECT
                           ENTREGA_A_RENDIR AS external_id,
                           ENTREGA_A_RENDIR AS num_solicitud,
@@ -201,8 +205,19 @@ class Liquidaciones(models.Model):
                           CONVERT(decimal(10,2),MONTO) AS monto_entrega,
                           CONVERT(decimal(10,2),SALDO) AS saldo
                         FROM
-                          tqc.ENTREGA_A_RENDIR
+                          """ + prefix_table + """.ENTREGA_A_RENDIR
                         WHERE LIQUIDADO != 'S'"""
+
+        sql_prime2 = """SELECT MONTO, CAST(MONTO*1.0 AS float) AS monto_entrega FROM """ + prefix_table + """.ENTREGA_A_RENDIR WHERE LIQUIDADO != 'S'"""
+
+        print("primer2 ", sql_prime2)
+
+        sql_prueba = """SELECT ROWPOINTER AS external_id, 
+                            TIPO AS tipo,
+                            SUBTIPO AS subtipo,
+                            DESCRIPCION AS descripcion                    
+                            FROM """ + prefix_table + """.SUBTIPO_DOC_CAJA 
+                            WHERE TIPO IN ('B/V','RHP') OR (TIPO='VOG' AND SUBTIPO IN (17,18)) OR (TIPO='FAC' AND SUBTIPO IN (0,1,2,3,9,19))"""
 
         sql = """SELECT
                   ENTREGA_A_RENDIR AS external_id,
@@ -213,31 +228,34 @@ class Liquidaciones(models.Model):
                   FECHA_ENTREGA AS fecha_entrega,
                   MONTO AS monto_entrega,
                   SALDO AS saldo
-                FROM
-                  tqc.ENTREGA_A_RENDIR
+                FROM """ + prefix_table + """.ENTREGA_A_RENDIR
                 WHERE LIQUIDADO != 'S'"""
         try:
-            connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+            # connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+            #                   data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+            connection = pyodbc.connect("DRIVER={ODBC Driver 17 for SQL Server}; SERVER=10.10.10.228;DATABASE=TQCBKP2;UID=TQC;PWD=extqc")
 
             campList = self.convert_sql(sql)  # lista de campos odoo
             # company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
             # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
             posiUser = []
             print("table_bd : ", table_bd)
+            current_locale = locale.getlocale()
+            print("LENGUAJE LOCAL : ", current_locale)
+            # data = pd.read_sql(sql_prime2, connection)
+            cursor = connection.cursor()
+            cursor.execute(sql_prime)
+            idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
+            cursor.close()
+            print("xd : ", idusers)
             nom_module = table_bd.replace(".", "_")
             if table_relations:
                 dataExternalSQL = self.get_external_field(
                     table_relations)  # Devuelve un arreglo de los nombres de las tablas relacionadas
                 for data in dataExternalSQL[0]:
                     posiUser.append(campList.index(data))  # inicia posicion de elemento
+            print("posiUser : ", posiUser)
 
-            cursor = connection.cursor()
-            cursor.execute(sql_prime)
-            idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
-
-            current_locale = locale.getlocale()
-            print("LENGUAJE LOCAL : ", current_locale)
             _logger.info('LENGUAJE extraAAAAAA')
             _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
@@ -348,7 +366,7 @@ class Liquidaciones(models.Model):
                         {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
                     self.env.cr.commit()
         except Exception as e:
-            print("Error : ", e)
+            raise UserError(_(e))
 
     @api.model
     def create(self, vals):
@@ -791,4 +809,4 @@ class Liquidaciones(models.Model):
         if employee:
             return [employee.name, employee.department_id.name]
         else:
-            return False
+          return False

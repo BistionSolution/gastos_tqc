@@ -41,7 +41,7 @@ class detalleLiquidaciones(models.Model):
     cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
     codetipo = fields.Char(compute="_depend_tipocode")
-    observacionrepresentacion = fields.Text(string='Observacion representacion', required=1)
+    observacionrepresentacion = fields.Text(string='Observacion representacion')
     nocliente = fields.Char()
 
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
