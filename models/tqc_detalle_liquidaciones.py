@@ -41,7 +41,7 @@ class detalleLiquidaciones(models.Model):
     cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
     codetipo = fields.Char(compute="_depend_tipocode")
-    observacionrepresentacion = fields.Text(string='Observacion representacion', required=1)
+    observacionrepresentacion = fields.Text(string='Observacion representacion')
     nocliente = fields.Char()
 
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
@@ -105,6 +105,7 @@ class detalleLiquidaciones(models.Model):
     @api.depends()
     def _current_user(self):
         for record in self:
+            print("current user : ", record.liquidacion_id.current_user)
             record.current_user = record.liquidacion_id.current_user
 
     @api.depends()
@@ -148,6 +149,30 @@ class detalleLiquidaciones(models.Model):
                 rec.codetipo = rec.tipodocumento.tipo
             else:
                 rec.codetipo = False
+
+    @api.onchange('base_afecta')
+    def _check_detraction(self):
+        for rec in self:
+            print("ESTE REC", rec.base_afecta)
+            print("ESTE REC", rec.id)
+            if rec.base_afecta > 700:
+                warning = {
+                    'title': "Mensaje de advertencia",
+                    'message': "Factura mas de 700 se encuentra afecta a detracción (por adquisición de servicios) o retención (por adquisición de bienes)",
+                }
+                return {'warning': warning}
+                # raise UserError(_('Se paso del saldo'))
+                # title = _("Connection Test Succeeded!")
+                # message = _("Everything seems properly set up!")
+                # return {
+                #     'type': 'ir.actions.client',
+                #     'tag': 'display_notification',
+                #     'params': {
+                #         'title': title,
+                #         'message': message,
+                #         'sticky': False,
+                #     }
+                # }
 
     def _get_price_total(self, liquidacion_id=None, base_afecta=None, impuesto=None, base_inafecta=None):
         self.ensure_one()
@@ -219,6 +244,9 @@ class detalleLiquidaciones(models.Model):
                 if not int(min_serie) <= len(rec.serie) <= int(max_serie):
                     # raise UserError('error')
                     raise UserError('La serie debe ser menor igual a %s y mayor igual a %s' % (min_serie, max_serie))
+                rec.serie = rec.serie.upper()
+            else:
+                rec.serie = False
 
     @api.onchange('ruc')
     def _onchange_ruc(self):
@@ -266,8 +294,6 @@ class detalleLiquidaciones(models.Model):
                         if proveedor[2] != 'S':
                             raise UserError(_('Proveedor no activo'))
                     rec.proveedor_razonsocial = result
-
-
 
     @api.onchange('cliente')
     def _onchange_cliente(self):

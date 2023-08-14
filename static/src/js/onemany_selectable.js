@@ -8,6 +8,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
     var ListRenderer = require('web.ListRenderer');
     var FieldOne2Many = require('web.relational_fields').FieldOne2Many;
     var fields = require('web.relational_fields');
+    var session = require('web.session');
 
     ListRenderer.include({
         init: function (parent, state, params) {
@@ -29,6 +30,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                     allChecked = false;
                 }
             });
+
             if (this.selection.length > 0) {
                 $('.button_delete_order_lines').show()
                 $('.button_select_order_lines').show()
@@ -43,12 +45,23 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             // this.trigger_up('selection_changed', {selection: this.selection});
             this._updateFooter();
         },
+        _renderView: function () {
+            var self = this;
+            console.log("este selfd: ", self)
+            // deshabilita cuando el registro esta deshabilitado
+            return this._super.apply(this, arguments).then(function () {
+                self.$('.text-danger .custom-control-input').attr('disabled', 'disabled');
+            });
+        },
         _renderRows: function () {
             var $rows = this.state.data.map(this._renderRow.bind(this));
             // permite quitar por estado de la solicitud para poder quitar el editar
             if (this.__parentedParent.model === 'tqc.liquidaciones') {
                 // if (this.addCreateLine && this.__parentedParent.recordData.habilitado_state !== ['proceso','corregir']) {
                 let stado = ['proceso', 'corregir'];
+                console.log("Q ES : ", $rows)
+                // $rows.attr('disabled', 'disabled');
+                // Permite visializar si puede agregar mas registros, el boton de agregar linea
                 if (this.addCreateLine && stado.indexOf(this.__parentedParent.recordData.habilitado_state) === -1) {
                     var $tr = $('<tr>');
                     var colspan = this._getNumberOfCols();
@@ -123,7 +136,12 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             var fieldIndex = Math.max($tr.find('.o_field_cell').index($td), 0);
             this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
                 if (self.state.model === "tqc.detalle.liquidaciones") {
-                    if (self.__parentedParent.recordData.uid_create !== 3) {
+                    console.log("RENDER 1 : ", self.__parentedParent.recordData)
+                    console.log("RENDER 1 : ", self.__parentedParent.recordData.habilitado_state)
+                    console.log("RENDER 2 : ", self.__parentedParent.recordData.user_id)
+                    // Si el registro pertenece al usuario conectado, entocnes se le habilita la busqueda
+                    if (((session.user_id[0] === self.__parentedParent.recordData.user_id) && self.__parentedParent.recordData.habilitado_state === 'habilitado') || ((self.__parentedParent.recordData.habilitado_state === 'proceso') && ([2, 1].includes(self.__parentedParent.recordData.uid_create)))) {
+                        console.log("ENTRO XD")
                         if ($td.hasClass('consult_ruc')) {
                             $('.search_ruc').remove()
                             $td.addClass('overnone');
@@ -367,6 +385,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                 return One2ManyKanbanRenderer;
             }
             if (self.view.arch.tag === 'tree') {
+                console.log("esta es xd : ", self.recordData.current_user)
                 if ((self.recordData.state === 'jefatura' && self.recordData.uid_create === 3 && self.recordData.current_user == 1) || self.recordData.state === 'contable' && self.recordData.uid_create === 2) {
                     return ListRenderer.extend({
                         init: function (parent, state, params) {

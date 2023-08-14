@@ -2,7 +2,7 @@
 <templates id="template" xml:space="preserve">
     <t t-name="search_ruc">
         <div class="o_row o_row_readonly o_hr_holidays_dates">
-            <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="" type="text"
+            <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="Razón social o RUC/DNI" type="text"
                    autocomplete="off" id="ruc"/>
             <input type="hidden" name="clickruc" id="clickruc"/>
             <button type="button" class="btn button_search_ruc btn-primary" data-original-title="" title=""><i class="fa fa-fw o_button_icon fa-search"></i>
@@ -55,7 +55,7 @@
 
     <t t-name="search_client">
         <div class="o_row o_row_readonly o_hr_holidays_dates">
-            <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="" type="text"
+            <input class="o_field_char o_input oe_inline captura_name" name="name" placeholder="Razón social o RUC/DNI" type="text"
                    autocomplete="off" id="client"/>
             <input type="hidden" name="clickclient" id="clickclient"/>
             <button type="button" class="btn button_search_client btn-primary" data-original-title="" title=""><i class="fa fa-fw o_button_icon fa-search"></i>

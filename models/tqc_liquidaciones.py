@@ -94,6 +94,8 @@ class Liquidaciones(models.Model):
 
     current_user = fields.Integer(compute='_current_user')  # compute='_get_current_user', default=0
     uid_create = fields.Integer(compute='_get_current_user')
+    user_id = fields.Integer(compute='_get_user_id')
+
     current_total = fields.Float(string='Current Total', compute='_compute_amount')
 
     @api.depends('detalleliquidaciones_id')
@@ -131,28 +133,38 @@ class Liquidaciones(models.Model):
 
     @api.depends()
     def _current_user(self):
+        print("vamo argentina")
         for record in self:
             print("record.empleado_name : ", record.empleado_name.name)
-            print("record.empleado_name : ", record.empleado_name.superior.name)
-            if self.env.uid in record.empleado_name.superior.user_id.mapped('id'):
+            print("record.empleado_name : ", record.empleado_name.superior.mapped('user_id'))
+            if self.env.uid in record.empleado_name.superior.mapped('user_id').mapped('id'):
                 record.current_user = 1
             else:
                 record.current_user = 0
+
+    @api.depends()
+    def _get_user_id(self):
+        for record in self:
+            # print("SUPER ID  : ",record.empleado_name.user_id.id)
+            # record.empleado_name.user_id.id
+            record.user_id = record.empleado_name.user_id.id
 
     @api.depends()
     def _get_current_user(self):
         # data_id = model_obj._get_id('module_name', 'view_id_which_you_want_refresh')
         # view_id = model_obj.browse(data_id).res_id
         user_now = self.env.uid
+        print("VAMOS PERU")
+
         # ['|', ('empleado_name.superior.user_id', 'in', [self.env.uid]), ('empleado_name.user_id', '=', self.env.uid)]
         for record in self:
             # record.sudo().empleado_name.user_id.id == user_now) or
             if self.env.user.has_group('gastos_tqc.res_groups_administrator'):
                 record.uid_create = 1
-            elif self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
-                record.uid_create = 3
             elif self.env.user.has_group('gastos_tqc.res_groups_contador_gastos'):
                 record.uid_create = 2
+            elif self.env.user.has_group('gastos_tqc.res_groups_aprobador_gastos'):
+                record.uid_create = 3
             else:
                 record.uid_create = 0
 

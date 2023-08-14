@@ -204,9 +204,11 @@
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="observacionjefatura" string="Obs. Jefatura"
-                                           attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"/>
+                                           attrs="{'readonly':['|',('state_liqui', 'in', ['contable']),'&amp;',('revisado_state', 'not in', ['rechazado_jefatura']),('uid_create','!=',3)]}"
+                                    />
+<!--                                    attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"-->
                                     <field name="observacioncontabilidad" string="Obs. Contabilidad"
-                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
+                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"
@@ -287,6 +289,9 @@
                     <header>
                         <!--                        <field name="habilitado_state" invisible="1"/>-->
                         <field name="uid_create" invisible="1"/>
+                        <field name="current_user" invisible="1"/>
+                        <field name="user_id" invisible="1"/>
+                        <field name="state" invisible="1"/>
                         <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
                                 class="oe_highlight oe_read_only"
                                 attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"/>
