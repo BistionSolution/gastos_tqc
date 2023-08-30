@@ -109,6 +109,11 @@ class Liquidaciones(models.Model):
                 raise UserError(_('Se paso del saldo'))
             rec.current_total = total
 
+    @api.onchange('detalleliquidaciones_id')
+    def _onchange_detalles(self):
+        for rec in self:
+            print("DETALLES : ", rec.detalleliquidaciones_id)
+
     def _get_document_domain(self):
         context = self._context.copy() or {}
         if context.get("mode_view", False) == 'flujo':
@@ -561,6 +566,10 @@ class Liquidaciones(models.Model):
 
     def button_contable(self):
         if self.state == 'contable':
+            for doc in self.detalleliquidaciones_id:
+                if doc.razonsocial_invisible == 'no_existe':
+                    raise UserError(_('Hay documentos donde el "Proveedor" no existe, cambiar de "Proveedor" o crear uno nuevo desde Exactus'))
+
             self.write({'state': 'pendiente'})
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable']:

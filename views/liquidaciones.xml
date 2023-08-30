@@ -49,6 +49,7 @@
                                 attrs="{'invisible':[('state','!=','pendiente')]}"
                                 class="oe_highlight"
                                 groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
+                        <field name="habilitado_state" invisible="1"/>
                         <field name="state" widget="statusbar" statusbar_visible="jefatura,contable,pendiente"/>
                     </header>
                     <group>
@@ -178,14 +179,14 @@
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
-                                           attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','=','B/V')]}"
+                                           attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad'])]}"
                                            force_save="1"/>
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="impuesto"
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                                           attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','=','B/V')]}"
+                                           attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad'])]}"
                                            force_save="1"/>
                                     <field name="montoigv" widget="monetary" string="Monto IGV"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
@@ -201,12 +202,13 @@
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="cliente_razonsocial" readonly="1" force_save="1"
                                            string="Cliente razon social"/>
+                                    <field name="code_cuenta_contable" />
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"
-                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
+                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')],'required':[('code_cuenta_contable','in',['63.4.3.3.0.00.00','63.9.1.1.1.10.00','65.6.1.1.1.03.00'])]}"/>
                                     <field name="observacionjefatura" string="Obs. Jefatura"
                                            attrs="{'readonly':['|',('state_liqui', 'in', ['contable']),'&amp;',('revisado_state', 'not in', ['rechazado_jefatura']),('uid_create','!=',3)]}"
                                     />
-<!--                                    attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"-->
+                                    <!--                                    attrs="{'readonly':[('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable'])]}"-->
                                     <field name="observacioncontabilidad" string="Obs. Contabilidad"
                                            attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                     <field name="state" invisible="1"/>
@@ -287,7 +289,6 @@
             <field name="arch" type="xml">
                 <form string="Liquidacion" create="0" delete="0">
                     <header>
-                        <!--                        <field name="habilitado_state" invisible="1"/>-->
                         <field name="uid_create" invisible="1"/>
                         <field name="current_user" invisible="1"/>
                         <field name="user_id" invisible="1"/>
@@ -401,7 +402,7 @@
                                       decoration-danger="revisado_state== 'rechazado'">
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
-                                    <field name="codetipo" invisible="1"/>
+                                    <field name="codetipo"/>
                                     <field name="serie"/>
                                     <!--                                     widget="many2many_binary"-->
                                     <field name="numero"/>
@@ -418,13 +419,13 @@
                                     <!--                                    <field name="subtipo"/>-->
                                     <field name="base_afecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"
-                                           attrs="{'readonly':[('codetipo','=','B/V')]}"
+                                           attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad'])]}"
                                            force_save="1"/>
                                     <field name="base_inafecta" widget="monetary"
                                            options="{'currency_field': 'currency_id'}"/>
                                     <field name="impuesto"
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
-                                           attrs="{'readonly':[('codetipo','=','B/V')]}"
+                                           attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad'])]}"
                                            force_save="1"/>
                                     <field name="montoigv" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
@@ -438,7 +439,9 @@
                                     <!--                                    <field name="nocliente"/>-->
                                     <field name="cliente" class="consult_client"/>
                                     <field name="cliente_razonsocial" string="Cliente razon social"/>
-                                    <field name="observacionrepresentacion" string="Obs. Presentacion"/>
+                                    <field name="code_cuenta_contable" invisible="1"/>
+                                    <field name="observacionrepresentacion" string="Obs. Presentacion"
+                                           attrs="{'required':[('code_cuenta_contable','in',['63.4.3.3.0.00.00','63.9.1.1.1.10.00','65.6.1.1.1.03.00'])]}"/>
                                     <field name="state" readonly="1" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"
@@ -503,7 +506,8 @@
                                     <!--                                    <field name="nocliente"/>-->
                                     <field name="cliente" class="consult_client"/>
                                     <field name="cliente_razonsocial" string="Cliente razon social"/>
-                                    <field name="observacionrepresentacion" string="Obs. Presentacion"/>
+                                    <field name="code_cuenta_contable" invisible="1"/>
+                                    <field name="observacionrepresentacion" string="Obs. Presentacion" attrs="{'readonly':[('code_cuenta_contable','in',['63.4.3.3.0.00.00','63.9.1.1.1.10.00','65.6.1.1.1.03.00'])]}"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"

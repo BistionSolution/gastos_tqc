@@ -41,6 +41,7 @@ class detalleLiquidaciones(models.Model):
     cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
     codetipo = fields.Char(compute="_depend_tipocode")
+    code_cuenta_contable = fields.Char(compute="_depend_cuentacontable")
     observacionrepresentacion = fields.Text(string='Observacion representacion')
     nocliente = fields.Char()
 
@@ -137,18 +138,29 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('tipodocumento')
     def _onchange_tipodocumento(self):
         for rec in self:
-            if rec.tipodocumento.tipo == 'B/V':
+            if rec.tipodocumento.descripcion in ['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad']:
                 înafecto = self.env['tqc.impuestos'].search([('impuesto1', '=', 0)])
                 rec.impuesto = înafecto[0].id
                 rec.base_afecta = 0
+            else:
+                if rec.impuesto.impuesto1 == 0:
+                    rec.impuesto = False
 
     @api.depends('tipodocumento')
     def _depend_tipocode(self):
         for rec in self:
             if rec.tipodocumento:
-                rec.codetipo = rec.tipodocumento.tipo
+                rec.codetipo = rec.tipodocumento.descripcion
             else:
                 rec.codetipo = False
+
+    @api.depends('cuenta_contable')
+    def _depend_cuentacontable(self):
+        for rec in self:
+            if rec.cuenta_contable:
+                rec.code_cuenta_contable = rec.cuenta_contable.codigo
+            else:
+                rec.code_cuenta_contable = False
 
     @api.onchange('base_afecta')
     def _check_detraction(self):
@@ -200,6 +212,7 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('fechaemision')
     def _onchange_fecha(self):
         for rec in self:
+
             if rec.fechaemision and no_server:
                 cambio = 0
                 strfecha = rec.fechaemision
@@ -219,15 +232,19 @@ class detalleLiquidaciones(models.Model):
                     datos = cursor.fetchall()
 
                     for dat in datos:
-                        print("DATA : ", dat)
                         cambio = dat[1]
 
+                    if rec.fechaemision.weekday() == 6:
+                        warning = {
+                            'title': "Mensaje de advertencia",
+                            'message': "Fecha domingo debe contar aprobación de su jefatura, enviar mensaje a reembolsos.go@tqc.com.pe",
+                        }
+                        return {'warning': warning}
                 except Exception as e:
                     raise UserError(_("Error al consultar sql exactus"))
 
                 if cambio == 0:
                     raise UserError(_("No existe tipo de cambio para la fecha " + strfecha.strftime('%Y-%m-%d')))
-                print("DATA : ", cambio)
                 rec.tipocambio = cambio
             # if hi == 1:
             #     raise UserError(_("No existe tipo de cambio para la fecha 2023-01-26"))
@@ -248,17 +265,25 @@ class detalleLiquidaciones(models.Model):
             else:
                 rec.serie = False
 
+    # @api.onchange('numero')
+    # def _onchange_numero(self):
+    #     for rec in self:
+    #         print("fa ",rec.liquidacion_id.detalleliquidaciones_id)
+            # print("liquidacion ",rec.liquidacion_id.id)
+            # print("rec did ",rec.id)
+            # print("fa ",self.env['tqc.detalle.liquidaciones'].search([('liquidacion_id','=', rec.liquidacion_id.id)]))
+
     @api.onchange('ruc')
     def _onchange_ruc(self):
         for rec in self:
             if rec.ruc and no_server:
+                if rec.tipodocumento.descripcion == '53 - Planilla Movilidad' and len(rec.ruc) != 8:
+                    raise UserError('El campo RUC debe contener numero DNI (8 dígitos)')
                 result = ""
                 ip_conexion = "10.10.10.228"
                 data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
                 user_bd = userbd
                 pass_bd = passbd
-                table_bd = "tqc.liquidaciones"
-                table_relations = """empleado_name OF hr.employee"""
 
                 sql_habido = """SELECT RUC FROM tqc.PROV_NO_HABIDO WHERE RUC = '""" + rec.ruc + """'"""
 
@@ -293,6 +318,7 @@ class detalleLiquidaciones(models.Model):
                         result = proveedor[1]
                         if proveedor[2] != 'S':
                             raise UserError(_('Proveedor no activo'))
+                    rec.razonsocial_invisible = 'activo'
                     rec.proveedor_razonsocial = result
 
     @api.onchange('cliente')
