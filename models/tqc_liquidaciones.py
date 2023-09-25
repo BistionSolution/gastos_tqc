@@ -116,8 +116,18 @@ class Liquidaciones(models.Model):
 
     def _get_document_domain(self):
         context = self._context.copy() or {}
+        print("CONTEXT : ", context)
         if context.get("mode_view", False) == 'flujo':
-            domain = [('revisado_state', '!=', 'liquidado')]
+            domain = [('revisado_state', 'not in', ['liquidado'])]
+            if context.get("search_default_contable"):
+                print("searhc CONTABLE")
+                # Agregar un elemento a la lista con
+                domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura'])]
+            if context.get("search_default_pendiente"):
+                print("searhc PENDIENTE")
+                domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura', 'rechazado_contable'])]
+            # if context.get("search_default_jefatura"):
+            #     print("searhc JEGATURA")
         elif context.get("mode_view", False) == 'historial':
             domain = []
         elif context.get("mode_view", False) == 'registro':
@@ -138,7 +148,6 @@ class Liquidaciones(models.Model):
 
     @api.depends()
     def _current_user(self):
-        print("vamo argentina")
         for record in self:
             print("record.empleado_name : ", record.empleado_name.name)
             print("record.empleado_name : ", record.empleado_name.superior.mapped('user_id'))
@@ -567,7 +576,7 @@ class Liquidaciones(models.Model):
     def button_contable(self):
         if self.state == 'contable':
             for doc in self.detalleliquidaciones_id:
-                if doc.razonsocial_invisible == 'no_existe':
+                if doc.razonsocial_invisible == 'no_existe' and doc.revisado_state not in ['rechazado_jefatura', 'rechazado_contable']:
                     raise UserError(_('Hay documentos donde el "Proveedor" no existe, cambiar de "Proveedor" o crear uno nuevo desde Exactus'))
 
             self.write({'state': 'pendiente'})
@@ -578,7 +587,6 @@ class Liquidaciones(models.Model):
                     })
 
     def send_exactus(self):
-        vacio = None
         ip_conexion = "10.10.10.228"
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         user_bd = userbd

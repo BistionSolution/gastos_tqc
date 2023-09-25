@@ -402,7 +402,7 @@
                                       decoration-danger="revisado_state== 'rechazado'">
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
-                                    <field name="codetipo"/>
+                                    <field name="codetipo" invisible="1"/>
                                     <field name="serie"/>
                                     <!--                                     widget="many2many_binary"-->
                                     <field name="numero"/>

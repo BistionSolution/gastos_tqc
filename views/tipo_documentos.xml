@@ -11,7 +11,7 @@
             <field name="name">view.tree.tqc.tipo.documentos</field>
             <field name="model">tqc.tipo.documentos</field>
             <field name="arch" type="xml">
-                <tree create="0" edit="0" delete="0">
+                <tree create="0">
                     <field name="tipo"/>
                     <field name="subtipo" string="Subtipo"/>
                     <field name="descripcion"/>
@@ -24,7 +24,7 @@
             <field name="name">view.form.tqc.tipo.documentos</field>
             <field name="model">tqc.tipo.documentos</field>
             <field name="arch" type="xml">
-                <form create="0" edit="0" delete="0">
+                <form create="0">
                     <sheet>
                         <group>
                             <field name="tipo"/>

@@ -11,6 +11,7 @@
                     <group string="Aprobador Gastos">
                         <field name="superior" widget="many2many_tags"/>
                         <field name="subordinados" widget="many2many_tags"/>
+                        <field name="create_date"/>
                     </group>
 
                 </xpath>

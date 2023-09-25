@@ -138,7 +138,8 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('tipodocumento')
     def _onchange_tipodocumento(self):
         for rec in self:
-            if rec.tipodocumento.descripcion in ['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad']:
+            if rec.tipodocumento.descripcion in ['03 - Boleta de Venta', '01 - Factura No Gravada',
+                                                 '53 - Planilla Movilidad']:
                 înafecto = self.env['tqc.impuestos'].search([('impuesto1', '=', 0)])
                 rec.impuesto = înafecto[0].id
                 rec.base_afecta = 0
@@ -269,9 +270,9 @@ class detalleLiquidaciones(models.Model):
     # def _onchange_numero(self):
     #     for rec in self:
     #         print("fa ",rec.liquidacion_id.detalleliquidaciones_id)
-            # print("liquidacion ",rec.liquidacion_id.id)
-            # print("rec did ",rec.id)
-            # print("fa ",self.env['tqc.detalle.liquidaciones'].search([('liquidacion_id','=', rec.liquidacion_id.id)]))
+    # print("liquidacion ",rec.liquidacion_id.id)
+    # print("rec did ",rec.id)
+    # print("fa ",self.env['tqc.detalle.liquidaciones'].search([('liquidacion_id','=', rec.liquidacion_id.id)]))
 
     @api.onchange('ruc')
     def _onchange_ruc(self):
@@ -295,9 +296,7 @@ class detalleLiquidaciones(models.Model):
                     cursor = connection.cursor()
                     cursor.execute(sql_habido)
                     proveedor_habido = cursor.fetchall()
-                    if proveedor_habido:
-                        raise UserError(
-                            _("RUC " + rec.ruc + " esta no habido, ingresa otro para poder crear documento"))
+
                     cursor.close()
                     # print("GAAAAAAAAA 22 : ", sql_prime)
                     cursor = connection.cursor()
@@ -311,13 +310,22 @@ class detalleLiquidaciones(models.Model):
                 except Exception as e:
                     raise UserError(_('Error conexion exactus'))
 
+                if proveedor_habido:
+                    raise UserError(
+                        _("RUC " + rec.ruc + " esta no habido, ingresa otro para poder crear documento"))
+
                 if not proveedores:
                     rec.razonsocial_invisible = 'no_existe'
+                    warning = {
+                        'title': "Mensaje de advertencia",
+                        'message': "Proveedor no existente en Exactus, puede ingresar el RUC pero se le marcara en rojo",
+                    }
+                    return {'warning': warning}
                 else:
                     for proveedor in proveedores:
                         result = proveedor[1]
                         if proveedor[2] != 'S':
-                            raise UserError(_('Proveedor no activo'))
+                            raise UserError(_('Proveedor no activo, no puede crear documento'))
                     rec.razonsocial_invisible = 'activo'
                     rec.proveedor_razonsocial = result
 
@@ -375,8 +383,6 @@ class detalleLiquidaciones(models.Model):
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
             user_bd = userbd
             pass_bd = passbd
-            table_bd = "tqc.liquidaciones"
-            table_relations = """empleado_name OF hr.employee"""
 
             sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args[
                 'ruc'] + """%' OR NOMBRE LIKE '%""" + args['ruc'] + """%'"""
