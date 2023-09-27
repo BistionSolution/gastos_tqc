@@ -30,7 +30,7 @@ class tqcImpuesto(models.Model):
                     IMPUESTO AS impuesto,
                     DESCRIPCION AS descripcion,
                     IMPUESTO1 AS impuesto1
-                    FROM """ + prefix_table + """.IMPUESTO"""
+                    FROM """ + prefix_table + """.IMPUESTO WHERE IMPUESTO != 'IGV9' AND IMPUESTO != 'ICBP'"""
 
             ip_conexion = "10.10.10.228"
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')

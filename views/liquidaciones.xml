@@ -5,7 +5,7 @@
             <field name="name">view.tree.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <tree js_class="gastos_tqc_tree_selections" class="gastos_tqc" create="0" delete="0">
+                <tree js_class="gastos_tqc_tree_selections" class="gastos_tqc" create="0">
                     <field name="habilitado_state" invisible="1"/>
                     <field name="mode_view" force_save="1" invisible="1"/>
 
@@ -188,6 +188,8 @@
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                            attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad'])]}"
                                            force_save="1"/>
+                                    <field name="igv_per"/>
+                                    <field name="otros_tributos"/>
                                     <field name="montoigv" widget="monetary" string="Monto IGV"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
                                     <field name="totaldocumento" widget="monetary" string="Total Documento"
@@ -204,7 +206,7 @@
                                            string="Cliente razon social"/>
                                     <field name="code_cuenta_contable" />
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"
-                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')],'required':[('code_cuenta_contable','in',['63.4.3.3.0.00.00','63.9.1.1.1.10.00','65.6.1.1.1.03.00'])]}"/>
+                                           attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')],'required':[('code_cuenta_contable','in',['63.4.3.3.0.00.00'])]}"/>
                                     <field name="observacionjefatura" string="Obs. Jefatura"
                                            attrs="{'readonly':['|',('state_liqui', 'in', ['contable']),'&amp;',('revisado_state', 'not in', ['rechazado_jefatura']),('uid_create','!=',3)]}"
                                     />
@@ -241,8 +243,7 @@
             </field>
         </record>
 
-        <!--Regsitrar gasto-->
-        <!--Vistra tree registrar gastos-->
+        <!--Vista tree registrar gastos-->
         <record id="view_tree_registro_gasto" model="ir.ui.view">
             <field name="name">view.tree.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
@@ -250,7 +251,7 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <!-- Colocar esto dentro de tree atrributo: js_class="gastos_view_name"-->
-                <tree js_class="gastos_view_name" create="0" delete="0">
+                <tree js_class="gastos_view_name" create="0" >
                     <field name="empleado_name"
                            groups="gastos_tqc.res_groups_administrator,gastos_tqc.res_groups_aprobador_gastos"/>
                     <field name="num_solicitud"/>
@@ -427,6 +428,8 @@
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                            attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad'])]}"
                                            force_save="1"/>
+                                    <field name="igv_per"/>
+                                    <field name="otros_tributos"/>
                                     <field name="montoigv" widget="monetary"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                            string="Monto IGV"/>
@@ -441,7 +444,7 @@
                                     <field name="cliente_razonsocial" string="Cliente razon social"/>
                                     <field name="code_cuenta_contable" invisible="1"/>
                                     <field name="observacionrepresentacion" string="Obs. Presentacion"
-                                           attrs="{'required':[('code_cuenta_contable','in',['63.4.3.3.0.00.00','63.9.1.1.1.10.00','65.6.1.1.1.03.00'])]}"/>
+                                           attrs="{'required':[('code_cuenta_contable','in',['63.4.3.3.0.00.00'])]}"/>
                                     <field name="state" readonly="1" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"
@@ -507,7 +510,7 @@
                                     <field name="cliente" class="consult_client"/>
                                     <field name="cliente_razonsocial" string="Cliente razon social"/>
                                     <field name="code_cuenta_contable" invisible="1"/>
-                                    <field name="observacionrepresentacion" string="Obs. Presentacion" attrs="{'readonly':[('code_cuenta_contable','in',['63.4.3.3.0.00.00','63.9.1.1.1.10.00','65.6.1.1.1.03.00'])]}"/>
+                                    <field name="observacionrepresentacion" string="Obs. Presentacion" attrs="{'readonly':[('code_cuenta_contable','in',['63.4.3.3.0.00.00'])]}"/>
                                     <field name="state" invisible="1"/>
                                     <field name="revisado_state" readonly="1" widget="badge"
                                            decoration-success="revisado_state == 'aprobado'"

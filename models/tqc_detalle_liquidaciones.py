@@ -64,7 +64,8 @@ class detalleLiquidaciones(models.Model):
     totaldocumento_soles = fields.Float()
     cliente_razonsocial = fields.Char()
     cuenta_contable_descripcion = fields.Char()
-
+    igv_per = fields.Char("IGV PER")
+    otros_tributos = fields.Char("Otros tributos")
     proveedornoexiste = fields.Boolean()
     proveedornohabido = fields.Boolean()
 
@@ -217,13 +218,19 @@ class detalleLiquidaciones(models.Model):
             if rec.fechaemision and no_server:
                 cambio = 0
                 strfecha = rec.fechaemision
+                print("fecha ", strfecha)
+                # restar 3 dias a la fecha y guardarla en una variable
+                strfecha2 = strfecha - datetime.timedelta(days=3)
+                print("fecha ", strfecha2)
                 ip_conexion = "10.10.10.228"
                 data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
                 user_bd = userbd
                 pass_bd = passbd
 
-                sql_prime = """SELECT FECHA, CONVERT(decimal(10,3),MONTO) FROM tqc.TIPO_CAMBIO_HIST WHERE CONVERT(DATE, FECHA) = '""" + strfecha.strftime(
-                    '%Y-%m-%d') + """' AND TIPO_CAMBIO = 'TCV'"""
+                sql_prime = """SELECT FECHA, CONVERT(decimal(10,3),MONTO) FROM tqc.TIPO_CAMBIO_HIST WHERE 
+                    CONVERT(DATE, FECHA) > '""" + strfecha2.strftime(
+                    '%Y-%m-%d') + """' AND CONVERT(DATE, FECHA) <= '""" + strfecha.strftime(
+                    '%Y-%m-%d') + """'  AND TIPO_CAMBIO = 'TCV'"""
                 try:
                     connection = pyodbc.connect(
                         'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -233,6 +240,8 @@ class detalleLiquidaciones(models.Model):
                     datos = cursor.fetchall()
 
                     for dat in datos:
+                        # print("DATA ES ", dat[0])
+                        # print("DATA 2 ", dat[1])
                         cambio = dat[1]
 
                     if rec.fechaemision.weekday() == 6:
@@ -245,7 +254,7 @@ class detalleLiquidaciones(models.Model):
                     raise UserError(_("Error al consultar sql exactus"))
 
                 if cambio == 0:
-                    raise UserError(_("No existe tipo de cambio para la fecha " + strfecha.strftime('%Y-%m-%d')))
+                    raise UserError(_("No existe tipo de cambio para la fecha " + strfecha2.strftime('%Y-%m-%d')+" hasta la fecha ingresada "+strfecha.strftime('%Y-%m-%d')))
                 rec.tipocambio = cambio
             # if hi == 1:
             #     raise UserError(_("No existe tipo de cambio para la fecha 2023-01-26"))

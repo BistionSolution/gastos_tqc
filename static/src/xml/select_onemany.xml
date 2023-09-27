@@ -4,15 +4,22 @@
     <t t-name="One2ManySelectable">
      	<div>
 <!--            <button t-if="!widget.get('effective_readonly')" style="margin-bottom: 1%;display:none;"-->
-<!--                    class="button_select_order_lines"-->
-<!--                    href="javascript:void(0)">-->
-<!--				<span class="fa fa-check"/> Aprobar-->
-<!--			</button>-->
-			<t t-if="!widget.get('effective_readonly')" >
+            <!--                    class="button_select_order_lines"-->
+            <!--                    href="javascript:void(0)">-->
+            <!--				<span class="fa fa-check"/> Aprobar-->
+            <!--			</button>-->
+            <t t-if="!widget.get('effective_readonly')">
 				<button style="margin-bottom: 1%;display:none;"
-						class="button_delete_order_lines btn btn-primary oe_highlight"
-						href="javascript:void(0)">
-					<span class="fa fa-times"/> Rechazar
+                        class="button_delete_order_lines btn btn-primary oe_highlight"
+                        href="javascript:void(0)">
+					<span class="fa fa-times"/>
+                    Rechazar
+				</button>
+                <button t-if="!widget.get('effective_readonly')" style="margin-bottom: 1%;display:none;"
+                        class="button_select_order_lines btn btn-primary oe_highlight"
+                        href="javascript:void(0)">
+					<span class="fa fa-check"/>
+						Restaurar
 				</button>
 			</t>
             <t t-if="widget.get('effective_readonly')">

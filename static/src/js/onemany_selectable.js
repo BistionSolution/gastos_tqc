@@ -50,7 +50,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             console.log("este selfd: ", self)
             // deshabilita cuando el registro esta deshabilitado
             return this._super.apply(this, arguments).then(function () {
-                self.$('.text-danger .custom-control-input').attr('disabled', 'disabled');
+                // self.$('.text-danger .custom-control-input').attr('disabled', 'disabled');
             });
         },
         _renderRows: function () {
@@ -141,7 +141,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                     console.log("RENDER 2 : ", self.__parentedParent.recordData.user_id)
                     // Si el registro pertenece al usuario conectado, entocnes se le habilita la busqueda
                     if (((session.user_id[0] === self.__parentedParent.recordData.user_id) && self.__parentedParent.recordData.habilitado_state === 'habilitado') || ((self.__parentedParent.recordData.habilitado_state === 'proceso') && ([2, 1].includes(self.__parentedParent.recordData.uid_create)))) {
-                        console.log("ENTRO XD")
                         if ($td.hasClass('consult_ruc')) {
                             $('.search_ruc').remove()
                             $td.addClass('overnone');
@@ -239,7 +238,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
         // },
         _onClickRuc: function (event) {
             var changes = {}
-
             var self = this;
             // changes['glosa_entrega'] = "GAAAAAAAA";
             // this.trigger_up('field_changed', {
@@ -359,19 +357,35 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
         selected_lines: function () {
             var self = this;
             var current_model = this.recordData[this.name].model;
-            var selected_lines = self.find_selected_lines();
+            var selected_lines = self.find_deleted_lines();
+
             if (selected_lines.length === 0) {
-                this.do_warn(_t("Please Select at least One Record"));
+                this.do_warn(_t("Please Select at least One Record."));
                 return false;
             }
-            var w_response = confirm("Dou You Want to Select ?");
-            if (w_response) {
 
+            var w_response = confirm("¿Seguro que deseas restaurar seleccionados?");
+            if (w_response) {
                 rpc.query({
-                    'model': current_model, 'method': 'write', 'args': [selected_lines, {
-                        'revisado_state': 'aprobado',
+                    'model': current_model,
+                    'method': 'write',
+                    'args': [selected_lines, {
+                        'revisado_state': 'borrador'
                     }],
                 }).then(function (result) {
+                    // console.log("VAMOS CON VAMOSS : ")
+                    // console.log("VAMOS CON model : ", self.model)
+                    // if (self.model === 'tqc.liquidaciones') {
+                    //     rpc.query({
+                    //         'model': self.model,
+                    //         'method': 'write',
+                    //         'args': [self.res_id, {
+                    //             'habilitado_state': 'corregir'
+                    //         }],
+                    //     }).then(function (e) {
+                    //         self.trigger_up('reload');
+                    //     });
+                    // }
                     self.trigger_up('reload');
                 });
             }
