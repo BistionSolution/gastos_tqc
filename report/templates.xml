@@ -125,18 +125,18 @@
                                         <span t-esc="gt.glosa_entrega"/>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        TOTAL NETO:
-                                    </td>
-                                    <td>
-                                        <span t-esc="gt.current_total"/>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
+                                <!--                                <tr>-->
+                                <!--                                    <td>-->
+                                <!--                                        TOTAL NETO:-->
+                                <!--                                    </td>-->
+                                <!--                                    <td>-->
+                                <!--                                        <span t-esc="gt.current_total"/>-->
+                                <!--                                    </td>-->
+                                <!--                                    <td>-->
+                                <!--                                    </td>-->
+                                <!--                                    <td>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
                             </tbody>
                         </table>
                         <br/>
@@ -203,6 +203,36 @@
                                     </td>
                                 </tr>
                             </tbody>
+                            <tfooter>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                    </td>
+                                    <td>
+                                        TOTAL
+                                    </td>
+                                    <td colspan="3">
+                                        <span t-esc="gt.current_total"/>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                </tr>
+                            </tfooter>
                         </table>
                     </div>
                 </t>
