@@ -5,9 +5,9 @@ from odoo.exceptions import UserError, ValidationError
 import datetime
 import re, pyodbc
 import logging
-import locale
+# import locale
 
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+# locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 _logger = logging.getLogger(__name__)
 
@@ -276,10 +276,10 @@ class Liquidaciones(models.Model):
             cursor.execute(sql_prime_super)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
-            current_locale = locale.getlocale()
-            print("LENGUAJE LOCAL : ", current_locale)
-            _logger.info('LENGUAJE extraAAAAAA')
-            _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
+            # current_locale = locale.getlocale()
+            # print("LENGUAJE LOCAL : ", current_locale)
+            # _logger.info('LENGUAJE extraAAAAAA')
+            # _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
             for user in idusers:
                 if user[1] == '000000013300':
