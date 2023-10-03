@@ -8,6 +8,7 @@
     >
 
         <xpath expr="//div[contains(@class, 'o_list_renderer')]" position="replace">
+            <HeaderFlujo t-if="headerFlujoView.show"/>
             <div class="wrap-all">
                 <div
             class="o_list_renderer o_renderer table-responsive"

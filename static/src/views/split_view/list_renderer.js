@@ -1,5 +1,5 @@
 /** @odoo-module **/
-const {useState, useChildSubEnv, useExternalListener} = owl;
+const {useState, useChildSubEnv, useExternalListener, onMounted} = owl;
 
 import {ListRenderer} from '@web/views/list/list_renderer';
 import {registry} from "@web/core/registry";
@@ -8,6 +8,7 @@ import {patch} from '@web/core/utils/patch';
 import {useService} from '@web/core/utils/hooks';
 import {SideFormviewContainer} from './side_form_view_container';
 import {sideFormBeforeChangeFunctions} from "./hooks";
+import {HeaderFlujo} from '@gastos_tqc/views/header_flujo';
 
 // import {HeaderFlujoRenderer} from "../../../gastos_tqc/static/src/views/header_registry";
 
@@ -26,10 +27,12 @@ export class SplitViewRenderer extends ListRenderer {
         })
 
         this.headerFlujoView = useState({
-            show: false,
+            show: this.props.list.model.env.searchModel.globalContext.mode_view === 'flujo',
         })
 
         const formViewId = this.getFormViewId()
+        // console.log("form view : ", this)
+        console.log("form view : ", this.props.list.model.env.searchModel.globalContext.mode_view)
         useChildSubEnv({
             config: {
                 ...this.env.config,
@@ -39,8 +42,16 @@ export class SplitViewRenderer extends ListRenderer {
             },
         });
 
+        onMounted(() => {
+            // do something here
+            console.log("super this : ", this)
+            // console.log("super this : ", this.prop.list.model.env.searchModel.globalContext.mode_view)
+            console.log("super this : ", this.props.list.model.env.searchModel._context.mode_view)
+        });
+
         useExternalListener(window, 'keyup', this._onKeyUp.bind(this));
     }
+
 
     _onKeyUp(ev) {
         if (this.sideFormView.show && ev.code === 'Escape') {
@@ -124,7 +135,7 @@ export class SplitViewRenderer extends ListRenderer {
 
 
 SplitViewRenderer.template = 'gastos_tqc.ListRenderer';
-SplitViewRenderer.components = Object.assign({}, ListRenderer.components, {SideFormviewContainer})
+SplitViewRenderer.components = Object.assign({}, ListRenderer.components, {HeaderFlujo, SideFormviewContainer})
 
 export const NewListView = {
     ...listView,
