@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t
+            t-name="gastos_tqc.ListView.Buttons"
+            t-inherit="web.ListView.Buttons"
+            t-inherit-mode="extension"
+            owl="1">
+        <xpath expr="//div[hasclass('o_list_buttons')]" position="inside">
+            <div t-if="splitView.available" class="btn align-self-end">
+                <CheckBox
+                    value="splitView.enabled"
+                    onChange.bind="onToggleSplitView"
+                >
+                    Split View
+                </CheckBox>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="gastos_tqc.ExternalAction" owl="1">
+        <div class="action-buttons ms-auto">
+            <button t-if="!env.config.isX2Many"
+                    class="btn btn-outline-secondary py-0" title="View"
+                     t-on-click="() => this.open()"
+            >
+                View
+            </button>
+            <button class="btn btn-outline-secondary py-0" title="View in Wizard"
+                    t-on-click="() => this.open(true)"
+            >
+                View in Popup
+            </button>
+            <button class="btn btn-outline-secondary py-0" title="Close"
+                    t-on-click="env.config.close"
+            >
+                Close
+            </button>
+        </div>
+    </t>
+
+    <t t-name="gastos_tqc.SideFormView"
+       t-inherit="web.FormView"
+       t-inherit-mode="primary"
+       owl="1"
+    >
+<!--        <xpath expr="//FormStatusIndicator" position="replace">-->
+<!--            <SideFormStatusIndicator-->
+<!--                    model="model"-->
+<!--                    discard.bind="discard"-->
+<!--                    save.bind="saveButtonClicked"-->
+<!--                    isDisabled="state.isDisabled"-->
+<!--                    fieldIsDirty="state.fieldIsDirty"-->
+<!--            />-->
+<!--        </xpath>-->
+
+        <xpath expr="//Layout" position="inside">
+            <t t-set-slot="control-panel-external-action">
+                <t t-call="gastos_tqc.ExternalAction"/>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

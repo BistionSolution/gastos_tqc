@@ -26,7 +26,7 @@
 
 
         <!-- QUITO TODOS LOS USUARIOS QUE PERTENECENA UN MODULO MENUS -->
-        <record model="ir.ui.menu" id="hr.menu_human_resources_configuration_employee">
+        <record model="ir.ui.menu" id="hr.menu_config_employee">
             <field name="groups_id" eval="[(6,0,[ref('gastos_tqc.res_groups_administrator')])]"/>
         </record>
           <record model="ir.ui.menu" id="hr.menu_hr_employee">

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="gastos_tqc.SideFormControlPanel"
+       owl="1"
+    >
+        <div class="o_control_panel o_control_panel_side_form f-flex" t-ref="root">
+            <t t-slot="control-panel-status-indicator"/>
+            <t t-slot="control-panel-external-action"/>
+        </div>
+    </t>
+
+</templates>

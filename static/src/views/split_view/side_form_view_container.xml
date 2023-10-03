@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="gastos_tqc.SideFormviewContainer"
+       owl="1"
+    >
+        <div class="formview-panel border-start" t-ref="formview-panel">
+            <div class="formview-container" t-ref="formview-container">
+                <FormView t-props="formViewProps"/>
+            </div>
+        </div>
+    </t>
+
+</templates>

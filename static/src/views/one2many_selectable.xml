@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+   <t t-name="one2many_mass_select_delete.One2manyDelete" t-inherit="web.X2ManyField" t-inherit-mode="primary" owl="1">
+        <xpath expr="//div[hasclass('o_x2m_control_panel')]" position="before">
+            <div>
+                <button t-if="hasSelected" class="btn btn-danger" t-on-click="deleteSelected">
+                    <span class="fa fa-trash"/> Rechazar
+                </button>
+                <button t-if="hasSelected" class="btn btn-success" t-on-click="restaurarRecord">
+                     <span class="fa fa-check"/> Restaurar
+                </button>
+                <t t-if="props.readonly">
+                 <span class="oe_form_char_content"/>
+                </t>
+            </div>
+            <div t-attf-class="{{showModalDescription.value ? 'modal-gasto' : 'modal-press'}}" id="exampleModalDescription"
+                 tabindex="-1"
+                 role="dialog"
+            >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Agregar descripcion de rechazo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+
+                    <!--  Caja de texto para colocar descripcion -->
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" t-model="descriptionRechazo.text"/>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" t-on-click="_onClickClose">Cancelar</button>
+                        <button type="button" class="btn btn-primary" t-on-click="_onClickAceptar">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </xpath>
+    </t>
+</templates>

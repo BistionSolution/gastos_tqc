@@ -1,0 +1,62 @@
+.o_control_panel_side_form {
+  display: flex;
+}
+.wrap-all{
+  display: flex;
+  overflow-y: scroll;
+  flex-direction: column;
+  height: 100% !important;
+  .o_form_sheet{
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+  tr.o_data_row:active{
+    //background: red;
+  }
+}
+.formview-panel {
+  flex: 0 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.48em;
+
+  .action-buttons {
+    display: flex;
+
+    .btn {
+      flex: 1 1 auto;
+    }
+  }
+
+  .formview-container {
+    overflow-y: auto;
+
+    .o_form_view {
+      overflow-x: hidden;
+
+      .o_form_view_container {
+        width: 100%;
+        height: unset;
+
+        .o_content {
+          overflow: unset;
+
+          .o-form-buttonbox .btn.oe_stat_button, .o-form-buttonbox > .o_field_widget {
+            width: 33%;
+          }
+
+          .o_notebook_content .o_inner_group {
+            width: 100%;
+          }
+
+          .o_form_label {
+            word-break: normal;
+          }
+        }
+
+      }
+    }
+  }
+
+}

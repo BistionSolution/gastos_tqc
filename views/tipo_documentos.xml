@@ -24,7 +24,7 @@
             <field name="name">view.form.tqc.tipo.documentos</field>
             <field name="model">tqc.tipo.documentos</field>
             <field name="arch" type="xml">
-                <form create="0">
+                <form>
                     <sheet>
                         <group>
                             <field name="tipo"/>

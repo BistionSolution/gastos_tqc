@@ -12,6 +12,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
 
     ListRenderer.include({
         init: function (parent, state, params) {
+            console.log("hola inir prime")
             this._super.apply(this, arguments);
         }, events: _.extend({}, ListRenderer.prototype.events, {
             'click tbody .search_ruc': '_onClickRuc',
@@ -237,7 +238,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
         //
         //     return selectCell
         // },
-        _onClickRuc: function (event) {
+        _onClickRuc: function () {
             var changes = {}
 
             var self = this;

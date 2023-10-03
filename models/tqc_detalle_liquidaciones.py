@@ -64,7 +64,8 @@ class detalleLiquidaciones(models.Model):
     totaldocumento_soles = fields.Float()
     cliente_razonsocial = fields.Char()
     cuenta_contable_descripcion = fields.Char()
-
+    icbper = fields.Float("ICBPER")
+    otros_tributos = fields.Float("Otros tributos")
     proveedornoexiste = fields.Boolean()
     proveedornohabido = fields.Boolean()
 
@@ -78,7 +79,7 @@ class detalleLiquidaciones(models.Model):
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
 
     revisado_state = fields.Selection([
-        ('borrador', 'Borrador'),
+        ('borrador', 'Por enviar'),
         ('aprobado_jefatura', 'Aprobado jefatura'),
         ('aprobado_contable', 'Aprobado contabilidad'),
         ('rechazado_jefatura', 'Rechazado jefatura'),
@@ -139,7 +140,13 @@ class detalleLiquidaciones(models.Model):
     def _onchange_tipodocumento(self):
         for rec in self:
             if rec.tipodocumento.descripcion in ['03 - Boleta de Venta', '01 - Factura No Gravada',
-                                                 '53 - Planilla Movilidad']:
+                                                 '53 - Planilla Movilidad', 'Vale Otros Gastos']:
+                if rec.tipodocumento.descripcion == '03 - Boleta de Venta':
+                    rec.icbper = 0
+                    rec.otros_tributos = 0
+                if rec.tipodocumento.descripcion == 'Vale Otros Gastos':
+                    rec.serie = False
+                    rec.numero = False
                 înafecto = self.env['tqc.impuestos'].search([('impuesto1', '=', 0)])
                 rec.impuesto = înafecto[0].id
                 rec.base_afecta = 0
@@ -163,12 +170,12 @@ class detalleLiquidaciones(models.Model):
             else:
                 rec.code_cuenta_contable = False
 
-    @api.onchange('base_afecta')
+    @api.onchange('totaldocumento')
     def _check_detraction(self):
         for rec in self:
             print("ESTE REC", rec.base_afecta)
             print("ESTE REC", rec.id)
-            if rec.base_afecta > 700:
+            if rec.totaldocumento > 700:
                 warning = {
                     'title': "Mensaje de advertencia",
                     'message': "Factura mas de 700 se encuentra afecta a detracción (por adquisición de servicios) o retención (por adquisición de bienes)",

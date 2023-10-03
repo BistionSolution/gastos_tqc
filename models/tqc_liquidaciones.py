@@ -117,13 +117,16 @@ class Liquidaciones(models.Model):
     def _get_document_domain(self):
         context = self._context.copy() or {}
         print("CONTEXT : ", context)
+        # obtener valor de state en la siguiente vista
+        print("este es self , ", self.state)
+
         if context.get("mode_view", False) == 'flujo':
             domain = [('revisado_state', 'not in', ['liquidado'])]
-            if context.get("search_default_contable"):
+            if self.state == 'contable':
                 print("searhc CONTABLE")
                 # Agregar un elemento a la lista con
                 domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura'])]
-            if context.get("search_default_pendiente"):
+            if self.state == 'pendiente':
                 print("searhc PENDIENTE")
                 domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura', 'rechazado_contable'])]
             # if context.get("search_default_jefatura"):
@@ -388,6 +391,33 @@ class Liquidaciones(models.Model):
             raise UserError(_(e))
 
     @api.model
+    def import_exactus(self):
+        self.importar_exactus()
+        res = {
+            "name": "Liquidaciones",
+            "type": "ir.actions.act_window",
+            "res_model": "tqc.liquidaciones",
+            "view_type": "form",
+            "view_mode": "form,tree",
+            "target": "current",
+            'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
+                      (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
+            'domain': [('habilitado_state', '!=', 'liquidado')],
+            "context": {'search_default_filtro_rendir': 1},
+            'search_view_id': [self.env.ref("gastos_tqc.search_register_filter").id, 'search'],
+            # 'clear_breadcrumb': True,
+            # "nodestroy": True,
+            'help': """
+                            <p class="o_view_nocontent_smiling_face">
+                                No hay registros para mostrar
+                              </p><p>
+
+                              </p>
+                            """
+        }
+        return res
+
+    @api.model
     def create(self, vals):
         if "TARJETA" in str(vals.get("glosa_entrega")):
             vals['tipo_documento'] = 'tarjeta_credito'
@@ -576,8 +606,10 @@ class Liquidaciones(models.Model):
     def button_contable(self):
         if self.state == 'contable':
             for doc in self.detalleliquidaciones_id:
-                if doc.razonsocial_invisible == 'no_existe' and doc.revisado_state not in ['rechazado_jefatura', 'rechazado_contable']:
-                    raise UserError(_('Hay documentos donde el "Proveedor" no existe, cambiar de "Proveedor" o crear uno nuevo desde Exactus'))
+                if doc.razonsocial_invisible == 'no_existe' and doc.revisado_state not in ['rechazado_jefatura',
+                                                                                           'rechazado_contable']:
+                    raise UserError(
+                        _('Hay documentos donde el "Proveedor" no existe, cambiar de "Proveedor" o crear uno nuevo desde Exactus'))
 
             self.write({'state': 'pendiente'})
             for doc in self.detalleliquidaciones_id:
@@ -806,16 +838,22 @@ class Liquidaciones(models.Model):
         return res
 
     @api.model
-    def get_count_states(self, args):
+    def get_count_states(self, user_id):
+        print("CORRE O NO CORRE")
+        result = {
+            'jefatura': 0,
+            'contable': 0,
+            'pendiente': 0
+        }
         # public = self.env.ref('gastos_tqc.res_groups_aprobador_gastos')
-        user_id = args['user_id']
-        jefatura = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+        result['jefatura'] = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
             [('state', 'in', ['jefatura']), ('habilitado_state', 'in', ['proceso'])])
-        contable = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+        result['contable'] = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
             [('state', 'in', ['contable']), ('habilitado_state', 'in', ['proceso'])])
-        pendiente = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+        result['pendiente'] = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
             [('state', 'in', ['pendiente']), ('habilitado_state', 'in', ['proceso'])])
-        return [jefatura, contable, pendiente]
+
+        return result
 
     def search_ruc(self):
         pass

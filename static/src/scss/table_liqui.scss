@@ -12,7 +12,10 @@
   background: #5D737E;
 }
 
-.o_list_gastos {
+.table-liquidacion {
+  .o_form_sheet{
+    padding: 0 !important;
+  }
   .o_list_table {
     .text-danger, .text-warning {
       color: #fff !important;
@@ -22,6 +25,9 @@
       background: #a58202;
       background-color: #a58202 !important;
       position: relative;
+    }
+    .text-muted{
+      background: rgba(0,0,0,0.1);
     }
 
     .text-warning:hover:after {
@@ -93,11 +99,7 @@
       user-select: none;
       z-index: 99;
     }
-
-
   }
-
-
 }
 
 

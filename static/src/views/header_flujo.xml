@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates>
+    <t t-name="gastos_tqc.headerChild" owl="1">
+        <div class="o_expense_container d-flex o_form_statusbar gastos_tqc " context='{"search_default_draft": true}'>
+            <div class="o_gastos_button" name="state" data-original-title="" title="">
+                <button type="button" t-on-click="setSearchContext" id="pendiente" title="Estado actual"
+                        class="btn o_arrow_button o_context_three btn-primary"
+                        filter_name="pendiente">
+                    Pendientes a procesar (<span t-out="countData['pendiente']"/>)
+                </button>
+                <button type="button" t-on-click="setSearchContext" id="contable" title="Estado actual"
+                        class="btn o_arrow_button o_context_two btn-primary"
+                        filter_name="contable">
+                    Sin visto contable (<span t-out="countData['contable']"/>)
+                </button>
+                <button type="button" t-on-click="setSearchContext" id="jefatura" title="Estado actual"
+                        class="btn o_arrow_button o_context_one btn-primary"
+                        filter_name="jefatura">
+                    Sin visto jefe (<span t-out="countData['jefatura']"/>)
+                </button>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="gastos_tqc.headerFlujo" t-inherit="gastos_tqc.ListRenderer" t-inherit-mode="primary" owl="1">
+        <xpath expr="//div[hasclass('o_list_renderer')]" position="before">
+            <HeaderFlujo/>
+        </xpath>
+    </t>
+
+    <t t-name="owl_learn.ClickMe.RecordRow" t-inherit="web.ListRenderer.RecordRow" t-inherit-mode="extension" owl="1">
+        <!--        Xpath del elemento cuarto td    -->
+        <xpath expr="//td[@class='o_data_cell']" position="after">
+            <button class="search_ruc fa fa-search" t-on-click="_onClick"/>
+        </xpath>
+
+        <!--        <xpath expr="//td[@class='o_data_cell']" position="after">-->
+        <!--            <td>-->
+        <!--                <button t-on-click="_onClick">click me</button>-->
+        <!--            </td>-->
+        <!--        </xpath>-->
+    </t>
+
+    <t t-name="gastos_tqc.componentGlobal" owl="1">
+        <!--        <button class="btn btn-primary" t-on-click="increment">Increment</button>-->
+        <input type="text" class="o_input text-danger" t-on-click="_onClickInput"/>
+        <button t-on-click="_onClickRuc" class="btn btn-primary search_ruc fa fa-search"/>
+        <!--        desaparecer y apararecer boton con estado-->
+    </t>
+
+    <t t-name="gastos_tqc.FieldDateMultipleDate" owl="1">
+        <input t-on-blur="_onClearDateField" t-on-click="_onSelectDateField" type="text" class="o_input"
+               t-ref="inputdate"
+        />
+        <button t-if="state.value" t-on-click="_onClickRuc" class="btn btn-primary search_ruc fa fa-search"/>
+
+        <div t-attf-class="{{modalState.value ? 'modal-gasto' : 'modal-press'}}" id="exampleModalCenter" tabindex="-1"
+             role="dialog"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="o_row o_row_readonly o_hr_holidays_dates">
+                            <input class="o_field_char o_input oe_inline captura_name" name="name"
+                                   placeholder="Razón social o RUC/DNI" type="text"
+                                   autocomplete="off" id="ruc"
+                                   t-model="textSearch.text"/>
+                            <span t-esc="textSearch.text"/>
+<!--                            <input type="hidden" name="clickruc" id="clickruc"/>-->
+                            <button type="button" class="btn btn-primary" data-original-title=""
+                                    title="" t-on-click="_onClickSearch">
+                                <i class="fa fa-fw o_button_icon fa-search"></i>
+                                <span>Buscar</span>
+                            </button>
+
+                        </div>
+                        <div class="o_field_one2many o_field_x2many_list custom-checkbox">
+
+                            <div class="o_list_view o_list_gastos" style="margin-top: 15px;">
+                                <div class="table-responsive table-over">
+                                    <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped o_section_and_note_list_view"
+                                           style="table-layout: auto; width:100%; overflow-x:auto;">
+                                        <thead>
+                                            <tr >
+                                                <th data-name="tipodocumento" tabindex="-1" class="o_column_sortable"
+                                                    data-original-title="" title="" style="width: 30%;">
+                                                    RUC
+                                                </th>
+                                                <th data-name="serie" tabindex="-1" class="o_column_sortable"
+                                                    data-original-title="" title="" style="width: 70%;">
+                                                    Razon Social
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="ui-sortable" style="width:100% !important;">
+                                            <t t-foreach="data.value" t-as="i" t-key="i.ruc">
+                                                <tr t-on-click="_onClickRow" >
+                                                    <td data-name="tipodocumento" tabindex="-1"
+                                                        class="o_data_cell o_field_cell o_list_char"
+                                                        data-original-title="" title="" style="width: 30%;">
+                                                        <t t-esc="i.ruc"/>
+                                                    </td>
+                                                    <td data-name="serie" tabindex="-1"
+                                                        class="o_data_cell o_field_cell o_list_char"
+                                                        data-original-title="" title="" style="width: 70%;">
+                                                        <t t-esc="i.razon"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="tipo"></td>
+                                                <td class="ruc"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" t-on-click="_onClickRucClose">Close</button>
+                        <button type="button" class="btn btn-primary" t-on-click="_onClickRucClose">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

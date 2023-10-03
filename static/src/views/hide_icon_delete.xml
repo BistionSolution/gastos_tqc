@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+   <t t-name="owl_learn.ClickMe.RecordRow" t-inherit="web.ListRenderer.RecordRow" owl="1">
+       <xpath expr="//t[contains(@t-if,'displayOptionalFields')]" position="replace">
+           <t t-if="displayOptionalFields or hasX2ManyAction">
+                <t t-if="hasX2ManyAction and showRemoveIcon">
+                    <td class="o_list_record_remove text-center"
+                        t-on-keydown.synthetic="(ev) => this.onCellKeydown(ev, group, record)"
+                        t-on-click.stop="() => this.onDeleteRecord(record)"
+                        tabindex="-1"
+                    >
+                        <button class="fa"
+                                t-att-class="{
+                                'fa-trash-o': !useUnlink and activeActions.delete,
+                                'fa-times': useUnlink and activeActions.unlink,
+                            }"
+                                name="delete"
+                                aria-label="Delete row"
+                                tabindex="-1"
+                        />
+                    </td>
+                </t>
+               <td t-else="" tabindex="-1"/>
+            </t>
+       </xpath>
+   </t>
+</templates>

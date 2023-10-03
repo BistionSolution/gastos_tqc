@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="gastos_tqc.X2ManyField"
+       t-inherit="web.X2ManyField"
+       t-inherit-mode="extension"
+       owl="1"
+    >
+        <xpath expr="//ListRenderer" position="replace">
+            <div t-if="viewMode === 'list'" class="d-flex">
+                <ListRenderer t-props="rendererProps"/>
+            </div>
+        </xpath>
+    </t>
+
+</templates>
