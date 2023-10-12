@@ -50,10 +50,6 @@ export class SideFormviewContainer extends Component {
             listeners: {
                 move: event => {
                     let {x, y} = event.target.dataset
-                    console.log("xxxx : ", x)
-                    console.log("yyy : ", y)
-                    console.log("gaa : ", event.rect.width)
-                    console.log("gaa : ", event.rect.height)
                     Object.assign(event.target.style, {
                         width: `${event.rect.width}px`,
                         height: `${event.rect.height}px`,
@@ -67,12 +63,10 @@ export class SideFormviewContainer extends Component {
                 interact.modifiers.restrictSize({min: {height: 400}}),
             ],
         })
-        console.log("Interact INIT 3 : ")
     }
 
     onPatchedSideFormview() {
         const formViewEl = this.formviewContainer.el?.querySelector('.o_form_view')
-        console.log("ACA POIBLE ERROR zero", formViewEl)
         // if (formViewEl) {
         //     console.log("ACA POIBLE ERROR 3")
         //     formViewEl.classList.remove('o_xxl_form_view')

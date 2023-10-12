@@ -6,6 +6,15 @@
   overflow-y: scroll;
   flex-direction: column;
   height: 100% !important;
+
+  .o_control_panel {
+    background: #f1f1f1;
+  }
+
+  .o_list_renderer .o_list_record_selected {
+    background: #e2f0fc !important;
+  }
+
   .o_form_sheet{
     margin: 0 !important;
     max-width: 100% !important;

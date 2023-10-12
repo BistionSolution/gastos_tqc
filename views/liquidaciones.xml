@@ -194,7 +194,7 @@
                            groups="gastos_tqc.res_groups_administrator,gastos_tqc.res_groups_aprobador_gastos"/>
                     <field name="num_solicitud"/>
                     <!--                    <field name="empleado_name"/>-->
-                    <field name="state"/>
+                    <field name="state" invisible="1"/>
                     <field name="tipo_documento"/>
 
                     <field name="fecha_entrega" string="Fecha de solicitud"/>
@@ -203,8 +203,7 @@
                     <field name="moneda"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="glosa_entrega" string="Glosa de solicitud"/>
-                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"
-                           sum="Total Of Ages"/>
+                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <!--                    <field name="observacionenvio"/>-->
                     <!--                    <field name="numeroplaca"/>-->
@@ -264,7 +263,7 @@
                         <field name="fecha_contable" class="oe_inline" invisible="1"/>
 
                         <notebook>
-                            <page string="Documentoss">
+                            <page string="Documentos">
                                 <field name="detalleliquidaciones_id">
                                     <tree editable="top" decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state == 'corregido'"
@@ -282,7 +281,7 @@
                                         <field name="ruc" string="Ruc proveedor" class="consult_ruc"
                                                decoration-danger="razonsocial_invisible == 'no_existe'"
                                                decoration-warning="razonsocial_invisible == 'no_activo'"
-                                               widget="multiple_datepicker"/>
+                                               widget="search_supplier"/>
                                         <field name="razonsocial_invisible" invisible="1"/>
                                         <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                         <!--                                    <field name="state"/>-->
@@ -314,7 +313,7 @@
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                         />
                                         <!--                                    <field name="nocliente"/>-->
-                                        <field name="cliente" class="consult_client"/>
+                                        <field name="cliente" class="consult_client" widget="search_client"/>
                                         <field name="cliente_razonsocial" string="Cliente razon social"/>
                                         <field name="code_cuenta_contable" invisible="1"/>
                                         <field name="observacionrepresentacion" string="Obs. Presentacion"

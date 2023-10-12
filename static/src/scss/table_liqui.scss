@@ -13,9 +13,25 @@
 }
 
 .table-liquidacion {
-  .o_form_sheet{
-    padding: 0 !important;
+  height: auto !important;
+
+  .o_list_renderer .o_list_table tbody > tr > td.o_list_text:not(.o_list_record_selector):not(.o_handle_cell):not(.o_list_button):not(.o_list_record_remove) {
+    white-space: nowrap !important;
   }
+
+  .text-truncate {
+    white-space: normal !important;
+  }
+
+  .o_list_table {
+    table-layout: auto !important;
+  }
+
+  .o_form_sheet {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
   .o_list_table {
     .text-danger, .text-warning {
       color: #fff !important;
@@ -26,8 +42,9 @@
       background-color: #a58202 !important;
       position: relative;
     }
-    .text-muted{
-      background: rgba(0,0,0,0.1);
+
+    .text-muted {
+      background: rgba(0, 0, 0, 0.1);
     }
 
     .text-warning:hover:after {
@@ -107,10 +124,10 @@
   overflow: visible !important;
 }
 
-.search_ruc, .search_client{
-    background: #013d90;
-    border: none;
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
+.search_ruc, .search_client {
+  background: #013d90;
+  border: none;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
 }

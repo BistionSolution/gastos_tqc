@@ -16,7 +16,6 @@ export class SplitViewRenderer extends ListRenderer {
     setup() {
         super.setup();
         // this._super.apply(this, arguments);
-        console.log("!AH CARGADPO !")
         this.actionService = useService('action');
         this.viewService = useService('view');
         this.userService = useService('user');
@@ -54,6 +53,8 @@ export class SplitViewRenderer extends ListRenderer {
 
 
     _onKeyUp(ev) {
+        console.log("QUE ES ONKEYUO : ", ev)
+        console.log("QUE ES ONKEYUO : ", this.sideFormView)
         if (this.sideFormView.show && ev.code === 'Escape') {
             this.closeSideFormview();
         }
@@ -64,9 +65,9 @@ export class SplitViewRenderer extends ListRenderer {
     }
 
     getSideFormViewContainerProps() {
-        console.log("this.props.list.resModel : ", this.props.list.resModel)
-        console.log("this.sideFormView.id : ", this.sideFormView.id)
-        console.log("this.sideFormViewRecord : ", this.sideFormViewRecord)
+        // console.log("this.props.list.resModel : ", this.props.list.resModel)
+        // console.log("this.sideFormView.id : ", this.sideFormView.id)
+        // console.log("this.sideFormViewRecord : ", this.sideFormViewRecord)
 
         const props = {
             resModel: this.props.list.resModel,
@@ -88,14 +89,29 @@ export class SplitViewRenderer extends ListRenderer {
     }
 
     async onCellClicked(record, column, ev) {
+
+        // si record.data.saldo es menor a 0, no hacer nada
+        if (record.data.saldo < 0) {
+            return;
+        }
         // Agregar clase al elemento padre clickeado
-        // console.log("XDDDD . : ", this.env.splitView?.enabled)
-        // const element = ev.target.closest('td')
-        // console.log("ELEMENTO : ", element)
-        // if (element) {
-        //     element.parentElement.classList.add('gosito');
-        //     // element.classList.add('o_list_record_selected')
-        // }
+        console.log("XDDDD . : ", this.env.splitView?.enabled)
+        const element = ev.target.closest('td')
+        const focusRow = this.tableRef.el.querySelector(`[data-id='${this.recordDatapointID}']`);
+        // quitarle la clase o_list_record_selected a focusRow
+        if (focusRow) {
+            focusRow.classList.remove('o_list_record_selected')
+
+        }
+        console.log("FOCUS ROW ga ::::", focusRow)
+        console.log("ELEMENTO : ", element)
+        if (element) {
+            element.parentElement.classList.add('o_list_record_selected');
+            // capturar elemento que tenga data-id igual datapint_6
+
+
+            // element.classList.add('o_list_record_selected')
+        }
 
         // if (
         //     (!this.isX2Many && !this.env.splitView?.enabled)
@@ -109,6 +125,7 @@ export class SplitViewRenderer extends ListRenderer {
             console.log("gopp")
             return;
         }
+
         if (record.resId && this.sideFormView.id !== record.resId) {
             console.log("gopp 3")
             await this.callSideFormBeforeChangeFunctions();
@@ -123,13 +140,14 @@ export class SplitViewRenderer extends ListRenderer {
         await this.callSideFormBeforeChangeFunctions();
         this.sideFormView.show = false;
         this.sideFormView.id = false;
-        // this.keepFocusRow()
+        this.keepFocusRow()
     }
 
     keepFocusRow() {
         this.tableRef.el.querySelector('tbody').classList.add('o_keyboard_navigation');
         const focusRow = this.tableRef.el.querySelector(`[data-id='${this.recordDatapointID}']`);
         focusRow.focus();
+        // agregar clase a focusRow
     }
 }
 

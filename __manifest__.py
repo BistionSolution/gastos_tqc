@@ -84,6 +84,7 @@
             'gastos_tqc/static/src/views/header_flujo.xml',
             'gastos_tqc/static/src/views/hide_icon_delete.xml',
             'gastos_tqc/static/src/views/one2many_selectable.xml',
+            'gastos_tqc/static/src/views/search_modal/search_modal.xml',
 
             # views js
             'gastos_tqc/static/src/views/header_flujo.js',
@@ -110,7 +111,8 @@
 
             # 'gastos_tqc/static/src/js/modal_search.js',
             # 'gastos_tqc/static/src/js/clicked_field.js',
-            'gastos_tqc/static/src/js/wiget_text.js',
+            'gastos_tqc/static/src/views/search_modal/search_supplier.js',
+            'gastos_tqc/static/src/views/search_modal/search_client.js',
             # 'gastos_tqc/static/src/js/render_search_ruc.js',
             # 'gastos_tqc/static/src/js/render_search_client.js',
             # 'gastos_tqc/static/src/js/get_cuenta_contable.js',

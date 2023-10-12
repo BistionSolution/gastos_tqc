@@ -8,8 +8,8 @@ var translation = require('web.translation');
 var _t = translation._t;
 const {Component, useRef, useState} = owl;
 
-export class DomainSelectorTextField extends Component {
-    static template = 'gastos_tqc.FieldDateMultipleDate'
+export class ClientSelectorTextField extends Component {
+    static template = 'gastos_tqc.searchCliente'
 
     setup() {
         super.setup();
@@ -60,10 +60,9 @@ export class DomainSelectorTextField extends Component {
         // llamar metodo search_ruc de la tabla tqc.detalle.liquidaciones
         rpc.query({
             model: 'tqc.detalle.liquidaciones',
-            method: 'search_ruc',
-            args:[{'ruc': this.textSearch.text}],
+            method: 'search_client',
+            args:[{'client': this.textSearch.text}],
             }).then(function(data){
-                console.log("data es : ", data)
                 self.data.value = data
         });
     }
@@ -76,4 +75,4 @@ export class DomainSelectorTextField extends Component {
     }
 }
 
-registry.category("fields").add("multiple_datepicker", DomainSelectorTextField);
+registry.category("fields").add("search_client", ClientSelectorTextField);
