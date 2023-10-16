@@ -116,6 +116,14 @@ class detalleLiquidaciones(models.Model):
             record.uid_create = record.liquidacion_id.uid_create
             record.state_liqui = record.liquidacion_id.state
 
+    # totaldocumento no debe ser meno a 0
+    @api.constrains('totaldocumento')
+    def check_saldo(self):
+        for rec in self:
+            if rec.totaldocumento <= 0:
+                raise UserError(_('El monto total del documento no debe ser menor o igual a 0'))
+
+
     # @api.constrains('tipocambio')
     # def check_saldo(self):
     #     for rec in self:
