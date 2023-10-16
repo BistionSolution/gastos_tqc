@@ -24,7 +24,8 @@
 
                     <field name="state"/>
                     <field name="tipo_documento"/>
-                    <field name="habilitado_state" widget="badge" decoration-success="habilitado_state in ['habilitado','liquidado']"
+                    <field name="habilitado_state" widget="badge"
+                           decoration-success="habilitado_state in ['habilitado','liquidado']"
                            decoration-warning="habilitado_state == 'corregir'"
                            decoration-info="habilitado_state == 'proceso'"
                            string="Estado"
@@ -48,85 +49,18 @@
                     </header>
                     <group>
                         <field name="name" readonly="1" invisible="1"/>
-                        <div style="display: flex;">
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Empleado :
-                                </span>
-                                <field name="empleado_name" class="oe_inline" readonly="1"/>
-                            </div>
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    N° Solicitud :
-                                </span>
-                                <field name="num_solicitud" class="oe_inline" readonly="1"/>
-                            </div>
-
-                        </div>
-                        <div style="display: flex;">
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Fch. entrega:
-                                </span>
-                                <field name="fecha_entrega" class="oe_inline" readonly="1"/>
-                            </div>
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Fch. Generación:
-                                </span>
-                                <field name="fecha_generacion" readonly="1" class="oe_inline"/>
-                            </div>
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Moneda :
-                                </span>
-                                <field name="moneda" class="oe_inline" readonly="1" string="Moneda"/>
-                            </div>
-
-                        </div>
-                        <div style="display: flex;">
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Centro de costo :
-                                </span>
-                                <field name="centro_costo" class="oe_inline" readonly="1"/>
-                            </div>
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Glosa entrega :
-                                </span>
-                                <field name="glosa_entrega" readonly="1"/>
-                            </div>
-                        </div>
-                        <div style="display: flex;">
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Monto entrega :
-                                </span>
-                                <field name="monto_entrega" class="oe_inline" readonly="1"
-                                />
-                            </div>
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Saldo :
-                                </span>
-                                <field name="saldo" class="oe_inline" readonly="1"/>
-                            </div>
-                            <div style="flex-grow: 1;flex-basis: 0;">
-                                <span class="oe_inline font-boldodo">
-                                    Total neto :
-                                </span>
-                                <field name="current_total" class="oe_inline" readonly="1" force_save="1"
-                                       string="current_total"/>
-                            </div>
-
-                        </div>
-                        <div>
-                            <span class="oe_inline font-boldodo">
-                                Fecha contable:
-                            </span>
-                            <field name="fecha_contable" readonly="1" class="oe_inline"/>
-                        </div>
+                        <field name="empleado_name" class="oe_inline" readonly="1" invisible="1"/>
+                        <field name="num_solicitud" class="oe_inline" readonly="1" invisible="1"/>
+                        <field name="fecha_entrega" class="oe_inline" readonly="1" invisible="1"/>
+                        <field name="fecha_generacion" readonly="1" class="oe_inline" invisible="1"/>
+                        <field name="moneda" class="oe_inline" readonly="1" string="Moneda" invisible="1"/>
+                        <field name="centro_costo" class="oe_inline" readonly="1" invisible="1"/>
+                        <field name="glosa_entrega" readonly="1" invisible="1"/>
+                        <field name="monto_entrega" class="oe_inline" readonly="1" invisible="1"/>
+                        <field name="saldo" class="oe_inline" readonly="1" invisible="1"/>
+                        <field name="current_total" class="oe_inline" readonly="1" force_save="1"
+                               string="current_total" invisible="1"/>
+                        <field name="fecha_contable" readonly="1" class="oe_inline" invisible="1"/>
                     </group>
                     <notebook>
                         <page string="Detalle Liquidacioness">
@@ -140,8 +74,8 @@
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
                                       decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"
-                                      >
-<!--                                    decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"-->
+                                >
+                                    <!--                                    decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"-->
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="serie"/>
@@ -232,7 +166,8 @@
                     <filter name="contable" string="Sin visto contable" domain="[('state', '=', 'contable')]"/>
                     <filter name="pendiente" string="Pendiente a procesar" domain="[('state', '=', 'pendiente')]"/>
                     <group expand="1" string="Group by ">
-                        <filter string="Num Solicitud" name="group_by_num_solicitud" context="{'group_by':'num_solicitud'}"/>
+                        <filter string="Num Solicitud" name="group_by_num_solicitud"
+                                context="{'group_by':'num_solicitud'}"/>
                     </group>
                 </search>
             </field>
