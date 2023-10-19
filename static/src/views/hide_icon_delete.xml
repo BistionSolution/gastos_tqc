@@ -3,7 +3,7 @@
    <t t-name="owl_learn.ClickMe.RecordRow" t-inherit="web.ListRenderer.RecordRow" owl="1">
        <xpath expr="//t[contains(@t-if,'displayOptionalFields')]" position="replace">
            <t t-if="displayOptionalFields or hasX2ManyAction">
-                <t t-if="hasX2ManyAction and showRemoveIcon">
+                <t t-if="hasX2ManyAction and showRemoveIcon.value">
                     <td class="o_list_record_remove text-center"
                         t-on-keydown.synthetic="(ev) => this.onCellKeydown(ev, group, record)"
                         t-on-click.stop="() => this.onDeleteRecord(record)"

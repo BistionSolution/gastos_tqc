@@ -3,10 +3,11 @@ import {registry} from "@web/core/registry";
 import {useInputField} from "@web/views/fields/input_field_hook";
 import time from 'web.time';
 import {useService} from "@web/core/utils/hooks";
+
 const rpc = require('web.rpc');
 var translation = require('web.translation');
 var _t = translation._t;
-const {Component, useRef, useState} = owl;
+const {onWillStart, Component, useRef, useState} = owl;
 
 export class ClientSelectorTextField extends Component {
     static template = 'gastos_tqc.searchCliente'
@@ -19,6 +20,8 @@ export class ClientSelectorTextField extends Component {
         this.modalState = useState({value: false});
         this.textSearch = useState({text: ""});
         this.data = useState({value: []});
+        this.readonlyMode = useState({value: false})
+        onWillStart(() => this._loadPro());
         useInputField({getValue: () => this.props.value || "", refName: "inputdate"});
     }
 
@@ -43,14 +46,26 @@ export class ClientSelectorTextField extends Component {
         // this.props.update(null);
     }
 
+    async _loadPro() {
+        const modeRecord = this.props.record.model.root.data.state
+        const habilitado_state = this.props.record.model.root.data.habilitado_state
+        const mode_view = this.props.record.context.mode_view
+
+        if (modeRecord === "jefatura" || ((habilitado_state !== 'habilitado') && (mode_view !== "flujo"))) {
+            this.readonlyMode.value = true
+        }
+    }
+
     _onClickRuc(event) {
         // event.stopPropagation();
         // Abrir ventana modal de una tabla existente con do_action
         this.modalState.value = true
     }
+
     _onClickRucClose(event) {
         this.modalState.value = false
     }
+
     _onClickSearch(event) {
         // this.textSearch.text = $(this.input.el).val()
         let self = this;
@@ -61,11 +76,12 @@ export class ClientSelectorTextField extends Component {
         rpc.query({
             model: 'tqc.detalle.liquidaciones',
             method: 'search_client',
-            args:[{'client': this.textSearch.text}],
-            }).then(function(data){
-                self.data.value = data
+            args: [{'client': this.textSearch.text}],
+        }).then(function (data) {
+            self.data.value = data
         });
     }
+
     _onClickRow(event) {
         // evitar propagacion
         event.stopPropagation();

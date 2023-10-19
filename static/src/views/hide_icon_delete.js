@@ -71,7 +71,7 @@ export class TestListRenderer extends ListRenderer {
 
     async _loadPro() {
         if (await session.user_has_group('gastos_tqc.res_groups_administrator')) {
-            this.showRemoveIcon.value = true
+            this.showRemoveIcon.value = false
         }
         if (await session.user_has_group('gastos_tqc.res_groups_aprobador_gastos')) {
             this.showRemoveIcon.value = false
@@ -126,7 +126,7 @@ export class NewListRenderer extends X2ManyField {
                 method: 'write',
                 args: [selected_list, {
                     'revisado_state': 'rechazado_' + state,
-                    'observacionjefatura': this.descriptionRechazo.text
+                    [state === 'contable' ? 'observacioncontabilidad' : 'observacionjefatura']: this.descriptionRechazo.text
                 }],
             }).then(function (response) {
                 self.rendererProps.list.model.load()

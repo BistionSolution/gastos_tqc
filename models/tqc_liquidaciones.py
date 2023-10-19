@@ -628,9 +628,10 @@ class Liquidaciones(models.Model):
             'habilitado_state': 'liquidado',
             'detalleliquidaciones_id': []
         }
+
         try:
             connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd + ';Encrypt=no')
             sql = """
             DECLARE	@return_value int,
                     @psDocumento varchar(20),
@@ -690,6 +691,7 @@ class Liquidaciones(models.Model):
 
             for document in self.detalleliquidaciones_id:
                 if document.revisado_state == 'aprobado_contable':
+                    print("AGAIN")
                     values = (
                         document.numero,  # Numero factura
                         'TQC',
@@ -740,6 +742,7 @@ class Liquidaciones(models.Model):
                         # self.state,  # Código del asiento generado por el documento.
                         # self.state  # Mensaje de error en caso ocurra un error en la transacción.
                     )
+                    print("AGAIN 2")
                     cursor = connection.cursor()
                     cursor.execute(sql, values)
                     idusers = cursor.fetchone()
@@ -751,16 +754,19 @@ class Liquidaciones(models.Model):
                     cursor.close()
 
                     # Si no hay error cambia estado a liquidado
-
+                    print("ERROR ES" , idusers[1])
                     if idusers[1]:
                         print("document liquidado")
                         vals['detalleliquidaciones_id'].append([1, document.id, {'revisado_state': 'liquidado'}])
 
                     else:
+                        print("document liquidado 22 : ",  idusers[2])
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': idusers[2]}])
+                    print("GO")
 
             self.write(vals)
+            print("EROR HERE")
             self.importar_exactus
             # res = {
             #     "name": "Historial de liquidaciones",
@@ -786,7 +792,7 @@ class Liquidaciones(models.Model):
             #                             """
             # }
             # return res
-
+            print("OR HERE")
             title = _("¡Envio exitoso!")
             message = _("Se envio correctamente los documentos")
             return {

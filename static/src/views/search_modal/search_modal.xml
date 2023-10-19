@@ -2,11 +2,15 @@
 
 <templates>
     <t t-name="gastos_tqc.searchProveedor" owl="1">
-        <input t-on-blur="_onClearDateField" t-on-click="_onSelectDateField" type="text" class="o_input"
-               t-ref="inputdate"
-        />
-        <button t-if="state.value" t-on-click="_onClickRuc" class="btn btn-primary search_ruc fa fa-search"/>
-
+        <t t-if="readonlyMode.value">
+            <t t-esc="props.value"/>
+        </t>
+        <t t-else="">
+            <input t-on-blur="_onClearDateField" t-on-click="_onSelectDateField" type="text" class="o_input"
+                   t-ref="inputdate"
+            />
+            <button t-if="state.value" t-on-click="_onClickRuc" class="btn btn-primary search_ruc fa fa-search"/>
+        </t>
         <div t-attf-class="{{modalState.value ? 'modal-gasto' : 'modal-press'}}" id="exampleModalCenter" tabindex="-1"
              role="dialog"
         >
@@ -92,10 +96,16 @@
         </div>
     </t>
     <t t-name="gastos_tqc.searchCliente" owl="1">
-        <input t-on-blur="_onClearDateField" t-on-click="_onSelectDateField" type="text" class="o_input"
-               t-ref="inputdate"
-        />
-        <button t-if="state.value" t-on-click="_onClickRuc" class="btn btn-primary search_ruc fa fa-search"/>
+        <t t-if="readonlyMode.value">
+            <t t-esc="props.value"/>
+        </t>
+        <t t-else="">
+            <input t-on-blur="_onClearDateField" t-on-click="_onSelectDateField" type="text" class="o_input"
+                   t-ref="inputdate"
+            />
+            <button t-if="state.value" t-on-click="_onClickRuc" class="btn btn-primary search_ruc fa fa-search"/>
+        </t>
+
 
         <div t-attf-class="{{modalState.value ? 'modal-gasto' : 'modal-press'}}" id="exampleModalCenter" tabindex="-1"
              role="dialog"

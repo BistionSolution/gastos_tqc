@@ -3,10 +3,11 @@ import {registry} from "@web/core/registry";
 import {useInputField} from "@web/views/fields/input_field_hook";
 import time from 'web.time';
 import {useService} from "@web/core/utils/hooks";
+
 const rpc = require('web.rpc');
 var translation = require('web.translation');
 var _t = translation._t;
-const {Component, useRef, useState} = owl;
+const {onWillStart, Component, useRef, useState} = owl;
 
 export class DomainSelectorTextField extends Component {
     static template = 'gastos_tqc.searchProveedor'
@@ -18,8 +19,20 @@ export class DomainSelectorTextField extends Component {
         this.state = useState({value: false});
         this.modalState = useState({value: false});
         this.textSearch = useState({text: ""});
+        this.readonlyMode = useState({value: false})
         this.data = useState({value: []});
+        onWillStart(() => this._loadPro());
         useInputField({getValue: () => this.props.value || "", refName: "inputdate"});
+    }
+
+    async _loadPro() {
+        const modeRecord = this.props.record.model.root.data.state
+        const habilitado_state = this.props.record.model.root.data.habilitado_state
+        const mode_view = this.props.record.context.mode_view
+
+        if (modeRecord === "jefatura" || ((habilitado_state !== 'habilitado') && (mode_view !== "flujo"))) {
+            this.readonlyMode.value = true
+        }
     }
 
     _onSelectDateField(ev) {
@@ -48,9 +61,11 @@ export class DomainSelectorTextField extends Component {
         // Abrir ventana modal de una tabla existente con do_action
         this.modalState.value = true
     }
+
     _onClickRucClose(event) {
         this.modalState.value = false
     }
+
     _onClickSearch(event) {
         // this.textSearch.text = $(this.input.el).val()
         let self = this;
@@ -61,12 +76,13 @@ export class DomainSelectorTextField extends Component {
         rpc.query({
             model: 'tqc.detalle.liquidaciones',
             method: 'search_ruc',
-            args:[{'ruc': this.textSearch.text}],
-            }).then(function(data){
-                console.log("data es : ", data)
-                self.data.value = data
+            args: [{'ruc': this.textSearch.text}],
+        }).then(function (data) {
+            console.log("data es : ", data)
+            self.data.value = data
         });
     }
+
     _onClickRow(event) {
         // evitar propagacion
         event.stopPropagation();

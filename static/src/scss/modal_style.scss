@@ -1,16 +1,26 @@
+.exampleModalCenter {
+  z-index: 50;
+}
+
 .modal-gasto {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 50;
   width: 100%;
   height: 100%;
+  color: #000 !important;
   overflow-x: hidden;
   overflow-y: auto;
   outline: 0;
+
+  input {
+    color: #000 !important;
+  }
 }
-.modal-press{
+
+.modal-press {
   display: none;
 
 }

@@ -4,16 +4,19 @@
         <xpath expr="//div[hasclass('o_x2m_control_panel')]" position="before">
             <div>
                 <button t-if="hasSelected" class="btn btn-danger" t-on-click="deleteSelected">
-                    <span class="fa fa-trash"/> Rechazar
+                    <span class="fa fa-trash"/>
+                    Rechazar
                 </button>
                 <button t-if="hasSelected" class="btn btn-success" t-on-click="restaurarRecord">
-                     <span class="fa fa-check"/> Restaurar
+                     <span class="fa fa-check"/>
+                    Restaurar
                 </button>
                 <t t-if="props.readonly">
                  <span class="oe_form_char_content"/>
                 </t>
             </div>
-            <div t-attf-class="{{showModalDescription.value ? 'modal-gasto' : 'modal-press'}}" id="exampleModalDescription"
+            <div t-attf-class="{{showModalDescription.value ? 'modal-gasto' : 'modal-press'}}"
+                 id="exampleModalDescription"
                  tabindex="-1"
                  role="dialog"
             >
@@ -21,15 +24,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Agregar descripcion de rechazo</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">x</span>
-                        </button>
+                        <button type="button" class="btn-close" t-on-click="_onClickClose" aria-label="Close"
+                                tabindex="-1"/>
 
                     </div>
                     <div class="modal-body">
 
                     <!--  Caja de texto para colocar descripcion -->
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" t-model="descriptionRechazo.text"/>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                  t-model="descriptionRechazo.text"/>
 
                     </div>
                     <div class="modal-footer">
