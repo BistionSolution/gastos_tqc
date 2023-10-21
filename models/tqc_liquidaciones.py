@@ -5,6 +5,7 @@ from odoo.exceptions import UserError, ValidationError
 import datetime
 import re, pyodbc
 import logging
+
 # import locale
 
 # locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -691,7 +692,6 @@ class Liquidaciones(models.Model):
 
             for document in self.detalleliquidaciones_id:
                 if document.revisado_state == 'aprobado_contable':
-                    print("AGAIN")
                     values = (
                         document.numero,  # Numero factura
                         'TQC',
@@ -742,32 +742,28 @@ class Liquidaciones(models.Model):
                         # self.state,  # Código del asiento generado por el documento.
                         # self.state  # Mensaje de error en caso ocurra un error en la transacción.
                     )
-                    print("AGAIN 2")
-                    cursor = connection.cursor()
-                    cursor.execute(sql, values)
-                    idusers = cursor.fetchone()
-                    print("GOES RESPUESTA : ", idusers)
-                    print("PRIMER DATA ", idusers[0])
-                    print("segundo DATA ", idusers[1])
-                    cursor.commit()
-                    # idusers = cursor.fetchval()
-                    cursor.close()
+                    try:
+                        cursor = connection.cursor()
+                        cursor.execute(sql, values)
+                        idusers = cursor.fetchone()
+                        cursor.commit()
+                        # idusers = cursor.fetchval()
+                        cursor.close()
+                    except Exception as e:
+                        vals['detalleliquidaciones_id'].append(
+                            [1, document.id, {'revisado_state': 'send_error', 'message_error': f"Error sql :{e}"}])
+                        continue
 
                     # Si no hay error cambia estado a liquidado
-                    print("ERROR ES" , idusers[1])
                     if idusers[1]:
-                        print("document liquidado")
                         vals['detalleliquidaciones_id'].append([1, document.id, {'revisado_state': 'liquidado'}])
 
                     else:
-                        print("document liquidado 22 : ",  idusers[2])
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': idusers[2]}])
-                    print("GO")
 
-            self.write(vals)
-            print("EROR HERE")
             self.importar_exactus
+            self.write(vals)
             # res = {
             #     "name": "Historial de liquidaciones",
             #     "type": "ir.actions.act_window",
@@ -792,7 +788,6 @@ class Liquidaciones(models.Model):
             #                             """
             # }
             # return res
-            print("OR HERE")
             title = _("¡Envio exitoso!")
             message = _("Se envio correctamente los documentos")
             return {

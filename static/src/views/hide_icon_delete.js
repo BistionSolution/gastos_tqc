@@ -50,7 +50,6 @@ export class TestListRenderer extends ListRenderer {
         //     }
         // });
         this.showRemoveIcon = useState({value: false});
-        console.log("List controller started! no se que pasa");
         onWillStart(() => this._loadPro());
     }
 
@@ -83,7 +82,6 @@ TestListRenderer.recordRowTemplate = 'owl_learn.ClickMe.RecordRow';
 
 export class NewListRenderer extends X2ManyField {
     setup() {
-        console.log("List view started!");
         super.setup();
         this.showModalDescription = useState({value: false});
         this.descriptionRechazo = useState({text: ''});

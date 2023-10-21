@@ -53,8 +53,6 @@ export class SplitViewRenderer extends ListRenderer {
 
 
     _onKeyUp(ev) {
-        console.log("QUE ES ONKEYUO : ", ev)
-        console.log("QUE ES ONKEYUO : ", this.sideFormView)
         if (this.sideFormView.show && ev.code === 'Escape') {
             this.closeSideFormview();
         }
@@ -95,7 +93,6 @@ export class SplitViewRenderer extends ListRenderer {
             return;
         }
         // Agregar clase al elemento padre clickeado
-        console.log("XDDDD . : ", this.env.splitView?.enabled)
         const element = ev.target.closest('td')
         const focusRow = this.tableRef.el.querySelector(`[data-id='${this.recordDatapointID}']`);
         // quitarle la clase o_list_record_selected a focusRow
@@ -103,8 +100,6 @@ export class SplitViewRenderer extends ListRenderer {
             focusRow.classList.remove('o_list_record_selected')
 
         }
-        console.log("FOCUS ROW ga ::::", focusRow)
-        console.log("ELEMENTO : ", element)
         if (element) {
             element.parentElement.classList.add('o_list_record_selected');
             // capturar elemento que tenga data-id igual datapint_6

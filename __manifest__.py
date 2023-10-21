@@ -77,6 +77,7 @@
             'gastos_tqc/static/src/views/split_view/side_form_controller.xml',
             'gastos_tqc/static/src/views/split_view/side_form_view_container.xml',
 
+
             # 'gastos_tqc/static/src/views/split_view/list_controller.xml',
             'gastos_tqc/static/src/views/split_view/list_renderer.xml',
 
@@ -96,6 +97,11 @@
             'gastos_tqc/static/src/lib/interact.min.js',
 
             'gastos_tqc/static/src/views/split_view/hooks.js',
+
+            'gastos_tqc/static/src/views/button_interfaz/button_interfaz.js',
+
+            'gastos_tqc/static/src/views/button_interfaz/button_interfaz.xml',
+
 
             'gastos_tqc/static/src/views/split_view/with_search.js',
 

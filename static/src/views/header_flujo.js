@@ -9,7 +9,6 @@ export class HeaderFlujo extends Component {
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
-        console.log("INITAL COMPOENET")
         onWillStart(async () => {
             const module_name = this.env.searchModel.resModel
             console.log("module_name : ", module_name)
@@ -21,7 +20,6 @@ export class HeaderFlujo extends Component {
             // this.select = 'HII'
             this.env.searchModel
             this.select = this.env.searchModel._domain[2][2]
-            console.log("Hola data : ", this.countData)
         });
     }
 
@@ -31,7 +29,6 @@ export class HeaderFlujo extends Component {
      */
 
     setSearchContext(ev) {
-        console.log("filters  : ", ev)
         let filter_name = ev.currentTarget.getAttribute("filter_name");
         let filters = filter_name.split(',');
 

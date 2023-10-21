@@ -30,12 +30,12 @@
             </field>
         </record>
 
-        <!--VISTA flujo form-->
+        <!--Vista flujo form-->
         <record id="view_form_tqc_liquidaciones" model="ir.ui.view">
             <field name="name">view.form.tqc.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion" class="table-liquidacion">
+                <form js_class="button_form_view" class="table-liquidacion">
                     <header>
                         <button string="Enviar a contabilidad" name="button_jefatura" type="object"
                                 attrs="{'invisible':['|',('uid_create', '!=', 1),('state','!=','jefatura'),'|',('current_user','not in',[1]),('state','!=','jefatura')]}"
