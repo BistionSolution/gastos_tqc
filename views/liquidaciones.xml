@@ -96,9 +96,9 @@
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),]}"/>
                                         <field name="serie"
-                                               attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['Vale Otros Gastos'])]}"/>
+                                               attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"/>
                                         <field name="numero"
-                                               attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['Vale Otros Gastos'])]}"/>
+                                               attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"/>
                                         <field name="fechaemision" string="Fecha emisión"
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
@@ -278,11 +278,11 @@
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                         <field name="codetipo" invisible="1"/>
                                         <field name="serie"
-                                               attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])]}"
+                                               attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"
                                                force_save="1"/>
                                         <!--                                     widget="many2many_binary"-->
                                         <field name="numero"
-                                               attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])]}"
+                                               attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"
                                                force_save="1"/>
                                         <field name="attachment" widget="many2many_binary"/>
 
