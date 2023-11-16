@@ -3,12 +3,14 @@
     //width: 100px;
     //height: 75px;
   }
+
+  .o_list_table tfoot {
+    //position: sticky;
+    display: none !important;
+    bottom: 0;
+  }
 }
 
-.o_list_view .o_list_table tfoot {
-  //position: sticky;
-  bottom: 0;
-}
 
 .o_list_view .o_list_table.o_empty_list {
   table-layout: auto !important;
@@ -72,10 +74,11 @@
   display: none;
 }
 
-.button_black{
+.button_black {
   background: #3A5A6B;
 }
-.button_black:after{
+
+.button_black:after {
   border-left-color: #3A5A6B !important;
 }
 
@@ -144,22 +147,25 @@
 //  background-color: #F20B0D !important;
 //}
 
-.o_list_view thead{
+.o_list_view thead {
   background-color: #eee !important;
 }
-.o_list_view .o_list_table thead > tr > th{
+
+.o_list_view .o_list_table thead > tr > th {
   text-align: left !important;
 }
+
 /*Estilo de tabla de busqueda personalizada*/
-.search_aument{
+.search_aument {
   width: 100% !important;
 }
 
-.hidden_remove{
+.hidden_remove {
   display: none;
 }
+
 /*Estilo*/
-.table-over{
+.table-over {
 
   border: 2px #E2E2E2 solid;
   height: 400px;

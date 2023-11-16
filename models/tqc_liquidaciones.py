@@ -117,18 +117,14 @@ class Liquidaciones(models.Model):
 
     def _get_document_domain(self):
         context = self._context.copy() or {}
-        print("CONTEXT : ", context)
         # obtener valor de state en la siguiente vista
-        print("este es self , ", self.state)
 
         if context.get("mode_view", False) == 'flujo':
             domain = [('revisado_state', 'not in', ['liquidado'])]
             if self.state == 'contable':
-                print("searhc CONTABLE")
                 # Agregar un elemento a la lista con
                 domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura'])]
             if self.state == 'pendiente':
-                print("searhc PENDIENTE")
                 domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura', 'rechazado_contable'])]
             # if context.get("search_default_jefatura"):
             #     print("searhc JEGATURA")
@@ -691,9 +687,9 @@ class Liquidaciones(models.Model):
             """
 
             for document in self.detalleliquidaciones_id:
-                if document.revisado_state == 'aprobado_contable':
+                if document.revisado_state != 'aprobado_contable':
                     values = (
-                        document.numero,  # Numero factura
+                        (document.numero + "-" + document.serie) if document.numero and document.serie else None,  # Numero factura
                         'TQC',
                         self.num_solicitud,  # Numero de solicitud
                         document.tipodocumento.tipo,  # Tipó DE DOCUMENTO
@@ -737,11 +733,12 @@ class Liquidaciones(models.Model):
                         None,  # Rubro 9 adicional del documento. Opcional.
                         None,  # Rubro 10 adicional del documento. Opcional.
                         None,  # Código de la cuenta bancaria. Obligatorio para depósito o devoluciones de efectivo.
-                        document.observacionrepresentacion,  # NOTAS
+                        document.observacionrepresentacion or '',  # NOTAS
                         'SA',  # Código del usuario de la transacción. Obligatorio. Por defecto: SA.
                         # self.state,  # Código del asiento generado por el documento.
                         # self.state  # Mensaje de error en caso ocurra un error en la transacción.
                     )
+                    print("VALORES : ", values)
                     try:
                         cursor = connection.cursor()
                         cursor.execute(sql, values)

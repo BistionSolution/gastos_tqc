@@ -12,7 +12,6 @@
                     <field name="empleado_name"/>
                     <field name="centro_costo"/>
                     <field name="fecha_entrega" string="Fecha solicitud"/>
-                    <field name="fecha_contable" invisible="1"/>
                     <field name="moneda"/>
                     <field name="currency_id" string="Moneda" invisible="1"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -21,6 +20,7 @@
                     <!--                    <field name="numeroplaca"/>-->
                     <!--                    <field name="glosa_entrega"/>-->
                     <field name="fecha_generacion"/>
+                    <field name="fecha_contable"/>
 
                     <field name="state"/>
                     <field name="tipo_documento"/>
@@ -44,6 +44,9 @@
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
+                        <button name="send_exactus" string="Volver a enviar" type="object"
+                                class="oe_highlight"/>
+
                         <field name="habilitado_state" widget="statusbar"
                                statusbar_visible="habilitado,proceso,liquidado"/>
                     </header>
@@ -132,12 +135,65 @@
                                 </tree>
                                 <form>
                                     <group>
-                                        <field name="tipo"/>
-                                        <field name="subtipo"/>
-                                        <field name="serie"/>
-                                        <field name="numero"/>
-                                        <field name="ruc"/>
-                                        <field name="revisado_state"/>
+                                        <group>
+                                            <field name="tipodocumento" string="Tipo doc."
+                                                   options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                                            <field name="serie"/>
+                                            <field name="numero"/>
+                                            <field name="fechaemision" string="Fecha emisión"/>
+                                            <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
+                                            <field name="attachment"/>
+                                            <field name="ruc" string="Ruc proveedor" class="consult_ruc"
+                                                   decoration-danger="razonsocial_invisible == 'no_existe'"/>
+                                            <field name="razonsocial_invisible" invisible="1"/>
+                                            <field name="proveedor_razonsocial" string="Proveedor Razon social"
+                                                   readonly="1"
+                                                   force_save="1"/>
+                                            <!--                                    <field name="state"/>-->
+                                            <!--                                    <field name="subtipo"/>-->
+                                        </group>
+                                        <group>
+                                            <field name="base_afecta" widget="monetary"
+                                                   options="{'currency_field': 'currency_id'}"
+                                            />
+                                            <field name="base_inafecta" widget="monetary"
+                                                   options="{'currency_field': 'currency_id'}"
+                                            />
+                                            <field name="impuesto"
+                                                   options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                            />
+                                            <field name="montoigv" widget="monetary" string="Monto IGV"
+                                                   options="{'currency_field': 'currency_id'}" readonly="1"
+                                                   force_save="1"/>
+                                            <field name="totaldocumento" widget="monetary" string="Total Documento"
+                                                   options="{'currency_field': 'currency_id'}" readonly="1"
+                                                   force_save="1"
+                                                   sum="Total Documentos"/>
+                                            <field name="cuenta_contable"
+                                                   options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+
+                                            />
+                                            <!--                                    <field name="nocliente"/>-->
+                                            <field name="cliente" class="consult_client"/>
+                                            <field name="cliente_razonsocial" readonly="1" force_save="1"
+                                                   string="Cliente razon social"/>
+
+                                            <field name="message_error"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="revisado_state" readonly="1" widget="badge"
+                                                   decoration-success="revisado_state in ['aprobado','liquidado']"
+                                                   decoration-warning="revisado_state == 'corregido'"
+                                                   decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"/>
+
+                                        </group>
+                                    </group>
+                                    <group string="Observaciones">
+                                        <field name="observacionrepresentacion" string="Obs. Presentacion"
+                                        />
+                                        <field name="observacionjefatura" string="Obs. Jefatura"
+                                        />
+                                        <field name="observacioncontabilidad" string="Obs. Contabilidad"
+                                        />
                                     </group>
                                 </form>
                             </field>
@@ -168,6 +224,8 @@
                     <group expand="1" string="Group by ">
                         <filter string="Num Solicitud" name="group_by_num_solicitud"
                                 context="{'group_by':'num_solicitud'}"/>
+                        <filter string="Empleado" name="group_by_employee"
+                                context="{'group_by':'empleado_name'}"/>
                     </group>
                 </search>
             </field>
@@ -181,7 +239,7 @@
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_historial_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_historial_liquidaciones')})]"/>
-            <field name="context">{'mode_view':'historial','search_default_group_by_num_solicitud':1}</field>
+            <field name="context">{'mode_view':'historial','search_default_group_by_employee':1}</field>
             <field name="domain">[('fecha_generacion', '!=', False)]</field>
             <field name="target">main</field>
             <field name="help" type="html">
