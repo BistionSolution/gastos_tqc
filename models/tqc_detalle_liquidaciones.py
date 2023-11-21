@@ -11,7 +11,6 @@ database = 'TQCBKP2'
 userbd = "TQC"
 passbd = "extqc"
 
-
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
     _description = 'Detalle de Liquidaciones'
@@ -28,7 +27,7 @@ class detalleLiquidaciones(models.Model):
         ('no_activo', 'No activo'),
         ('no_existe', 'Historial ERC')
     ], default='activo')
-    moneda = fields.Char()
+
     tipocambio = fields.Float(required=1, digits=(12, 3))
     fechaemision = fields.Date(required=1)
 
@@ -36,7 +35,9 @@ class detalleLiquidaciones(models.Model):
     base_inafecta = fields.Monetary(currency_field='currency_id', required=1)
     montoigv = fields.Monetary(currency_field='currency_id', required=1)
     impuesto = fields.Many2one('tqc.impuestos', required=1)
+    # Totales
     totaldocumento = fields.Monetary(currency_field='currency_id', required=1)
+    total_neto = fields.Monetary(currency_field='currency_id', required=1)
 
     cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
@@ -44,11 +45,19 @@ class detalleLiquidaciones(models.Model):
     code_cuenta_contable = fields.Char(compute="_depend_cuentacontable")
     observacionrepresentacion = fields.Text(string='Observacion representacion')
     nocliente = fields.Char()
-
+    moneda = fields.Selection([
+        ('PEN', 'SOL'),
+        ('USD', 'DOLAR')
+    ], string='Moneda', default="PEN", required=True)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
                                   states={'reported': [('readonly', True)], 'approved': [('readonly', True)],
                                           'done': [('readonly', True)]}, compute='_compute_currency_id',
                                   default=lambda self: self.env.company.currency_id)
+    currency_liquidacion_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False,
+                                                states={'reported': [('readonly', True)],
+                                                        'approved': [('readonly', True)],
+                                                        'done': [('readonly', True)]},
+                                                related='liquidacion_id.currency_id', store=True)
 
     useraprobacionjefatura = fields.Integer()
     fechaaprobacionjefatura = fields.Datetime()
@@ -62,6 +71,7 @@ class detalleLiquidaciones(models.Model):
 
     cliente = fields.Char()
     totaldocumento_soles = fields.Float()
+
     cliente_razonsocial = fields.Char()
     cuenta_contable_descripcion = fields.Char()
     icbper = fields.Float("ICBPER")
@@ -102,7 +112,10 @@ class detalleLiquidaciones(models.Model):
     def _compute_currency_id(self):
         for rec in self:
             if rec.moneda == 'USD':
-                rec.currency_id = 2
+                # Buscar moneda USD
+                rec.currency_id = self.env['res.currency'].search([('name', '=', 'USD')]).id
+            else:
+                rec.currency_id = self.env['res.currency'].search([('name', '=', 'PEN')]).id
 
     @api.depends()
     def _current_user(self):
@@ -181,8 +194,6 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('totaldocumento')
     def _check_detraction(self):
         for rec in self:
-            print("ESTE REC", rec.base_afecta)
-            print("ESTE REC", rec.id)
             if rec.totaldocumento > 700:
                 warning = {
                     'title': "Mensaje de advertencia",
@@ -211,6 +222,13 @@ class detalleLiquidaciones(models.Model):
         totaldocumento = monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
+        if self.tipocambio != 0:
+            if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
+                res['total_neto'] = totaldocumento/self.tipocambio
+            elif self.currency_liquidacion_id.name == 'PEN' and self.currency_id.name == 'USD':
+                res['total_neto'] = totaldocumento*self.tipocambio
+            else:
+                res['total_neto'] = totaldocumento
         # In case of multi currency, round before it's use for computing debit credit
         return res
 

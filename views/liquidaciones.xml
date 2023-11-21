@@ -114,6 +114,9 @@
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <!--                                    <field name="state"/>-->
                                         <!--                                    <field name="subtipo"/>-->
+                                        <field name="moneda"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="currency_liquidacion_id" invisible="1"/>
                                         <field name="base_afecta" widget="monetary"
                                                options="{'currency_field': 'currency_id'}"
                                                attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad'])]}"
@@ -136,6 +139,9 @@
                                         <field name="totaldocumento" widget="monetary" string="Total Documento"
                                                options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                                sum="Total Documentos"/>
+                                        <field name="total_neto" widget="monetary"
+                                               options="{'currency_field': 'currency_liquidacion_id'}" readonly="1" force_save="1"
+                                               sum="Total Neto"/>
                                         <field name="cuenta_contable"
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"
@@ -296,6 +302,9 @@
                                         <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                         <!--                                    <field name="state"/>-->
                                         <!--                                    <field name="subtipo"/>-->
+                                        <field name="moneda"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="currency_liquidacion_id" invisible="1"/>
                                         <field name="base_afecta" widget="monetary"
                                                options="{'currency_field': 'currency_id'}"
                                                attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad','Vale Otros Gastos'])]}"
@@ -319,6 +328,10 @@
                                                options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                                sum="Total Documentos"
                                                decoration-warning="totaldocumento > 700"/>
+                                         <field name="total_neto" widget="monetary"
+                                               options="{'currency_field': 'currency_liquidacion_id'}" readonly="1" force_save="1"
+                                               sum="Total neto"
+                                               />
                                         <field name="cuenta_contable"
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                         />
@@ -371,6 +384,8 @@
                                         <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
                                         <!--                                    <field name="state"/>-->
                                         <!--                                    <field name="subtipo"/>-->
+                                        <field name="moneda"/>
+                                        <field name="currency_id" invisible="1"/>
                                         <field name="base_afecta" widget="monetary"
                                                options="{'currency_field': 'currency_id'}"
                                         />
@@ -389,7 +404,10 @@
                                                string="Monto IGV"/>
                                         <field name="totaldocumento" widget="monetary"
                                                options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
-                                               sum="Total Documentos"/>
+                                               />
+                                        <field name="total_neto" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
+                                               sum="Total Neto"/>
                                         <field name="cuenta_contable"
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                         />

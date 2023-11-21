@@ -137,9 +137,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             var fieldIndex = Math.max($tr.find('.o_field_cell').index($td), 0);
             this._selectCell(rowIndex, fieldIndex, {event: event}).then(function () {
                 if (self.state.model === "tqc.detalle.liquidaciones") {
-                    console.log("RENDER 1 : ", self.__parentedParent.recordData)
-                    console.log("RENDER 1 : ", self.__parentedParent.recordData.habilitado_state)
-                    console.log("RENDER 2 : ", self.__parentedParent.recordData.user_id)
                     // Si el registro pertenece al usuario conectado, entocnes se le habilita la busqueda
                     if (((session.user_id[0] === self.__parentedParent.recordData.user_id) && self.__parentedParent.recordData.habilitado_state === 'habilitado') || ((self.__parentedParent.recordData.habilitado_state === 'proceso') && ([2, 1].includes(self.__parentedParent.recordData.uid_create)))) {
                         console.log("ENTRO XD")
@@ -266,7 +263,6 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
             }
             self.do_action(action, options).then(function () {
                 var self = this
-                console.log("SELF GAAA ; ", self)
             });
 
             //    return this.do_action(action, { on_close: function () {
@@ -340,19 +336,7 @@ odoo.define('gastos_tqc.go_selectable', function (require) {
                         'revisado_state': 'rechazado_' + this.recordData.state
                     }],
                 }).then(function (result) {
-                    // console.log("VAMOS CON VAMOSS : ")
-                    // console.log("VAMOS CON model : ", self.model)
-                    // if (self.model === 'tqc.liquidaciones') {
-                    //     rpc.query({
-                    //         'model': self.model,
-                    //         'method': 'write',
-                    //         'args': [self.res_id, {
-                    //             'habilitado_state': 'corregir'
-                    //         }],
-                    //     }).then(function (e) {
-                    //         self.trigger_up('reload');
-                    //     });
-                    // }
+
                     self.trigger_up('reload');
                 });
             }
