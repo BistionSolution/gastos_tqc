@@ -16,7 +16,7 @@ class TqcAuth(models.Model):
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         prefijo_database = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         if data_base:
-            self.env['tqc.autorizadores'].search([]).unlink()
+            self.env['tqc.autorizadores'].sudo().search([]).unlink()
             self.env.cr.commit()
             sql = """SELECT
                       SUPERIOR AS external_id,
@@ -62,7 +62,7 @@ class TqcAuth(models.Model):
                         sudord_ids = self.env['tqc.autorizadores'].browse(id_register).subordinados.mapped('id')
                         if not (id_subord in sudord_ids):
                             # agrega a usuario nuevo
-                            self.env['tqc.autorizadores'].browse(id_register).write({'subordinados': [(4, id_subord)]})
+                            self.env['tqc.autorizadores'].browse(id_register).sudo().write({'subordinados': [(4, id_subord)]})
                             self.env.cr.commit()
 
                 else:  # CREA NUEVO REGISTRO
@@ -79,10 +79,10 @@ class TqcAuth(models.Model):
                         except ValueError:
                             vjson = {'superior': id_register}
 
-                        original_id = self.env[table_bd].create(vjson).id
+                        original_id = self.env[table_bd].sudo().create(vjson).id
                         self.env.cr.commit()
                         # Si funciona
-                        self.env["ir.model.data"].create(
+                        self.env["ir.model.data"].sudo().create(
                             {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
                         self.env.cr.commit()
 
@@ -130,8 +130,8 @@ class TqcAuth(models.Model):
 
     # ACTUALIZA DE FORMA MASIVA EL GRUPO DE USUARIO APROBADOR Y EMPLEADO DE TODOS LOS EMPLEADOS
     def masive_auth(self):
-        id_group_emple = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Empleado')]).id
-        id_group_aprob = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Aprobador')]).id
+        id_group_emple = self.env['res.groups'].sudo().search([('full_name', '=', 'Web de Gastos / Gasto-Empleado')]).id
+        id_group_aprob = self.env['res.groups'].sudo().search([('full_name', '=', 'Web de Gastos / Gasto-Aprobador')]).id
         # Para cambiar
         # id_rrhh_group = self.env['ir.model.data'].xmlid_to_res_id('hr.group_hr_manager')
         # idall = self.env["hr.employee"].search([]).mapped("user_id").mapped("id")
@@ -140,7 +140,7 @@ class TqcAuth(models.Model):
         #     {'users': [(3, i) for i in idall]})
 
         # OBTENGO ID DE CUENTAS ERP DE LOS EMPLEADOS VINCULADOS COMO APROADORES, NOTE: ENVIE LIST1 - LISTA DE ID DE JOBS
-        listsup = self.env["tqc.autorizadores"].search([]).mapped("superior").mapped("user_id").mapped("id")
+        listsup = self.env["tqc.autorizadores"].sudo().search([]).mapped("superior").mapped("user_id").mapped("id")
         # listsub = self.env["tqc.autorizadores"].search([]).mapped("subordinados").mapped("user_id").mapped("id")
 
         # ID DE LOS ADMIN
@@ -153,25 +153,25 @@ class TqcAuth(models.Model):
         list_new_aprob = list(set(listsup).difference(set(ids_aprobador)))
 
         # CONVERTIR EN APROBADORES
-        self.env['res.groups'].search([('id', '=', id_group_aprob)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_aprob)]).sudo().write(
             {'users': [(4, i) for i in list_new_aprob]})
         # QUITAR rol aprobador a EMPLEADOS
-        self.env['res.groups'].search([('id', '=', id_group_emple)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_emple)]).sudo().write(
             {'users': [(3, i) for i in list_new_aprob]})
 
         # AHORA CON LOS USUARIO NO ADMIN Y EMPLEADOS
         # ID DE USUARIOS no ADMIN
-        ids_not_aprob = self.env["hr.employee"].search([('user_id.id', 'not in', listsup)]).mapped("user_id").mapped(
+        ids_not_aprob = self.env["hr.employee"].sudo().search([('user_id.id', 'not in', listsup)]).mapped("user_id").mapped(
             "id")
 
         # RESTAMOS (LISTA DE EMPLEADOS - ADMIN)
         list_new_emple = list(set(ids_not_aprob).difference(set(ids_aprobador)))
 
         # CONVERTIR EN EMPLEADOS
-        self.env['res.groups'].search([('id', '=', id_group_emple)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_emple)]).sudo().write(
             {'users': [(4, i) for i in list_new_emple]})
         # QUITAR EN APROBADORES
-        self.env['res.groups'].search([('id', '=', id_group_aprob)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_aprob)]).sudo().write(
             {'users': [(3, i) for i in list_new_emple]})
 
 
@@ -182,11 +182,11 @@ class TqcAuthConta(models.Model):
     empleado = fields.Many2one("hr.employee", string='Nombre', required=1)
 
     def masive_auth(self):
-        id_group_emple = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Empleado')]).id
-        id_group_aprob = self.env['res.groups'].search([('full_name', '=', 'Web de Gastos / Gasto-Contador')]).id
+        id_group_emple = self.env['res.groups'].sudo().search([('full_name', '=', 'Web de Gastos / Gasto-Empleado')]).id
+        id_group_aprob = self.env['res.groups'].sudo().search([('full_name', '=', 'Web de Gastos / Gasto-Contador')]).id
 
         # OBTENGO ID DE CUENTAS ERP DE LOS EMPLEADOS VINCULADOS COMO APROADORES, NOTE: ENVIE LIST1 - LISTA DE ID DE JOBS
-        listsup = self.env["tqc.auth.contabilidad"].search([]).mapped("empleado").mapped("user_id").mapped("id")
+        listsup = self.env["tqc.auth.contabilidad"].sudo().search([]).mapped("empleado").mapped("user_id").mapped("id")
         # listsub = self.env["tqc.autorizadores"].search([]).mapped("subordinados").mapped("user_id").mapped("id")
 
         # ID DE LOS ADMIN
@@ -199,25 +199,25 @@ class TqcAuthConta(models.Model):
         list_new_aprob = list(set(listsup).difference(set(ids_aprobador)))
 
         # CONVERTIR EN APROBADORES
-        self.env['res.groups'].search([('id', '=', id_group_aprob)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_aprob)]).sudo().write(
             {'users': [(4, i) for i in list_new_aprob]})
         # QUITAR rol aprobador a EMPLEADOS
-        self.env['res.groups'].search([('id', '=', id_group_emple)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_emple)]).sudo().write(
             {'users': [(3, i) for i in list_new_aprob]})
 
         # AHORA CON LOS USUARIO NO ADMIN Y EMPLEADOS
         # ID DE USUARIOS no ADMIN
-        ids_not_aprob = self.env["hr.employee"].search([('user_id.id', 'not in', listsup)]).mapped("user_id").mapped(
+        ids_not_aprob = self.env["hr.employee"].sudo().search([('user_id.id', 'not in', listsup)]).mapped("user_id").mapped(
             "id")
 
         # RESTAMOS (LISTA DE EMPLEADOS - ADMIN)
         list_new_emple = list(set(ids_not_aprob).difference(set(ids_aprobador)))
 
         # CONVERTIR EN EMPLEADOS
-        self.env['res.groups'].search([('id', '=', id_group_emple)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_emple)]).sudo().write(
             {'users': [(4, i) for i in list_new_emple]})
         # QUITAR EN APROBADORES
-        self.env['res.groups'].search([('id', '=', id_group_aprob)]).sudo().write(
+        self.env['res.groups'].sudo().search([('id', '=', id_group_aprob)]).sudo().write(
             {'users': [(3, i) for i in list_new_emple]})
 
     def write(self, vals):
