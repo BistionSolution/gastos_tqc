@@ -122,7 +122,7 @@ class Liquidaciones(models.Model):
         # obtener valor de state en la siguiente vista
 
         if context.get("mode_view", False) == 'flujo':
-            # domain = [('revisado_state', 'not in', ['liquidado'])]
+            domain = []
             if self.state == 'contable':
                 # Agregar un elemento a la lista con
                 domain = [('revisado_state', 'not in', [ 'rechazado_jefatura'])]
