@@ -53,6 +53,19 @@
             <field name="perm_create" eval="False"/>
         </record>
 
+        <record id="ir_rule_empleado_admin" model="ir.rule">
+            <field name="name">Mostrar todos empleados al admin</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="domain_force">
+                [(1,'=',1)]
+            </field>
+            <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_administrator'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_create" eval="False"/>
+        </record>
+
         <record id="ir_rule_empleado_own" model="ir.rule">
             <field name="name">Mostrar propia data</field>
             <field name="model_id" ref="hr.model_hr_employee"/>

@@ -47,7 +47,7 @@
             <field name="arch" type="xml">
                 <form string="Superior">
                     <group string="Contabilidad">
-                       <field name="empleado"/>
+                       <field name="empleado" options="{'no_quick_create':True,'no_create_edit':True}" />
                     </group>
                 </form>
             </field>
