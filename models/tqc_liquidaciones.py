@@ -42,7 +42,9 @@ class Liquidaciones(models.Model):
         ('habilitado', 'habilitado'),
         ('jefatura', 'Sin visto jefe'),
         ('contable', 'Sin visto Contable'),
-        ('pendiente', 'Pediente a procesar')],
+        ('pendiente', 'Pendiente a procesar'),
+        ('liquidado', 'Liquidado')
+    ],
         default='habilitado', string='Estado Solicitud')
 
     aprobacioncontabilidad = fields.Boolean()
@@ -123,9 +125,9 @@ class Liquidaciones(models.Model):
             domain = [('revisado_state', 'not in', ['liquidado'])]
             if self.state == 'contable':
                 # Agregar un elemento a la lista con
-                domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura'])]
+                domain = [('revisado_state', 'not in', [ 'rechazado_jefatura'])]
             if self.state == 'pendiente':
-                domain = [('revisado_state', 'not in', ['liquidado', 'rechazado_jefatura', 'rechazado_contable'])]
+                domain = [('revisado_state', 'not in', ['rechazado_jefatura', 'rechazado_contable'])]
             # if context.get("search_default_jefatura"):
             #     print("searhc JEGATURA")
         elif context.get("mode_view", False) == 'historial':
@@ -210,6 +212,7 @@ class Liquidaciones(models.Model):
 
     @api.model
     def importar_exactus(self):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = "10.10.10.228"
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         user_bd = userbd
@@ -254,8 +257,9 @@ class Liquidaciones(models.Model):
                   tqc.ENTREGA_A_RENDIR
                 WHERE LIQUIDADO != 'S'"""
         try:
-            connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+            connection = pyodbc.connect(
+                'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
 
             campList = self.convert_sql(sql)  # lista de campos odoo
             # company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
@@ -611,24 +615,25 @@ class Liquidaciones(models.Model):
             self.write({'state': 'pendiente'})
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable']:
-                    self.env['tqc.detalle.liquidaciones'].browse(doc.id).write({
+                    self.env['tqc.detalle.liquidaciones'].browse(doc.id).sudo().write({
                         'revisado_state': 'aprobado_contable'
                     })
 
     def send_exactus(self):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = "10.10.10.228"
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         user_bd = userbd
         pass_bd = passbd
 
         vals = {
-            'habilitado_state': 'liquidado',
             'detalleliquidaciones_id': []
         }
 
         try:
-            connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
-                                        data_base + ';UID=' + user_bd + ';PWD=' + pass_bd + ';Encrypt=no')
+            connection = pyodbc.connect(
+                'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                data_base + ';UID=' + user_bd + ';PWD=' + pass_bd + ';Encrypt=no')
             sql = """
             DECLARE	@return_value int,
                     @psDocumento varchar(20),
@@ -685,11 +690,11 @@ class Liquidaciones(models.Model):
                     @psAsiento as N'@psAsiento',
                     @psMensajeError as N'@psMensajeError'
             """
-
             for document in self.detalleliquidaciones_id:
-                if document.revisado_state != 'aprobado_contable':
+                if document.revisado_state == 'aprobado_contable':
                     values = (
-                        (document.numero + "-" + document.serie) if document.numero and document.serie else None,  # Numero factura
+                        (document.numero + "-" + document.serie) if document.numero and document.serie else None,
+                        # Numero factura
                         'TQC',
                         self.num_solicitud,  # Numero de solicitud
                         document.tipodocumento.tipo,  # Tipó DE DOCUMENTO
@@ -738,7 +743,6 @@ class Liquidaciones(models.Model):
                         # self.state,  # Código del asiento generado por el documento.
                         # self.state  # Mensaje de error en caso ocurra un error en la transacción.
                     )
-                    print("VALORES : ", values)
                     try:
                         cursor = connection.cursor()
                         cursor.execute(sql, values)
@@ -747,6 +751,7 @@ class Liquidaciones(models.Model):
                         # idusers = cursor.fetchval()
                         cursor.close()
                     except Exception as e:
+                        print("EEROOR ", e)
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': f"Error sql :{e}"}])
                         continue
@@ -759,6 +764,9 @@ class Liquidaciones(models.Model):
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': idusers[2]}])
 
+            # Cambia estado de liquidacion
+            vals['habilitado_state'] = 'liquidado'
+            vals['state'] = 'liquidado'
             self.importar_exactus
             self.write(vals)
             # res = {
@@ -785,17 +793,18 @@ class Liquidaciones(models.Model):
             #                             """
             # }
             # return res
-            title = _("¡Envio exitoso!")
-            message = _("Se envio correctamente los documentos")
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': title,
-                    'message': message,
-                    'sticky': False,
-                }
-            }
+
+            # title = _("¡Envio exitoso!")
+            # message = _("Se envio correctamente los documentos")
+            # return {
+            #     'type': 'ir.actions.client',
+            #     'tag': 'display_notification',
+            #     'params': {
+            #         'title': title,
+            #         'message': message,
+            #         'sticky': False,
+            #     }
+            # }
 
         except Exception as e:
             raise UserError(_(e))

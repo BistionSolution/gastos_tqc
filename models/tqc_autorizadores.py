@@ -13,6 +13,7 @@ class TqcAuth(models.Model):
     subordinados = fields.Many2many("hr.employee", string="Subordinado", required=1)
 
     def load_autorizadores(self):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         prefijo_database = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         if data_base:
@@ -31,7 +32,7 @@ class TqcAuth(models.Model):
 
             table_bd = 'tqc.autorizadores'
 
-            connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+            connection = pyodbc.connect('DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
 
             cursor = connection.cursor()

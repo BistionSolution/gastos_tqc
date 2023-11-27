@@ -49,8 +49,9 @@
                                 attrs="{'invisible':[('state','!=','pendiente')]}"
                                 class="oe_highlight"
                                 groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
-                        <field name="habilitado_state" invisible="1"/>
-                        <field name="state" widget="statusbar" statusbar_visible="jefatura,contable,pendiente"/>
+                        <field name="habilitado_state" widget="statusbar" statusbar_visible="habilitado,proceso,liquidado" attrs="{'invisible': [('habilitado_state','=','proceso')]}"/>
+                        <field name="state" widget="statusbar"  statusbar_visible="jefatura,contable,pendiente" attrs="{'invisible': [('habilitado_state','!=','proceso')]}"/>
+
                     </header>
                     <sheet>
                         <field name="mode_view" force_save="1" invisible="1"/>
@@ -165,7 +166,7 @@
                                         <field name="revisado_state" readonly="1" widget="badge"
                                                decoration-success="revisado_state == 'aprobado'"
                                                decoration-warning="revisado_state == 'corregido'"
-                                               decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"/>
+                                               decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable','send_error']"/>
 
                                         <!--                                    <button string="Aprobar" name="action_approve" type="object" icon="fa-thumbs-up"/>-->
                                         <!--                                    <button string="Rechazar" name="action_refuse" type="object" icon="fa-times"/>-->

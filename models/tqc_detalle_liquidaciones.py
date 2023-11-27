@@ -245,6 +245,7 @@ class detalleLiquidaciones(models.Model):
 
     @api.onchange('fechaemision')
     def _onchange_fecha(self):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         for rec in self:
 
             if rec.fechaemision and no_server:
@@ -265,7 +266,7 @@ class detalleLiquidaciones(models.Model):
                     '%Y-%m-%d') + """'  AND TIPO_CAMBIO = 'TCV'"""
                 try:
                     connection = pyodbc.connect(
-                        'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                        'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                     cursor = connection.cursor()
                     cursor.execute(sql_prime)
@@ -312,6 +313,7 @@ class detalleLiquidaciones(models.Model):
 
     @api.onchange('ruc')
     def _onchange_ruc(self):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         for rec in self:
             if rec.ruc and no_server:
                 if rec.tipodocumento.descripcion == '53 - Planilla Movilidad' and len(rec.ruc) != 8:
@@ -327,7 +329,7 @@ class detalleLiquidaciones(models.Model):
                 sql_prime = """SELECT TOP 1 PROVEEDOR, NOMBRE, ACTIVO FROM tqc.PROVEEDOR WHERE PROVEEDOR = '""" + rec.ruc + """'"""
                 try:
                     connection = pyodbc.connect(
-                        'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                        'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                     cursor = connection.cursor()
                     cursor.execute(sql_habido)
@@ -367,6 +369,7 @@ class detalleLiquidaciones(models.Model):
 
     @api.onchange('cliente')
     def _onchange_cliente(self):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         for rec in self:
             if rec.cliente and no_server:
                 print("que fuentes")
@@ -380,7 +383,7 @@ class detalleLiquidaciones(models.Model):
                 sql_prime = """SELECT TOP 1 * FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + rec.cliente + """'"""
                 try:
                     connection = pyodbc.connect(
-                        'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                        'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                         data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                     cursor = connection.cursor()
                     cursor.execute(sql_prime)
@@ -412,6 +415,7 @@ class detalleLiquidaciones(models.Model):
 
     @api.model
     def search_ruc(self, args):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         if no_server:
             info = []
 
@@ -425,7 +429,7 @@ class detalleLiquidaciones(models.Model):
 
             try:
                 connection = pyodbc.connect(
-                    'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                    'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                     data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                 cursor = connection.cursor()
                 cursor.execute(sql_prime)
@@ -443,6 +447,7 @@ class detalleLiquidaciones(models.Model):
 
     @api.model
     def search_client(self, args):
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         if no_server:
             info = []
             ip_conexion = "10.10.10.228"
@@ -453,7 +458,7 @@ class detalleLiquidaciones(models.Model):
                 'client'] + """%' OR NOMBRE LIKE '%""" + args['client'] + """%'"""
             try:
                 connection = pyodbc.connect(
-                    'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                    'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                     data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
                 cursor = connection.cursor()
                 cursor.execute(sql_prime)
