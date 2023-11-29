@@ -692,8 +692,9 @@ class Liquidaciones(models.Model):
             """
             for document in self.detalleliquidaciones_id:
                 if document.revisado_state == 'aprobado_contable':
+                    print("Observacion presentacion : ", document.observacionrepresentacion)
                     values = (
-                        (document.numero + "-" + document.serie) if document.numero and document.serie else None,
+                        (document.serie + "-" + document.numero) if document.numero and document.serie else None,
                         # Numero factura
                         'TQC',
                         self.num_solicitud,  # Numero de solicitud
@@ -705,7 +706,7 @@ class Liquidaciones(models.Model):
                         document.ruc,  # Ruc proveedor
                         document.proveedor_razonsocial,  # Razon social
                         document.ruc,  # Código del contribuyente
-                        document.observacionrepresentacion,  # glosa
+                        self.glosa_entrega,  # aplicación
                         self.moneda,  # Moneda
                         document.base_afecta + document.base_inafecta,  # Monto del subtotal.
                         0,  # Monto del descuento.
@@ -743,6 +744,7 @@ class Liquidaciones(models.Model):
                         # self.state,  # Código del asiento generado por el documento.
                         # self.state  # Mensaje de error en caso ocurra un error en la transacción.
                     )
+                    print("VALORES : ", values)
                     try:
                         cursor = connection.cursor()
                         cursor.execute(sql, values)
