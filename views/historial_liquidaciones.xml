@@ -55,7 +55,7 @@
                         <field name="empleado_name" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="num_solicitud" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="fecha_entrega" class="oe_inline" readonly="1" invisible="1"/>
-                        <field name="fecha_generacion" readonly="1" class="oe_inline" invisible="1"/>
+                        <field name="fecha_generacion" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="moneda" class="oe_inline" readonly="1" string="Moneda" invisible="1"/>
                         <field name="centro_costo" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="glosa_entrega" readonly="1" invisible="1"/>
@@ -63,7 +63,7 @@
                         <field name="saldo" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="current_total" class="oe_inline" readonly="1" force_save="1"
                                string="current_total" invisible="1"/>
-                        <field name="fecha_contable" readonly="1" class="oe_inline" invisible="1"/>
+                        <field name="fecha_contable" class="oe_inline" readonly="1"/>
                     </group>
                     <notebook>
                         <page string="Detalle Liquidacioness">
@@ -72,7 +72,8 @@
                                    class="o_field_one2many custom-control custom-checkbox"
                                    widget="select_onemany"
                                    options="{'create':false ,'create_edit': false}"
-                                   readonly="1">
+                                   readonly="1"
+                            >
                                 <!--                                section_and_note_one2many-->
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                       decoration-warning="revisado_state == 'corregido'"
@@ -88,6 +89,7 @@
                                     <field name="attachment"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
                                            decoration-danger="razonsocial_invisible == 'no_existe'"/>
+                                    <field name="moneda"/>
                                     <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"
                                            force_save="1"/>

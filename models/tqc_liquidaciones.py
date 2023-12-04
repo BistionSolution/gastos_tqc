@@ -151,8 +151,7 @@ class Liquidaciones(models.Model):
     @api.depends()
     def _current_user(self):
         for record in self:
-            print("record.empleado_name : ", record.empleado_name.name)
-            print("record.empleado_name : ", record.empleado_name.superior.mapped('user_id'))
+
             if self.env.uid in record.empleado_name.superior.mapped('user_id').mapped('id'):
                 record.current_user = 1
             else:
@@ -170,7 +169,6 @@ class Liquidaciones(models.Model):
         # data_id = model_obj._get_id('module_name', 'view_id_which_you_want_refresh')
         # view_id = model_obj.browse(data_id).res_id
         user_now = self.env.uid
-        print("VAMOS PERU")
 
         # ['|', ('empleado_name.superior.user_id', 'in', [self.env.uid]), ('empleado_name.user_id', '=', self.env.uid)]
         for record in self:
@@ -691,8 +689,8 @@ class Liquidaciones(models.Model):
                     @psMensajeError as N'@psMensajeError'
             """
             for document in self.detalleliquidaciones_id:
-                if document.revisado_state == 'aprobado_contable':
-                    print("Observacion presentacion : ", document.observacionrepresentacion)
+                # == 'aprobado_contable'
+                if document.revisado_state:
                     values = (
                         (document.serie + "-" + document.numero) if document.numero and document.serie else None,
                         # Numero factura
@@ -707,12 +705,12 @@ class Liquidaciones(models.Model):
                         document.proveedor_razonsocial,  # Razon social
                         document.ruc,  # Código del contribuyente
                         self.glosa_entrega,  # aplicación
-                        self.moneda,  # Moneda
-                        document.base_afecta + document.base_inafecta,  # Monto del subtotal.
+                        document.moneda,  # Moneda
+                        document.base_afecta,  # Monto del subtotal.
                         0,  # Monto del descuento.
                         document.montoigv,  # Monto del impuesto 1.
-                        0,  # Monto del impuesto 2.
-                        0,  # Monto del rubro 1.
+                        document.icbper,  # Monto del impuesto 2.
+                        document.base_inafecta + document.otros_tributos,  # Monto del rubro 1.
                         0,  # Monto del rubro 2.
                         document.totaldocumento,
                         # Monto total del documento. Obligatorio. No puede ser cero. Total = Subtotal-Descuento+Impuesto1+Impuesto2+Rubro1+Rubro2-Retencion1-Retencion2-Retencion3-Retencion4.
@@ -763,6 +761,7 @@ class Liquidaciones(models.Model):
                         vals['detalleliquidaciones_id'].append([1, document.id, {'revisado_state': 'liquidado'}])
 
                     else:
+                        print("ERROR : ", idusers[2])
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': idusers[2]}])
 

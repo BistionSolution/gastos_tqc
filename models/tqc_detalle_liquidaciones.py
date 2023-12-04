@@ -11,6 +11,7 @@ database = 'TQCBKP2'
 userbd = "TQC"
 passbd = "extqc"
 
+
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
     _description = 'Detalle de Liquidaciones'
@@ -46,7 +47,7 @@ class detalleLiquidaciones(models.Model):
     observacionrepresentacion = fields.Text(string='Observacion representacion')
     nocliente = fields.Char()
     moneda = fields.Selection([
-        ('PEN', 'SOL'),
+        ('SOL', 'SOL'),
         ('USD', 'DOLAR')
     ], string='Moneda', default="PEN", required=True)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
@@ -54,10 +55,10 @@ class detalleLiquidaciones(models.Model):
                                           'done': [('readonly', True)]}, compute='_compute_currency_id',
                                   default=lambda self: self.env.company.currency_id)
     currency_liquidacion_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False,
-                                                states={'reported': [('readonly', True)],
-                                                        'approved': [('readonly', True)],
-                                                        'done': [('readonly', True)]},
-                                                related='liquidacion_id.currency_id', store=True)
+                                              states={'reported': [('readonly', True)],
+                                                      'approved': [('readonly', True)],
+                                                      'done': [('readonly', True)]},
+                                              related='liquidacion_id.currency_id', store=True)
 
     useraprobacionjefatura = fields.Integer()
     fechaaprobacionjefatura = fields.Datetime()
@@ -74,8 +75,8 @@ class detalleLiquidaciones(models.Model):
 
     cliente_razonsocial = fields.Char()
     cuenta_contable_descripcion = fields.Char()
-    icbper = fields.Float("ICBPER")
-    otros_tributos = fields.Float("Otros tributos")
+    icbper = fields.Monetary(currency_field='currency_id', string="ICBPER")
+    otros_tributos = fields.Monetary(currency_field='currency_id', string="Otros tributos")
     proveedornoexiste = fields.Boolean()
     proveedornohabido = fields.Boolean()
 
@@ -135,7 +136,6 @@ class detalleLiquidaciones(models.Model):
         for rec in self:
             if rec.totaldocumento <= 0:
                 raise UserError(_('El monto total del documento no debe ser menor o igual a 0'))
-
 
     # @api.constrains('tipocambio')
     # def check_saldo(self):
@@ -224,9 +224,9 @@ class detalleLiquidaciones(models.Model):
         res['totaldocumento'] = totaldocumento
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
-                res['total_neto'] = totaldocumento/self.tipocambio
+                res['total_neto'] = totaldocumento / self.tipocambio
             elif self.currency_liquidacion_id.name == 'PEN' and self.currency_id.name == 'USD':
-                res['total_neto'] = totaldocumento*self.tipocambio
+                res['total_neto'] = totaldocumento * self.tipocambio
             else:
                 res['total_neto'] = totaldocumento
         # In case of multi currency, round before it's use for computing debit credit
