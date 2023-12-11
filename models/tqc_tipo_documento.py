@@ -14,7 +14,7 @@ class tipoDocumento(models.Model):
     _description = 'Tipo de Documentos'
 
     tipo = fields.Char(string='Tipo')
-    subtipo = fields.Integer(string='Tipo')
+    subtipo = fields.Integer(string='Subtipo')
     descripcion = fields.Char(default="Vacio")
     # impuesto = fields.Float(string='Impuesto')
 

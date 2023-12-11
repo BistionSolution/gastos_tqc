@@ -254,6 +254,7 @@ class Liquidaciones(models.Model):
                 FROM
                   tqc.ENTREGA_A_RENDIR
                 WHERE LIQUIDADO != 'S'"""
+
         try:
             connection = pyodbc.connect(
                 'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -326,7 +327,7 @@ class Liquidaciones(models.Model):
                         original_id = self.env[table_bd].create(variJson).id
                         # Si funciona
                         self.env["ir.model.data"].sudo().search(
-                            [('name', '=', register.num_solicitud), ('model', '=', 'tqc.liquidaciones')]).write(
+                            [('name', '=', register.num_solicitud), ('model', '=', 'tqc.liquidaciones')]).sudo().write(
                             {'res_id': original_id})
                         self.env.cr.commit()
                     else:
@@ -381,7 +382,7 @@ class Liquidaciones(models.Model):
                             continue
                         variJson['{}'.format(campList[i])] = user[i]
 
-                    original_id = self.env[table_bd].create(variJson).id
+                    original_id = self.env[table_bd].sudo().create(variJson).id
                     # Si funciona
                     self.env["ir.model.data"].sudo().create(
                         {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
