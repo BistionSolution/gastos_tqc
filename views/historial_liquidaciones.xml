@@ -5,7 +5,7 @@
             <field name="name">view.tree.historial.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <tree create="0" delete="0" expand="1">
+                <tree js_class="split_views" create="0" delete="0" expand="1">
                     <field name="mode_view" force_save="1" invisible="1"/>
 
                     <field name="num_solicitud"/>
@@ -40,7 +40,7 @@
             <field name="name">view.form.historial.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion" create="0" delete="0">
+                <form string="Liquidacion" create="0" delete="0" class="table-liquidacion">
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
@@ -66,11 +66,10 @@
                         <field name="fecha_contable" class="oe_inline" readonly="1"/>
                     </group>
                     <notebook>
-                        <page string="Detalle Liquidacioness">
+                        <page string="Detalle Liquidaciones">
                             <field name="uid_create" invisible="1"/>
                             <field name="detalleliquidaciones_id"
                                    class="o_field_one2many custom-control custom-checkbox"
-                                   widget="select_onemany"
                                    options="{'create':false ,'create_edit': false}"
                                    readonly="1"
                             >

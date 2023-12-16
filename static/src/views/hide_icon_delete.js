@@ -6,6 +6,7 @@ import session from 'web.session';
 // import {listView} from "@web/views/list/list_view"
 // import {ListController} from "@web/views/list/list_controller";
 import {registry} from "@web/core/registry";
+import { evaluateExpr } from "@web/core/py_js/py";
 import {TestX2ManyField} from "./one2many_selectable";
 import rpc from 'web.rpc';
 
@@ -51,6 +52,28 @@ export class TestListRenderer extends ListRenderer {
         // });
         this.showRemoveIcon = useState({value: false});
         onWillStart(() => this._loadPro());
+    }
+
+    // Cambiar clase de tabla
+    getRowClass(record) {
+        // classnames coming from decorations
+        const classNames = this.props.archInfo.decorations
+            .filter((decoration) => evaluateExpr(decoration.condition, record.evalContext))
+            .map((decoration) => decoration.class);
+        if (record.selected) {
+            classNames.push("table_info_new");
+        }
+        // "o_selected_row" classname for the potential row in edition
+        if (record.isInEdition) {
+            classNames.push("o_selected_row");
+        }
+        if (record.selected) {
+            classNames.push("o_data_row_selected");
+        }
+        if (this.canResequenceRows) {
+            classNames.push("o_row_draggable");
+        }
+        return classNames.join(" ");
     }
 
     get hasSelectors() {

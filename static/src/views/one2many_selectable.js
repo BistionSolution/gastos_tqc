@@ -96,5 +96,4 @@ TestX2ManyField.components = {
 };
 TestX2ManyField.template = "one2many_mass_select_delete.One2manyDelete";
 
-
 registry.category("fields").add("one2many_delete", TestX2ManyField);

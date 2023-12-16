@@ -33,13 +33,12 @@
   }
 
   .o_list_table {
-    .text-danger, .text-warning {
-      color: #fff !important;
-    }
+    //.text-danger, .text-warning {
+    //  color: #fff !important;
+    //}
 
     .text-warning {
-      background: #a58202;
-      background-color: #a58202 !important;
+      background: #fbe89c !important;
       position: relative;
     }
 
@@ -79,7 +78,18 @@
     }
 
     .text-danger {
-      background-color: #F20B0D !important;
+      background-color: #ffe4e5 !important;
+    }
+
+    .text-danger {
+      &.table-info {
+        background-color: #ffb9bd !important;
+        &:active {
+
+          background-color: #ffb9bd;
+          color: #fff;
+        }
+      }
     }
 
     .o_data_cell.text-danger {

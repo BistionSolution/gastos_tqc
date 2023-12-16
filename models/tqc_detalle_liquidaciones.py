@@ -49,7 +49,7 @@ class detalleLiquidaciones(models.Model):
     moneda = fields.Selection([
         ('SOL', 'SOL'),
         ('USD', 'DOLAR')
-    ], string='Moneda', default="PEN", required=True)
+    ], string='Moneda', default="SOL", required=True)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
                                   states={'reported': [('readonly', True)], 'approved': [('readonly', True)],
                                           'done': [('readonly', True)]}, compute='_compute_currency_id',
@@ -152,7 +152,7 @@ class detalleLiquidaciones(models.Model):
     #             if sum_total > saldo_liqudacion:
     #                 raise UserError(_('Se paso del saldo'))
 
-    @api.onchange('base_afecta', 'base_inafecta', 'impuesto', 'icbper', 'otros_tributos')
+    @api.onchange('base_afecta', 'base_inafecta', 'impuesto', 'icbper', 'otros_tributos', 'moneda')
     def _onchange_base_afecta(self):
         for rec in self:
             rec.update(rec._get_price_total())
@@ -186,15 +186,25 @@ class detalleLiquidaciones(models.Model):
     @api.depends('cuenta_contable')
     def _depend_cuentacontable(self):
         for rec in self:
+            rec.code_cuenta_contable = rec.cuenta_contable.codigo if rec.cuenta_contable else False
+
+    @api.onchange('cuenta_contable')
+    def _onchange_cuentacontable(self):
+        for rec in self:
             if rec.cuenta_contable:
-                rec.code_cuenta_contable = rec.cuenta_contable.codigo
-            else:
-                rec.code_cuenta_contable = False
+                print("cuenta contable ", rec.cuenta_contable.codigo)
+                if rec.cuenta_contable.codigo == '63.4.3.3.0.00.00':
+                    print("Mostrar campo de observacion de representacion")
+                    warning = {
+                        'title': "Mensaje de advertencia",
+                        'message': "Llenar campo de (Obs. de presentación) donde se consigna el numero de placa.",
+                    }
+                    return {'warning': warning}
 
     @api.onchange('totaldocumento')
     def _check_detraction(self):
         for rec in self:
-            if rec.totaldocumento > 700:
+            if rec.total_neto > 700 and rec.codetipo in ['01 - Factura']:
                 warning = {
                     'title': "Mensaje de advertencia",
                     'message': "Factura mas de 700 se encuentra afecta a detracción (por adquisición de servicios) o retención (por adquisición de bienes)",
@@ -222,6 +232,8 @@ class detalleLiquidaciones(models.Model):
         totaldocumento = monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
+        print("SEEEEE :  ", self.currency_liquidacion_id.name)
+        print("SEEEEE 2 :  ", self.currency_id.name)
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
                 res['total_neto'] = totaldocumento / self.tipocambio
