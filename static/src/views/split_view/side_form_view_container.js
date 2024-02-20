@@ -38,6 +38,7 @@ export class SideFormviewContainer extends Component {
             return
         }
         // Comprobar si llama a interact
+        const initialHeight = window.innerHeight * 0.5;
 
         console.log("Interact INIT 2 : ")
         interact(this.formviewPanel.el).resizable({
@@ -60,7 +61,7 @@ export class SideFormviewContainer extends Component {
                 },
             },
             modifiers: [
-                interact.modifiers.restrictSize({min: {height: 400}}),
+                interact.modifiers.restrictSize({min: {height: initialHeight}}),
             ],
         })
     }

@@ -108,7 +108,7 @@ class Liquidaciones(models.Model):
             for line in rec.detalleliquidaciones_id:
                 if line.revisado_state != 'liquidado':
                     total += line.total_neto
-            if total > rec.saldo:
+            if total + (total + 0.05) > rec.saldo:
                 raise UserError(_('Se paso del saldo'))
             rec.current_total = total
 
@@ -125,9 +125,9 @@ class Liquidaciones(models.Model):
             domain = []
             if self.state == 'contable':
                 # Agregar un elemento a la lista con
-                domain = [('revisado_state', 'not in', [ 'rechazado_jefatura'])]
+                domain = []
             if self.state == 'pendiente':
-                domain = [('revisado_state', 'not in', ['rechazado_jefatura', 'rechazado_contable'])]
+                domain = []
             # if context.get("search_default_jefatura"):
             #     print("searhc JEGATURA")
         elif context.get("mode_view", False) == 'historial':
@@ -580,7 +580,7 @@ class Liquidaciones(models.Model):
         if self.detalleliquidaciones_id:
             vals = {
                 'habilitado_state': 'proceso',
-                'state': 'jefatura',
+                'state': 'contable',
                 'fecha_generacion': datetime.date.today(),
                 'detalleliquidaciones_id': []
             }
@@ -601,7 +601,7 @@ class Liquidaciones(models.Model):
 
     def button_jefatura(self):
         if self.state == 'jefatura':
-            self.write({'state': 'contable'})
+            self.write({'state': 'pendiente'})
 
     def button_contable(self):
         if self.state == 'contable':
@@ -611,7 +611,7 @@ class Liquidaciones(models.Model):
                     raise UserError(
                         _('Hay documentos donde el "Proveedor" no existe, cambiar de "Proveedor" o crear uno nuevo desde Exactus'))
 
-            self.write({'state': 'pendiente'})
+            self.write({'state': 'jefatura'})
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable']:
                     self.env['tqc.detalle.liquidaciones'].browse(doc.id).sudo().write({

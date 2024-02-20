@@ -84,7 +84,7 @@ class detalleLiquidaciones(models.Model):
     state = fields.Selection([
         ('document', 'Documento'),
         ('historial', 'Historial ERC')
-    ], string='Stado', default='document',
+    ], string='Estado', default='document',
         help="Estado solicitud" +
              "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
@@ -232,8 +232,6 @@ class detalleLiquidaciones(models.Model):
         totaldocumento = monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
-        print("SEEEEE :  ", self.currency_liquidacion_id.name)
-        print("SEEEEE 2 :  ", self.currency_id.name)
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
                 res['total_neto'] = totaldocumento / self.tipocambio

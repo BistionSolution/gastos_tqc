@@ -9,16 +9,17 @@
                         filter_name="pendiente">
                     Pendientes a procesar (<span t-out="countData['pendiente']"/>)
                 </button>
-                <button type="button" t-on-click="setSearchContext" id="contable" title="Estado actual"
-                        class="btn o_arrow_button o_context_two btn-primary"
-                        filter_name="contable">
-                    Sin visto contable (<span t-out="countData['contable']"/>)
-                </button>
                 <button type="button" t-on-click="setSearchContext" id="jefatura" title="Estado actual"
                         class="btn o_arrow_button o_context_one btn-primary"
                         filter_name="jefatura">
                     Sin visto jefe (<span t-out="countData['jefatura']"/>)
                 </button>
+                <button type="button" t-on-click="setSearchContext" id="contable" title="Estado actual"
+                        class="btn o_arrow_button o_context_two btn-primary"
+                        filter_name="contable">
+                    Sin visto contable (<span t-out="countData['contable']"/>)
+                </button>
+
             </div>
         </div>
     </t>

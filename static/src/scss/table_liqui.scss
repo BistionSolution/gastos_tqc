@@ -41,6 +41,16 @@
       background: #fbe89c !important;
       position: relative;
     }
+    .o_attachments {
+      overflow-x: hidden;
+      height: 50px;
+    }
+    .o_selected_row {
+      .o_attachments {
+        overflow-x: clip;
+        height: auto;
+      }
+    }
 
     .text-muted {
       background: rgba(0, 0, 0, 0.1);
@@ -84,8 +94,8 @@
     .text-danger {
       &.table-info {
         background-color: #ffb9bd !important;
-        &:active {
 
+        &:active {
           background-color: #ffb9bd;
           color: #fff;
         }

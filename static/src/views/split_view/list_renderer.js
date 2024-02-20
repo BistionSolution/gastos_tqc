@@ -122,7 +122,6 @@ export class SplitViewRenderer extends ListRenderer {
         }
 
         if (record.resId && this.sideFormView.id !== record.resId) {
-            console.log("gopp 3")
             await this.callSideFormBeforeChangeFunctions();
             this.sideFormView.id = record.resId;
             this.sideFormView.show = true;
