@@ -13,7 +13,8 @@
                     <field name="fecha_entrega" string="Fecha solicitud" optional="show"/>
                     <field name="moneda" optional="show"/>
                     <field name="currency_id" string="Moneda" invisible="1"/>
-                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                    <field name="monto_rendido" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
                     <!--                    <field name="observacionenvio"/>-->
                     <!--                    <field name="numeroplaca"/>-->

@@ -66,6 +66,7 @@ class Liquidaciones(models.Model):
                                   default=lambda self: self.env.company.currency_id)
 
     monto_entrega = fields.Monetary(currency_field='currency_id')
+    monto_rendido = fields.Monetary(currency_field='currency_id')
 
     aprobacionrecepcioncontabilidad = fields.Boolean()
     observacionrecepcioncontabilidad = fields.Text()
@@ -689,6 +690,9 @@ class Liquidaciones(models.Model):
                     @psAsiento as N'@psAsiento',
                     @psMensajeError as N'@psMensajeError'
             """
+
+            monto_rendido = sum(self.detalleliquidaciones_id.mapped('totaldocumento'))
+
             for document in self.detalleliquidaciones_id:
                 # == 'aprobado_contable'
                 if document.revisado_state:
@@ -752,7 +756,7 @@ class Liquidaciones(models.Model):
                         # idusers = cursor.fetchval()
                         cursor.close()
                     except Exception as e:
-                        print("EEROOR ", e)
+                        print("Error ", e)
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': f"Error sql :{e}"}])
                         continue
@@ -769,7 +773,8 @@ class Liquidaciones(models.Model):
             # Cambia estado de liquidacion
             vals['habilitado_state'] = 'liquidado'
             vals['state'] = 'liquidado'
-            self.importar_exactus
+            vals['monto_rendido'] = monto_rendido
+            self.importar_exactus()
             self.write(vals)
             # res = {
             #     "name": "Historial de liquidaciones",

@@ -60,12 +60,12 @@ class detalleLiquidaciones(models.Model):
                                                       'done': [('readonly', True)]},
                                               related='liquidacion_id.currency_id', store=True)
 
-    useraprobacionjefatura = fields.Integer()
+    useraprobacionjefatura = fields.Monetary(currency_field='currency_id', string="Monto aprobado jefatura")
     fechaaprobacionjefatura = fields.Datetime()
     aprobacionjefatura = fields.Boolean()
     observacionjefatura = fields.Text()
 
-    useraprobacioncontabilidad = fields.Integer()
+    useraprobacioncontabilidad = fields.Monetary(currency_field='currency_id', string="Monto aprobado contabilidad")
     fechaaprobacioncontabilidad = fields.Datetime()
     aprobacioncontabilidad = fields.Boolean()
     observacioncontabilidad = fields.Text()
