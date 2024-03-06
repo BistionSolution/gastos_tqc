@@ -109,7 +109,7 @@ class Liquidaciones(models.Model):
             for line in rec.detalleliquidaciones_id:
                 if line.revisado_state != 'liquidado':
                     total += line.total_neto
-            if total + (total + 0.05) > rec.saldo:
+            if total > rec.saldo + (rec.saldo * 0.05):
                 raise UserError(_('Se paso del saldo'))
             rec.current_total = total
 
