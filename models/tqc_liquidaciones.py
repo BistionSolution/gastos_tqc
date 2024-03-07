@@ -40,8 +40,8 @@ class Liquidaciones(models.Model):
 
     state = fields.Selection([
         ('habilitado', 'habilitado'),
-        ('jefatura', 'Sin visto jefe'),
         ('contable', 'Sin visto Contable'),
+        ('jefatura', 'Sin visto jefe'),
         ('pendiente', 'Pendiente a procesar'),
         ('liquidado', 'Liquidado')
     ],

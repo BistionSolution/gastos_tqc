@@ -50,7 +50,7 @@
                                 class="oe_highlight"
                                 groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
                         <field name="habilitado_state" widget="statusbar" statusbar_visible="habilitado,proceso,liquidado" attrs="{'invisible': [('habilitado_state','=','proceso')]}"/>
-                        <field name="state" widget="statusbar"  statusbar_visible="jefatura,contable,pendiente" attrs="{'invisible': [('habilitado_state','!=','proceso')]}"/>
+                        <field name="state" widget="statusbar"  statusbar_visible="contable,jefatura,pendiente" attrs="{'invisible': [('habilitado_state','!=','proceso')]}"/>
 
                     </header>
                     <sheet>

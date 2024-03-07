@@ -225,7 +225,9 @@
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
                 <search string="Search Tqc">
-                    <field name="empleado_name"/>
+                    <field name="empleado_name" string="Nombre de Empleado"/>
+                    <field name="num_solicitud"/>
+                    <field name="centro_costo" string="Centro de costo"/>
                     <field name="num_solicitud" invisible="1"/>
                     <field name="fecha_entrega"/>
                     <field name="tipo_documento" invisible="1"/>
