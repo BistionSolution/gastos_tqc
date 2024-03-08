@@ -393,7 +393,7 @@ class Liquidaciones(models.Model):
 
     @api.model
     def import_exactus(self):
-        # self.importar_exactus()
+        self.importar_exactus()
         res = {
             "name": "Liquidaciones",
             "type": "ir.actions.act_window",
@@ -420,7 +420,7 @@ class Liquidaciones(models.Model):
 
     @api.model
     def import_exactus_register(self):
-        # self.importar_exactus()
+        self.importar_exactus()
         uid = self.env.uid
         res = {
             "name": "Web gastos",
