@@ -6,7 +6,7 @@ import session from 'web.session';
 // import {listView} from "@web/views/list/list_view"
 // import {ListController} from "@web/views/list/list_controller";
 import {registry} from "@web/core/registry";
-import { evaluateExpr } from "@web/core/py_js/py";
+import {evaluateExpr} from "@web/core/py_js/py";
 import {TestX2ManyField} from "./one2many_selectable";
 import rpc from 'web.rpc';
 
@@ -121,6 +121,39 @@ export class NewListRenderer extends X2ManyField {
         this.showModalDescription.value = true
     }
 
+    async observationSelected() {
+        // Obtener valor de campo state del registro padre
+        var current_model = this.field.relation;
+        let selected = this.list.records.filter((rec) => rec.selected)
+        this.list.records
+        var selected_list = []
+        selected.forEach((rec) => {
+            if (rec.data.id) {
+                selected_list.push(parseInt(rec.data.id))
+            } else {
+                if (this.activeActions.onDelete) {
+                    selected.forEach((rec) => {
+                        this.activeActions.onDelete(rec);
+                    })
+                }
+
+            }
+        })
+        var self = this;
+        if (selected_list.length !== 0) {
+            // this.showModalDescription.value = true
+            await rpc.query({
+                model: current_model,
+                method: 'write',
+                args: [selected_list, {
+                    'revisado_state': 'observado_contable'
+                }],
+            }).then(function (response) {
+                self.rendererProps.list.model.load()
+            });
+        }
+    }
+
     async _onClickAceptar() {
         const state = this.props.record.data.state
         var current_model = this.field.relation;
@@ -176,7 +209,7 @@ export class NewListRenderer extends X2ManyField {
             }
         })
         var self = this;
-        if (selected_list.length != 0) {
+        if (selected_list.length !== 0) {
             // this.showModalDescription.value = true
             var response = await rpc.query({
                 model: current_model,

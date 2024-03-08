@@ -49,8 +49,11 @@
                                 attrs="{'invisible':[('state','!=','pendiente')]}"
                                 class="oe_highlight"
                                 groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
-                        <field name="habilitado_state" widget="statusbar" statusbar_visible="habilitado,proceso,liquidado" attrs="{'invisible': [('habilitado_state','=','proceso')]}"/>
-                        <field name="state" widget="statusbar"  statusbar_visible="contable,jefatura,pendiente" attrs="{'invisible': [('habilitado_state','!=','proceso')]}"/>
+                        <field name="habilitado_state" widget="statusbar"
+                               statusbar_visible="habilitado,proceso,liquidado"
+                               attrs="{'invisible': [('habilitado_state','=','proceso')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="contable,jefatura,pendiente"
+                               attrs="{'invisible': [('habilitado_state','!=','proceso')]}"/>
 
                     </header>
                     <sheet>
@@ -87,7 +90,7 @@
                                     <!--para logica y '&amp;'-->
                                     <!--                                section_and_note_one2many-->
                                     <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
-                                          decoration-warning="revisado_state == 'corregido'"
+                                          decoration-warning="revisado_state in ['corregido','observado_contable']"
                                           decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']">
                                         <field name="liquidacion_id" invisible="1"/>
                                         <field name="uid_create" invisible="1"/>
@@ -104,7 +107,7 @@
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"/>
                                         <field name="razonsocial_invisible" invisible="1"/>
-                                        <field name="attachment"
+                                        <field name="attachment" widget="many2many_binary"
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <field name="ruc" string="Ruc proveedor" class="consult_ruc"
                                                decoration-danger="razonsocial_invisible == 'no_existe'"
@@ -141,7 +144,8 @@
                                                options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                                sum="Total Documentos"/>
                                         <field name="total_neto" widget="monetary"
-                                               options="{'currency_field': 'currency_liquidacion_id'}" readonly="1" force_save="1"
+                                               options="{'currency_field': 'currency_liquidacion_id'}" readonly="1"
+                                               force_save="1"
                                                sum="Total Neto"/>
                                         <field name="cuenta_contable"
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
@@ -279,8 +283,8 @@
                                 <field name="detalleliquidaciones_id"
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}">
                                     <tree editable="top" decoration-success="revisado_state == 'aprobado'"
-                                          decoration-warning="revisado_state == 'corregido'"
-                                          decoration-danger="revisado_state== 'rechazado'">
+                                          decoration-warning="revisado_state in ['corregido','observado_contable']"
+                                          decoration-danger="revisado_state == 'rechazado'">
                                         <field name="tipodocumento" string="Tipo doc."
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                         <field name="codetipo" invisible="1"/>
@@ -329,10 +333,11 @@
                                                options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                                sum="Total Documentos"
                                                decoration-warning="totaldocumento > 700"/>
-                                         <field name="total_neto" widget="monetary"
-                                               options="{'currency_field': 'currency_liquidacion_id'}" readonly="1" force_save="1"
+                                        <field name="total_neto" widget="monetary"
+                                               options="{'currency_field': 'currency_liquidacion_id'}" readonly="1"
+                                               force_save="1"
                                                sum="Total neto"
-                                               />
+                                        />
                                         <field name="cuenta_contable"
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                         />
@@ -405,7 +410,7 @@
                                                string="Monto IGV"/>
                                         <field name="totaldocumento" widget="monetary"
                                                options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
-                                               />
+                                        />
                                         <field name="total_neto" widget="monetary"
                                                options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                                sum="Total Neto"/>
@@ -602,11 +607,18 @@
             <field name="code">action = model.import_exactus()</field>
         </record>
 
+        <record id="import_exactus_register" model="ir.actions.server">
+            <field name="name">action.server.import.exactus.register</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="state">code</field>
+            <field name="code">action = model.import_exactus_register()</field>
+        </record>
+
         <!-- Top menu item -->
         <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
         <!--    <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_main_liquidaciones" name="Web de gastos"
-                  action="gastos_tqc.action_view_registro_liquidaciones"
+                  action="gastos_tqc.import_exactus_register"
                   web_icon="gastos_tqc,static/description/icon.png"
                   groups="gastos_tqc.res_groups_administrator,res_groups_employee_gastos,res_groups_aprobador_gastos,res_groups_contador_gastos"/>
         <!--    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>-->

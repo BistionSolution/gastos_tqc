@@ -393,7 +393,7 @@ class Liquidaciones(models.Model):
 
     @api.model
     def import_exactus(self):
-        self.importar_exactus()
+        # self.importar_exactus()
         res = {
             "name": "Liquidaciones",
             "type": "ir.actions.act_window",
@@ -415,6 +415,34 @@ class Liquidaciones(models.Model):
 
                               </p>
                             """
+        }
+        return res
+
+    @api.model
+    def import_exactus_register(self):
+        # self.importar_exactus()
+        uid = self.env.uid
+        res = {
+            "name": "Web gastos",
+            "type": "ir.actions.act_window",
+            "res_model": "tqc.liquidaciones",
+            "view_type": "form",
+            "view_mode": "form,tree",
+            "target": "current",
+            'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
+                      (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
+            'domain': [('empleado_name.user_id', '=', uid), ('habilitado_state', '!=', 'liquidado')],
+            "context": {'search_default_filtro_rendir': 1, 'mode_view': 'registro'},
+            'search_view_id': [self.env.ref("gastos_tqc.search_register_filter").id, 'search'],
+            # 'clear_breadcrumb': True,
+            # "nodestroy": True,
+            'help': """
+                               <p class="o_view_nocontent_smiling_face">
+                                   No hay registros para mostrar
+                                 </p><p>
+
+                                 </p>
+                               """
         }
         return res
 

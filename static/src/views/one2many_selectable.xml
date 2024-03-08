@@ -11,6 +11,10 @@
                      <span class="fa fa-check"/>
                     Restaurar
                 </button>
+                <button t-if="hasSelected" class="btn btn-warning" t-on-click="observationSelected">
+                     <span class="fa fa-check"/>
+                    Observación
+                </button>
                 <t t-if="props.readonly">
                  <span class="oe_form_char_content"/>
                 </t>

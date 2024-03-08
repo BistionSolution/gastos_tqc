@@ -71,9 +71,9 @@
 <!--        <menuitem id="menu_main_liquidaciones" name="Web de gastos"-->
 <!--                  action="gastos_tqc.action_view_registro_liquidaciones"/>-->
         <menuitem id="menu_registro_gasto" parent="gastos_tqc.menu_main_liquidaciones" sequence="1"
-                  name="Registro gastos" action="gastos_tqc.action_view_registro_liquidaciones"/>
+                  name="Registro gastos" action="gastos_tqc.import_exactus_register"/>
         <menuitem id="menu_registro_gasto_admin" parent="gastos_tqc.menu_main_liquidaciones" sequence="2"
-                  name="Todos Registros" action="import_exactus"
+                  name="Todos Registros" action="gastos_tqc.import_exactus"
                   groups="gastos_tqc.res_groups_administrator"/>
         <menuitem id="menu_flujo_configuraciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="5"
                   name="Configuracion" groups="gastos_tqc.res_groups_administrator"/>

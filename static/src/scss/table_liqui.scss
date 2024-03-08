@@ -41,10 +41,12 @@
       background: #fbe89c !important;
       position: relative;
     }
+
     .o_attachments {
       overflow-x: hidden;
       height: 50px;
     }
+
     .o_selected_row {
       .o_attachments {
         overflow-x: clip;
@@ -56,36 +58,39 @@
       background: rgba(0, 0, 0, 0.1);
     }
 
-    .text-warning:hover:after {
-      background: #111;
-      background: rgba(0, 0, 0, .8);
-      border-radius: .5em;
-      bottom: 2em;
-      color: #fff;
-      content: 'No activo';
-      display: block;
-      left: 4em;
-      padding: .3em 1em;
-      position: absolute;
-      text-shadow: 0 1px 0 #000;
-      white-space: nowrap;
-      z-index: 1000;
-      user-select: none;
+    .consult_ruc {
+      .text-warning:hover:after {
+        background: #111;
+        background: rgba(0, 0, 0, .8);
+        border-radius: .5em;
+        bottom: 2em;
+        color: #fff;
+        content: 'No activo';
+        display: block;
+        left: 4em;
+        padding: .3em 1em;
+        position: absolute;
+        text-shadow: 0 1px 0 #000;
+        white-space: nowrap;
+        z-index: 1000;
+        user-select: none;
+      }
+
+      .text-warning:hover:before {
+        border: solid;
+        border-color: #111 transparent;
+        border-color: rgba(0, 0, 0, .8) transparent;
+        border-width: .4em .4em 0 .4em;
+        bottom: 1.6em;
+        content: "";
+        display: block;
+        left: 5em;
+        position: absolute;
+        user-select: none;
+        z-index: 99;
+      }
     }
 
-    .text-warning:hover:before {
-      border: solid;
-      border-color: #111 transparent;
-      border-color: rgba(0, 0, 0, .8) transparent;
-      border-width: .4em .4em 0 .4em;
-      bottom: 1.6em;
-      content: "";
-      display: block;
-      left: 5em;
-      position: absolute;
-      user-select: none;
-      z-index: 99;
-    }
 
     .text-danger {
       background-color: #ffe4e5 !important;

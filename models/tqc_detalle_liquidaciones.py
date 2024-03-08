@@ -93,8 +93,9 @@ class detalleLiquidaciones(models.Model):
         ('borrador', 'Por enviar'),
         ('aprobado_jefatura', 'Aprobado jefatura'),
         ('aprobado_contable', 'Aprobado contabilidad'),
+        ('observado_contable', 'Observado contabilidad'),
         ('rechazado_jefatura', 'Rechazado jefatura'),
-        ('rechazado_contable', 'Rechazado Contabilidad'),
+        ('rechazado_contable', 'Rechazado contabilidad'),
         ('corregido', 'Corregido'),
         ('liquidado', 'Liquidado'),
         ('send_error', 'Error de envio')
