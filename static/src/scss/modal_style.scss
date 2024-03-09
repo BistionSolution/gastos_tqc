@@ -2,6 +2,13 @@
   z-index: 50;
 }
 
+/*Estilo*/
+.table-over {
+  border: 2px #E2E2E2 solid;
+  height: 400px;
+  overflow-x: auto;
+}
+
 .modal-gasto {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;

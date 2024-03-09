@@ -25,6 +25,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options">
+                            <div class="o_setting_right_pane">
+                                <label for="username_exactus"/>
+                                <field name="username_exactus"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options">
+                            <div class="o_setting_right_pane">
+                                <label for="password_exactus"/>
+                                <field name="password_exactus"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options">
+                            <div class="o_setting_right_pane">
+                                <label for="ip_conexion"/>
+                                <field name="ip_conexion"/>
+                            </div>
+                        </div>
+                    </div>
                     <h2>Serie minimo y maximo caracteres</h2>
                     <div class="row mt16 o_settings_container" name="catalog_setting_container">
                         <div class="col-12 col-lg-6 o_setting_box" id="variant_options">

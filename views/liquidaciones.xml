@@ -478,7 +478,7 @@
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_tqc_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_tqc_liquidaciones')})]"/>
-            <field name="context">{'search_default_jefatura':1,'mode_view':'flujo'}</field>
+            <field name="context">{'search_default_contable':1,'mode_view':'flujo'}</field>
             <field name="domain">[('habilitado_state', 'in', ['proceso'])]</field>
             <field name="target">main</field>
             <field name="help" type="html">

@@ -211,11 +211,13 @@ class Liquidaciones(models.Model):
 
     @api.model
     def importar_exactus(self):
+        global dataExternalSQL
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
-        ip_conexion = "10.10.10.228"
+        ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-        user_bd = userbd
-        pass_bd = passbd
+        user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+        pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
+
         table_bd = "tqc.liquidaciones"
         table_relations = """empleado_name OF hr.employee"""
 
@@ -243,35 +245,22 @@ class Liquidaciones(models.Model):
                                   tqc.ENTREGA_A_RENDIR
                                 WHERE LIQUIDADO != 'S'"""
 
-        sql = """SELECT
-                  ENTREGA_A_RENDIR AS external_id,
-                  ENTREGA_A_RENDIR AS num_solicitud,
-                  EMPLEADO AS empleado_name,
-                  MONEDA AS moneda,
-                  APLICACION AS glosa_entrega,
-                  FECHA_ENTREGA AS fecha_entrega,
-                  MONTO AS monto_entrega,
-                  SALDO AS saldo
-                FROM
-                  tqc.ENTREGA_A_RENDIR
-                WHERE LIQUIDADO != 'S'"""
-
         try:
             connection = pyodbc.connect(
                 'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
                 data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
 
-            campList = self.convert_sql(sql)  # lista de campos odoo
+            campList = ['external_id', 'num_solicitud', 'empleado_name', 'moneda', 'glosa_entrega', 'fecha_entrega',
+                        'monto_entrega', 'saldo']
             # company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
             # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
             posiUser = []
             print("table_bd : ", table_bd)
             nom_module = table_bd.replace(".", "_")
-            if table_relations:
-                dataExternalSQL = self.get_external_field(
-                    table_relations)  # Devuelve un arreglo de los nombres de las tablas relacionadas
-                for data in dataExternalSQL[0]:
-                    posiUser.append(campList.index(data))  # inicia posicion de elemento
+            dataExternalSQL = self.get_external_field(
+                table_relations)  # Devuelve un arreglo de los nombres de las tablas relacionadas
+            for data in dataExternalSQL[0]:
+                posiUser.append(campList.index(data))  # inicia posicion de elemento
 
             cursor = connection.cursor()
             cursor.execute(sql_prime_super)
@@ -289,9 +278,6 @@ class Liquidaciones(models.Model):
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
                 variJson = {}
-                existId = True
-
-                sumNom = "{}.{}".format(nom_module, user[0])  # (nombre modulo) + (id del sql)
 
                 # register = self.env.ref(sumNom)  # obtiene id de su respectivo modelo
                 # id_register = self.env.ref(sumNom).id
@@ -301,9 +287,7 @@ class Liquidaciones(models.Model):
                 register = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
                 if id_register != 0:  # SI EXISTE ACTUALIZA
-
                     if register.habilitado_state == 'liquidado':  # si ya se encuentra liquidado crea otra liquidacion
-
                         cont = 0
                         for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                             if i == 0:
@@ -313,7 +297,6 @@ class Liquidaciones(models.Model):
                                     id_exField = False
                                 else:
                                     searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
-                                    #
                                     try:
                                         # obtiene id de su respectivo modelo
                                         id_exField = self.env.ref(searchId).id
@@ -331,13 +314,9 @@ class Liquidaciones(models.Model):
                             [('name', '=', register.num_solicitud), ('model', '=', 'tqc.liquidaciones')]).sudo().write(
                             {'res_id': original_id})
                         self.env.cr.commit()
-                    else:
                         cont = 0
-                        no_register = False
-
                         for j in range(len(campList)):
-                            ## SOLO para validar correo repetidos en TQC ##
-                            ## HASTA AQUI ##
+                            # SOLO para validar correo repetidos en TQC #
                             if j == 0:
                                 continue
                             # LLAVE FORANEA ENLACE
@@ -358,9 +337,9 @@ class Liquidaciones(models.Model):
 
                             variJson['{}'.format(campList[j])] = user[j]
 
-                        if not no_register:  # si no cumple con los campos de usuarios no registra
-                            self.env[table_bd].browse(id_register).sudo().write(variJson)
-                            self.env.cr.commit()
+                        self.env[table_bd].browse(id_register).sudo().write(variJson)
+                        self.env.cr.commit()
+
                 else:  # CREA NUEVO REGISTRO
                     cont = 0
                     for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
