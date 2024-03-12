@@ -118,7 +118,7 @@
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <!--                                    <field name="state"/>-->
                                         <!--                                    <field name="subtipo"/>-->
-                                        <field name="moneda"/>
+                                        <field name="moneda" attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="currency_liquidacion_id" invisible="1"/>
                                         <field name="base_afecta" widget="monetary"
