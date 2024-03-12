@@ -3,9 +3,13 @@
 }
 .wrap-all{
   display: flex;
-  overflow-y: scroll;
+  //overflow-y: scroll;
   flex-direction: column;
   height: 100% !important;
+
+  .o_list_renderer {
+    height: 100%;
+  }
 
   .o_control_panel {
     background: #f1f1f1;
@@ -23,12 +27,13 @@
     //background: red;
   }
 }
+
 .formview-panel {
   flex: 0 0 auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.48em;
+  //width: 100%;
+  //display: flex;
+  //flex-direction: column;
+  //gap: 0.48em;
 
   .action-buttons {
     display: flex;
@@ -39,10 +44,10 @@
   }
 
   .formview-container {
-    overflow-y: auto;
+    //overflow-y: auto;
 
     .o_form_view {
-      overflow-x: hidden;
+      //overflow-x: hidden;
 
       .o_form_view_container {
         width: 100%;

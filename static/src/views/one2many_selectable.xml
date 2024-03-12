@@ -13,7 +13,7 @@
                 </button>
                 <button t-if="hasSelected" class="btn btn-warning" t-on-click="observationSelected">
                      <span class="fa fa-check"/>
-                    Observación
+                    Observar
                 </button>
                 <t t-if="props.readonly">
                  <span class="oe_form_char_content"/>
@@ -24,7 +24,7 @@
                  tabindex="-1"
                  role="dialog"
             >
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Agregar descripcion de rechazo</h5>
@@ -45,6 +45,35 @@
                     </div>
                 </div>
             </div>
+
+        </div>
+            <div t-attf-class="{{showModalObserva.value ? 'modal-observa' : 'modal-oberva-press'}}"
+                 id="exampleModalObserva"
+                 tabindex="-1"
+                 role="dialog"
+            >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Agregar descripcion de Observacion</h5>
+                        <button type="button" class="btn-close" t-on-click="_onClickClose" aria-label="Close"
+                                tabindex="-1"/>
+
+                    </div>
+                    <div class="modal-body">
+
+                    <!--  Caja de texto para colocar descripcion -->
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                  t-model="descriptionRechazo.text"/>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" t-on-click="_onClickCloseObserva">Cancelar</button>
+                        <button type="button" class="btn btn-primary" t-on-click="_onClickAceptarObserva">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
         </xpath>
     </t>

@@ -33,14 +33,12 @@ export class SideFormviewContainer extends Component {
     }
 
     setResizeFormviewPanel() {
-        console.log("Interact INIT : ")
         if (!this.formviewPanel.el) {
             return
         }
         // Comprobar si llama a interact
         const initialHeight = window.innerHeight * 0.5;
 
-        console.log("Interact INIT 2 : ")
         interact(this.formviewPanel.el).resizable({
             edges: {
                 top: true,

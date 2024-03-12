@@ -55,7 +55,7 @@
   border-bottom: 17px solid transparent;
   border-right: none;
   border-left: 11px solid white;
-  border-left-color: #5D8DA8;
+  border-left-color: $o-community-color;
   transition: border 0.2s ease 0s;
   -moz-transform: scale(0.9999);
 }
@@ -66,7 +66,7 @@
 }
 
 .o_gastos_button > .o_arrow_button:hover + o_arrow_button:after, .o_gastos_button > .o_arrow_button:hover + o_arrow_button:before {
-  border-left-color: #5D8DA8;
+  border-left-color: $o-community-color;
 }
 
 /*Oculta filas en registro de documentos (registro gastos)*/

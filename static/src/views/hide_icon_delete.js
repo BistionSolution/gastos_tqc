@@ -108,7 +108,8 @@ export class NewListRenderer extends X2ManyField {
         super.setup();
         this.showModalDescription = useState({value: false});
         this.descriptionRechazo = useState({text: ''});
-
+        this.showModalObserva = useState({value: false});
+        this.descriptionObesrva = useState({text: ''});
     }
 
     get hasSelected() {
@@ -122,36 +123,8 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async observationSelected() {
-        // Obtener valor de campo state del registro padre
-        var current_model = this.field.relation;
-        let selected = this.list.records.filter((rec) => rec.selected)
-        this.list.records
-        var selected_list = []
-        selected.forEach((rec) => {
-            if (rec.data.id) {
-                selected_list.push(parseInt(rec.data.id))
-            } else {
-                if (this.activeActions.onDelete) {
-                    selected.forEach((rec) => {
-                        this.activeActions.onDelete(rec);
-                    })
-                }
-
-            }
-        })
-        var self = this;
-        if (selected_list.length !== 0) {
-            // this.showModalDescription.value = true
-            await rpc.query({
-                model: current_model,
-                method: 'write',
-                args: [selected_list, {
-                    'revisado_state': 'observado_contable'
-                }],
-            }).then(function (response) {
-                self.rendererProps.list.model.load()
-            });
-        }
+        this.descriptionObesrva.text = ''
+        this.showModalObserva.value = true
     }
 
     async _onClickAceptar() {
@@ -187,6 +160,40 @@ export class NewListRenderer extends X2ManyField {
             });
         }
         this.showModalDescription.value = false
+    }
+
+    async _onClickAceptarObserva() {
+        // Obtener valor de campo state del registro padre
+        var current_model = this.field.relation;
+        let selected = this.list.records.filter((rec) => rec.selected)
+        this.list.records
+        var selected_list = []
+        selected.forEach((rec) => {
+            if (rec.data.id) {
+                selected_list.push(parseInt(rec.data.id))
+            } else {
+                if (this.activeActions.onDelete) {
+                    selected.forEach((rec) => {
+                        this.activeActions.onDelete(rec);
+                    })
+                }
+            }
+        })
+        var self = this;
+        if (selected_list.length !== 0) {
+            // this.showModalDescription.value = true
+            await rpc.query({
+                model: current_model,
+                method: 'write',
+                args: [selected_list, {
+                    'revisado_state': 'observado_contable',
+                    'observacioncontabilidad': this.descriptionObesrva.text
+                }],
+            }).then(function (response) {
+                self.rendererProps.list.model.load()
+            });
+        }
+        this.showModalObserva.value = false
     }
 
     async restaurarRecord() {
@@ -225,6 +232,10 @@ export class NewListRenderer extends X2ManyField {
 
     _onClickClose() {
         this.showModalDescription.value = false
+    }
+
+    _onClickCloseObserva() {
+        this.showModalObserva.value = false
     }
 }
 

@@ -3,17 +3,17 @@
 
     <t t-name="gastos_tqc.ExternalAction" owl="1">
         <div class="action-buttons ms-auto">
-            <button t-if="!env.config.isX2Many"
-                    class="btn btn-outline-secondary py-0" title="View"
-                     t-on-click="() => this.open()"
-            >
-                View
-            </button>
-            <button class="btn btn-outline-secondary py-0" title="View in Wizard"
-                    t-on-click="() => this.open(true)"
-            >
-                View in Popup
-            </button>
+<!--            <button t-if="!env.config.isX2Many"-->
+<!--                    class="btn btn-outline-secondary py-0" title="View"-->
+<!--                     t-on-click="() => this.open()"-->
+<!--            >-->
+<!--                View-->
+<!--            </button>-->
+<!--            <button class="btn btn-outline-secondary py-0" title="View in Wizard"-->
+<!--                    t-on-click="() => this.open(true)"-->
+<!--            >-->
+<!--                View in Popup-->
+<!--            </button>-->
             <button class="btn btn-outline-secondary py-0" title="Close"
                     t-on-click="env.config.close"
             >

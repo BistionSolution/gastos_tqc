@@ -702,7 +702,7 @@ class Liquidaciones(models.Model):
 
             for document in self.detalleliquidaciones_id:
                 # == 'aprobado_contable'
-                if document.revisado_state:
+                if document.revisado_state == 'aprobado_jefatura':
                     values = (
                         (document.serie + "-" + document.numero) if document.numero and document.serie else None,
                         # Numero factura
