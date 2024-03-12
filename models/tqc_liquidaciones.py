@@ -272,8 +272,8 @@ class Liquidaciones(models.Model):
             # _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
             for user in idusers:
-                if user[1] == '000000013300':
-                    _logger.info('VALOR TODO: %s' % (user))
+                if user[1] == '000000017694':
+                    _logger.info('VALOR TODO: ->>>>>>>>>>>>>>>>>>>>>>>>>> %s' % (user))
                     _logger.info('VALOR 6: %s' % (user[6]))
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
@@ -287,7 +287,11 @@ class Liquidaciones(models.Model):
                 register = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
                 if id_register != 0:  # SI EXISTE ACTUALIZA
+                    if user[1] == '000000017694':
+                        _logger.info('here update -----------------> %s')
                     if register.habilitado_state == 'liquidado':  # si ya se encuentra liquidado crea otra liquidacion
+                        if user[1] == '000000017694':
+                            _logger.info('here update -----------------> %s')
                         cont = 0
                         for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                             if i == 0:
@@ -341,6 +345,8 @@ class Liquidaciones(models.Model):
                         self.env.cr.commit()
 
                 else:  # CREA NUEVO REGISTRO
+                    if user[1] == '000000017694':
+                        _logger.info('create new -----------------> %s')
                     cont = 0
                     for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                         if i == 0:
