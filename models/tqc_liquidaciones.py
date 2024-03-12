@@ -274,7 +274,8 @@ class Liquidaciones(models.Model):
             for user in idusers:
                 if user[1] == '000000017694':
                     _logger.info('VALOR TODO: ->>>>>>>>>>>>>>>>>>>>>>>>>> %s' % (user))
-                    _logger.info('VALOR 6: %s' % (user[6]))
+                    _logger.info('VALOR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: %s' % (user[6]))
+                    _logger.info('SALDO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: %s' % (user[7]))
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
                 variJson = {}
@@ -291,7 +292,7 @@ class Liquidaciones(models.Model):
                         _logger.info('here update -----------------> %s')
                     if register.habilitado_state == 'liquidado':  # si ya se encuentra liquidado crea otra liquidacion
                         if user[1] == '000000017694':
-                            _logger.info('here update -----------------> %s')
+                            _logger.info('INTER LOIQUIDATED ---------->>>>>>>>>>>>> %s')
                         cont = 0
                         for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                             if i == 0:
