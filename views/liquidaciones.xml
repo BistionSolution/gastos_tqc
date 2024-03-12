@@ -37,7 +37,7 @@
             <field name="arch" type="xml">
                 <form js_class="button_form_view" class="table-liquidacion">
                     <header>
-                        <button string="Enviar a contabilidad" name="button_jefatura" type="object"
+                        <button string="Enviar a pendiente" name="button_jefatura" type="object"
                                 attrs="{'invisible':['|',('uid_create', '!=', 1),('state','!=','jefatura'),'|',('current_user','not in',[1]),('state','!=','jefatura')]}"
                                 class="oe_highlight"
                                 groups="gastos_tqc.res_groups_aprobador_gastos,gastos_tqc.res_groups_administrator"/>

@@ -96,6 +96,7 @@ class detalleLiquidaciones(models.Model):
         ('observado_contable', 'Observado contabilidad'),
         ('rechazado_jefatura', 'Rechazado jefatura'),
         ('rechazado_contable', 'Rechazado contabilidad'),
+        ('observado_jefatura', 'Rechazado contabilidad'),
         ('corregido', 'Corregido'),
         ('liquidado', 'Liquidado'),
         ('send_error', 'Error de envio')

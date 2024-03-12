@@ -621,6 +621,12 @@ class Liquidaciones(models.Model):
     def button_jefatura(self):
         if self.state == 'jefatura':
             self.write({'state': 'pendiente'})
+            for doc in self.detalleliquidaciones_id:
+                if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
+                                              'observado_contable', 'observado_jefatura']:
+                    doc.write({
+                        'revisado_state': 'aprobado_jefatura'
+                    })
 
     def button_contable(self):
         if self.state == 'contable':
@@ -633,8 +639,8 @@ class Liquidaciones(models.Model):
             self.write({'state': 'jefatura'})
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
-                                              'observado_contable']:
-                    self.env['tqc.detalle.liquidaciones'].browse(doc.id).sudo().write({
+                                              'observado_contable', 'observado_jefatura']:
+                    doc.write({
                         'revisado_state': 'aprobado_contable'
                     })
 
