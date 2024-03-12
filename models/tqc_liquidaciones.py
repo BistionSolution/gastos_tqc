@@ -489,6 +489,7 @@ class Liquidaciones(models.Model):
     def _compute_currency_id(self):
         for rec in self:
             if rec.moneda == 'USD':
+                print("USD //////////////////////////////////////////")
                 rec.currency_id = 2
 
     # def _action_import_gastos(self):
@@ -631,7 +632,8 @@ class Liquidaciones(models.Model):
 
             self.write({'state': 'jefatura'})
             for doc in self.detalleliquidaciones_id:
-                if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable']:
+                if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
+                                              'observado_contable']:
                     self.env['tqc.detalle.liquidaciones'].browse(doc.id).sudo().write({
                         'revisado_state': 'aprobado_contable'
                     })

@@ -217,7 +217,7 @@
                     <field name="fecha_generacion" string="Fecha gemeracion"/>
                     <!--                    <field name="fecha_contable"/>-->
                     <field name="moneda"/>
-                    <field name="currency_id"/>
+                    <field name="currency_id" invisible="1"/>
                     <field name="glosa_entrega" string="Glosa de solicitud"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}"/>

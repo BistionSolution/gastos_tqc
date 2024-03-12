@@ -29,7 +29,6 @@ export class TestX2ManyField extends X2ManyField {
     }
 
     async deleteSelected() {
-
         var current_model = this.field.relation;
         var w_response = confirm("Do You Want to Delete ?");
         if (w_response) {
