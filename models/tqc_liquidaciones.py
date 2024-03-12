@@ -344,6 +344,10 @@ class Liquidaciones(models.Model):
 
                         self.env[table_bd].browse(id_register).sudo().write(variJson)
                         self.env.cr.commit()
+                    if register.habilitado_state == 'habilitado':
+                        if user[1] == '000000017694':
+                            _logger.info('actualizando ---------->>>>>>>>>>>>> %s')
+                        self.env[table_bd].browse(id_register).sudo().write({'saldo': user[7]})
 
                 else:  # CREA NUEVO REGISTRO
                     if user[1] == '000000017694':
