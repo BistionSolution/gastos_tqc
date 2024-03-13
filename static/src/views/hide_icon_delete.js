@@ -109,7 +109,7 @@ export class NewListRenderer extends X2ManyField {
         this.showModalDescription = useState({value: false});
         this.descriptionRechazo = useState({text: ''});
         this.showModalObserva = useState({value: false});
-        this.descriptionObesrva = useState({text: ''});
+        this.descriptionObserva = useState({text: ''});
     }
 
     get hasSelected() {
@@ -123,7 +123,7 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async observationSelected() {
-        this.descriptionObesrva.text = ''
+        this.descriptionObserva.text = ''
         this.showModalObserva.value = true
     }
 
@@ -148,7 +148,7 @@ export class NewListRenderer extends X2ManyField {
         var self = this;
         if (selected_list.length != 0) {
             // this.showModalDescription.value = true
-            var response = await rpc.query({
+            await rpc.query({
                 model: current_model,
                 method: 'write',
                 args: [selected_list, {
@@ -186,8 +186,8 @@ export class NewListRenderer extends X2ManyField {
                 model: current_model,
                 method: 'write',
                 args: [selected_list, {
-                    'revisado_state': 'observado_contable',
-                    'observacioncontabilidad': this.descriptionObesrva.text
+                    'revisado_state': 'observado_contable' + state,
+                    [state === 'contable' ? 'observacioncontabilidad' : 'observacionjefatura']: this.descriptionObserva.text
                 }],
             }).then(function (response) {
                 self.rendererProps.list.model.load()
