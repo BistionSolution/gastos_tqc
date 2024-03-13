@@ -240,10 +240,10 @@ class Liquidaciones(models.Model):
                                   APLICACION AS glosa_entrega,
                                   FECHA_ENTREGA AS fecha_entrega,
                                   CONVERT(decimal(10,2),MONTO) AS monto_entrega,
-                                  CONVERT(decimal(10,2),SALDO) AS saldo,
-                                  LIQUIDADO
+                                  CONVERT(decimal(10,2),SALDO) AS saldo
                                 FROM
-                                  tqc.ENTREGA_A_RENDIR"""
+                                  tqc.ENTREGA_A_RENDIR
+                                WHERE LIQUIDADO != 'S'"""
 
         try:
             connection = pyodbc.connect(
@@ -346,8 +346,8 @@ class Liquidaciones(models.Model):
                         self.env.cr.commit()
                     if register.habilitado_state == 'habilitado':
                         variJsonNew = {}
-                        if user[8] == 'S':
-                            variJsonNew['habilitado_state'] = 'liquidado'
+                        # if user[8] == 'S':
+                        #     variJsonNew['habilitado_state'] = 'liquidado'
                         if user[1] == '000000017694':
                             _logger.info('actualizando ---------->>>>>>>>>>>>> %s')
                         variJsonNew['saldo'] = user[7]
@@ -493,7 +493,6 @@ class Liquidaciones(models.Model):
     def _compute_currency_id(self):
         for rec in self:
             if rec.moneda == 'USD':
-                print("USD //////////////////////////////////////////")
                 rec.currency_id = 2
 
     # def _action_import_gastos(self):
