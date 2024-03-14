@@ -51,7 +51,7 @@
         <style>
             .custom-table-padding td,
             .custom-table-padding th {
-            padding: 2px 2px; /* Ajusta estos valores según necesites */
+            padding: 1px 1px !important; /* Ajusta estos valores según necesites */
             }
         </style>
     </template>
@@ -64,7 +64,7 @@
                 <t t-call="gastos_tqc.gastos_layout">
                     <t t-set="total_acumulado" t-value="0"/>
                     <div class="page">
-                        <table class="table table-sm table-borderless m-0" style="font-size: 10px; ">
+                        <table class="table table-sm table-borderless m-0" style="font-size: 8px; ">
                             <tbody>
                                 <tr>
                                     <td>
@@ -151,7 +151,7 @@
                             </tbody>
                         </table>
                         <br/>
-                        <table class="table table-sm table-bordered m-0 p-0 custom-table-padding" style="font-size: 7px;">
+                        <table cellspacing="0" cellpadding="0" class="table table-sm table-bordered m-0 p-0 custom-table-padding" style="font-size: 7px;">
                             <thead>
                                 <tr>
                                     <th>TIPO DOC</th>
