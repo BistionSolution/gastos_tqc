@@ -171,46 +171,45 @@
                             </thead>
                             <tbody>
                                 <tr t-foreach='gt.detalleliquidaciones_id' t-as='doc'>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.tipodocumento.descripcion"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.serie"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.numero"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.fechaemision"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.ruc"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.proveedor_razonsocial[:30] if doc.proveedor_razonsocial else ''"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.base_afecta"/>
                                     </td>
-
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.base_inafecta"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.montoigv"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.totaldocumento"/>
                                         <t t-set="total_acumulado" t-value="total_acumulado + doc.totaldocumento"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.cuenta_contable.description"/>
                                     </td>
 
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.observacionrepresentacion"/>
                                     </td>
-                                    <td>
+                                    <td class="p-1">
                                         <span t-esc="doc.cliente_razonsocial"/>
                                     </td>
                                 </tr>
