@@ -487,6 +487,14 @@ class detalleLiquidaciones(models.Model):
 
             return info
 
+    def get_razon_social_cortada(self):
+        if len(self.proveedor_razonsocial) > 30:
+            # Corta la cadena para que no exceda de 30 caracteres
+            # y evita cortar palabras a mitad.
+            return ' '.join(self.proveedor_razonsocial[:30].split(' ')[:-1]) + '...'
+        else:
+            return self.proveedor_razonsocial
+
     def search_cod_client(self):
         pass
 

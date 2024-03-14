@@ -112,7 +112,7 @@ class Liquidaciones(models.Model):
                 total += line.total_neto
             if total > rec.saldo + (rec.saldo * 0.05):
                 print("xd")
-                # raise UserError(_('Se paso del saldo'))
+                raise UserError(_('Se paso del saldo'))
             rec.current_total = total
 
     @api.onchange('detalleliquidaciones_id')

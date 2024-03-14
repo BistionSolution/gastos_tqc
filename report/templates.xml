@@ -47,8 +47,18 @@
         </div>
     </template>
 
+    <template id="css_styles">
+        <style>
+            .custom-table-padding td,
+            .custom-table-padding th {
+            padding: 2px 5px; /* Ajusta estos valores según necesites */
+            }
+        </style>
+    </template>
+
     <template id="gastos_tqc.report_und_liquidacion">
         <t t-call="web.html_container">
+            <t t-call="css_styles"/>
             <t t-foreach="docs" t-as="gt">
                 <!--                web.external_layout-->
                 <t t-call="gastos_tqc.gastos_layout">
@@ -141,7 +151,7 @@
                             </tbody>
                         </table>
                         <br/>
-                        <table class="table table-sm table-bordered m-0 p-0" style="font-size: 7px;">
+                        <table class="table table-sm table-bordered m-0 p-0 custom-table-padding" style="font-size: 7px;">
                             <thead>
                                 <tr>
                                     <th>TIPO DOC</th>
@@ -177,7 +187,7 @@
                                         <span t-esc="doc.ruc"/>
                                     </td>
                                     <td>
-                                        <span t-esc="doc.proveedor_razonsocial"/>
+                                        <span t-esc="doc.get_razon_social_cortada()"/>
                                     </td>
                                     <td>
                                         <span t-esc="doc.base_afecta"/>
@@ -191,7 +201,7 @@
                                     </td>
                                     <td>
                                         <span t-esc="doc.totaldocumento"/>
-                                         <t t-set="total_acumulado" t-value="total_acumulado + doc.totaldocumento"/>
+                                        <t t-set="total_acumulado" t-value="total_acumulado + doc.totaldocumento"/>
                                     </td>
                                     <td>
                                         <span t-esc="doc.cuenta_contable.description"/>
