@@ -106,13 +106,14 @@ class Liquidaciones(models.Model):
     @api.depends('detalleliquidaciones_id')
     def _compute_amount(self):
         for rec in self:
+            print("RECORD : ", rec.detalleliquidaciones_id)
             total = 0.0
             for line in rec.detalleliquidaciones_id:
                 # if line.revisado_state != 'liquidado':
                 total += line.total_neto
             if total > rec.saldo + (rec.saldo * 0.05):
-                print("xd")
-                raise UserError(_('Se paso del saldo'))
+                print("SALODSO PASODSO")
+                # raise UserError(_('Se paso del saldo'))
             rec.current_total = total
 
     @api.onchange('detalleliquidaciones_id')
