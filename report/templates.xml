@@ -171,45 +171,45 @@
                             </thead>
                             <tbody>
                                 <tr t-foreach='gt.detalleliquidaciones_id' t-as='doc'>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.tipodocumento.descripcion"/>
                                     </td>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.serie"/>
                                     </td>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.numero"/>
                                     </td>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.fechaemision"/>
                                     </td>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.ruc"/>
                                     </td>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.proveedor_razonsocial[:30] if doc.proveedor_razonsocial else ''"/>
                                     </td>
-                                    <td class="p-1">
-                                        <span t-esc="doc.base_afecta"/>
+                                    <td style="padding: 3px;" class="text-end">
+                                        <span t-esc="'%.2f'%(doc.base_afecta)"/>
                                     </td>
-                                    <td class="p-1">
-                                        <span t-esc="doc.base_inafecta"/>
+                                    <td style="padding: 3px;" class="text-end">
+                                        <span t-esc="'%.2f'%(doc.base_inafecta)"/>
                                     </td>
-                                    <td class="p-1">
-                                        <span t-esc="doc.montoigv"/>
+                                    <td style="padding: 3px;" class="text-end">
+                                        <span t-esc="'%.2f'%(doc.montoigv)"/>
                                     </td>
-                                    <td class="p-1">
-                                        <span t-esc="doc.totaldocumento"/>
+                                    <td style="padding: 3px;" class="text-end">
+                                        <span t-esc="'%.2f'%(doc.totaldocumento)"/>
                                         <t t-set="total_acumulado" t-value="total_acumulado + doc.totaldocumento"/>
                                     </td>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.cuenta_contable.description"/>
                                     </td>
 
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.observacionrepresentacion"/>
                                     </td>
-                                    <td class="p-1">
+                                    <td style="padding: 3px;">
                                         <span t-esc="doc.cliente_razonsocial"/>
                                     </td>
                                 </tr>
@@ -236,8 +236,8 @@
                                     <td>
                                         TOTAL
                                     </td>
-                                    <td colspan="3">
-                                        <span t-esc="total_acumulado"/>
+                                    <td colspan="3" class="text-end">
+                                        <span t-esc="'%.2f'%(total_acumulado)"/>
                                     </td>
                                     <td>
                                     </td>
