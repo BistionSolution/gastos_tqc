@@ -417,7 +417,7 @@ class Liquidaciones(models.Model):
         self.importar_exactus()
         uid = self.env.uid
         res = {
-            "name": "Web gastos",
+            "name": "Web Gastos",
             "type": "ir.actions.act_window",
             "res_model": "tqc.liquidaciones",
             "view_type": "form",
@@ -855,7 +855,7 @@ class Liquidaciones(models.Model):
 
     def historial_go(self):
         res = {
-            "name": "Historial de liquidaciones",
+            "name": "Historial de Liquidaciones",
             "type": "ir.actions.act_window",
             "res_model": "tqc.liquidaciones",
             "view_type": "form",

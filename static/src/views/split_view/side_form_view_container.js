@@ -21,8 +21,7 @@ export class SideFormviewContainer extends Component {
             },
         })
 
-        this.actionService = useService('action');
-
+        this.actionService = useService('action')
         this.formviewPanel = useRef('formview-panel')
         this.formviewContainer = useRef('formview-container')
 
@@ -38,6 +37,7 @@ export class SideFormviewContainer extends Component {
         }
         // Comprobar si llama a interact
         const initialHeight = window.innerHeight * 0.5;
+        this.formviewPanel.el.style.height = `${initialHeight}px`;
 
         interact(this.formviewPanel.el).resizable({
             edges: {
@@ -54,7 +54,6 @@ export class SideFormviewContainer extends Component {
                         height: `${event.rect.height}px`,
                         transform: `translate(${x}px, ${y}px)`
                     })
-
                     Object.assign(event.target.dataset, {x, y})
                 },
             },
