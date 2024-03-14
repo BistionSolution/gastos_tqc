@@ -170,7 +170,7 @@
                             </thead>
                             <tbody>
                                 <tr t-foreach='gt.detalleliquidaciones_id' t-as='doc'>
-                                    <td style="padding: 3px;">
+                                    <td style="padding: 3px; white-space:nowrap;">
                                         <span t-esc="doc.tipodocumento.descripcion"/>
                                     </td>
                                     <td style="padding: 3px;">
@@ -185,7 +185,7 @@
                                     <td style="padding: 3px;">
                                         <span t-esc="doc.ruc"/>
                                     </td>
-                                    <td style="padding: 3px;">
+                                    <td style="padding: 3px; white-space:nowrap;">
                                         <span t-esc="doc.proveedor_razonsocial[:35] if doc.proveedor_razonsocial else ''"/>
                                     </td>
                                     <td style="padding: 3px;" class="text-end">
@@ -212,22 +212,7 @@
                             </tbody>
                             <tfooter>
                                 <tr>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-
-                                    <td>
+                                    <td colspan="8">
                                     </td>
                                     <td>
                                         TOTAL
@@ -235,11 +220,8 @@
                                     <td class="text-end">
                                         <span t-esc="'%.2f'%(total_acumulado)"/>
                                     </td>
-                                    <td>
+                                    <td colspan="3">
                                     </td>
-                                    <td>
-                                    </td>
-
                                 </tr>
                             </tfooter>
                         </table>
