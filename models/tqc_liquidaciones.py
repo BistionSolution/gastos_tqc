@@ -221,16 +221,16 @@ class Liquidaciones(models.Model):
         table_bd = "tqc.liquidaciones"
         table_relations = """empleado_name OF hr.employee"""
 
-        sql_prime = """SELECT
-                          ENTREGA_A_RENDIR AS external_id,
-                          ENTREGA_A_RENDIR AS num_solicitud,
-                          EMPLEADO AS empleado_name,
-                          MONEDA AS moneda,
-                          APLICACION AS glosa_entrega,
-                          FECHA_ENTREGA AS fecha_entrega
-                        FROM
-                          tqc.ENTREGA_A_RENDIR
-                        WHERE LIQUIDADO != 'S'"""
+        # sql_prime = """SELECT
+        #                   ENTREGA_A_RENDIR AS external_id,
+        #                   ENTREGA_A_RENDIR AS num_solicitud,
+        #                   EMPLEADO AS empleado_name,
+        #                   MONEDA AS moneda,
+        #                   APLICACION AS glosa_entrega,
+        #                   FECHA_ENTREGA AS fecha_entrega
+        #                 FROM
+        #                   tqc.ENTREGA_A_RENDIR
+        #                 WHERE LIQUIDADO != 'S'"""
 
         sql_prime_super = """SELECT
                                   ENTREGA_A_RENDIR AS external_id,
@@ -240,7 +240,8 @@ class Liquidaciones(models.Model):
                                   APLICACION AS glosa_entrega,
                                   FECHA_ENTREGA AS fecha_entrega,
                                   CONVERT(decimal(10,2),MONTO) AS monto_entrega,
-                                  CONVERT(decimal(10,2),SALDO) AS saldo
+                                  CONVERT(decimal(10,2),SALDO) AS saldo,
+                                  LIQUIDADO                                  
                                 FROM
                                   tqc.ENTREGA_A_RENDIR
                                 WHERE LIQUIDADO != 'S'"""
@@ -259,6 +260,7 @@ class Liquidaciones(models.Model):
             nom_module = table_bd.replace(".", "_")
             dataExternalSQL = self.get_external_field(
                 table_relations)  # Devuelve un arreglo de los nombres de las tablas relacionadas
+            print("dataExternalSQL : ", dataExternalSQL)
             for data in dataExternalSQL[0]:
                 posiUser.append(campList.index(data))  # inicia posicion de elemento
 
@@ -346,12 +348,15 @@ class Liquidaciones(models.Model):
                         self.env.cr.commit()
                     if register.habilitado_state == 'habilitado':
                         variJsonNew = {}
-                        # if user[8] == 'S':
-                        #     variJsonNew['habilitado_state'] = 'liquidado'
+                        print("user[8] : ", user[8])
+                        if user[8] == 'S':
+                            variJsonNew['habilitado_state'] = 'liquidado'
                         if user[1] == '000000017694':
                             _logger.info('actualizando ---------->>>>>>>>>>>>> %s')
                         variJsonNew['saldo'] = user[7]
+                        print("variJsonNew : ", variJsonNew)
                         self.env[table_bd].browse(id_register).sudo().write(variJsonNew)
+                        self.env.cr.commit()
 
                 else:  # CREA NUEVO REGISTRO
                     if user[1] == '000000017694':
