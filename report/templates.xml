@@ -166,7 +166,6 @@
                                     <th>TOTAL</th>
                                     <th>CTA. CONTABLE</th>
                                     <th>OBSERVACIÓN PRESENTACIÓN.</th>
-                                    <th>RAZÓN SOCIAL CLIENTE</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -187,7 +186,7 @@
                                         <span t-esc="doc.ruc"/>
                                     </td>
                                     <td style="padding: 3px;">
-                                        <span t-esc="doc.proveedor_razonsocial[:30] if doc.proveedor_razonsocial else ''"/>
+                                        <span t-esc="doc.proveedor_razonsocial[:35] if doc.proveedor_razonsocial else ''"/>
                                     </td>
                                     <td style="padding: 3px;" class="text-end">
                                         <span t-esc="'%.2f'%(doc.base_afecta)"/>
@@ -208,9 +207,6 @@
 
                                     <td style="padding: 3px;">
                                         <span t-esc="doc.observacionrepresentacion"/>
-                                    </td>
-                                    <td style="padding: 3px;">
-                                        <span t-esc="doc.cliente_razonsocial"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -236,8 +232,10 @@
                                     <td>
                                         TOTAL
                                     </td>
-                                    <td colspan="3" class="text-end">
+                                    <td class="text-end">
                                         <span t-esc="'%.2f'%(total_acumulado)"/>
+                                    </td>
+                                    <td>
                                     </td>
                                     <td>
                                     </td>
