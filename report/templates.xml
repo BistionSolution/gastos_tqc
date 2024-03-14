@@ -52,6 +52,7 @@
             <t t-foreach="docs" t-as="gt">
                 <!--                web.external_layout-->
                 <t t-call="gastos_tqc.gastos_layout">
+                    <t t-set="total_acumulado" t-value="0"/>
                     <div class="page">
                         <table class="table table-sm table-borderless m-0" style="font-size: 10px; ">
                             <tbody>
@@ -190,6 +191,7 @@
                                     </td>
                                     <td>
                                         <span t-esc="doc.totaldocumento"/>
+                                         <t t-set="total_acumulado" t-value="total_acumulado + doc.totaldocumento"/>
                                     </td>
                                     <td>
                                         <span t-esc="doc.cuenta_contable.description"/>
@@ -226,7 +228,7 @@
                                         TOTAL
                                     </td>
                                     <td colspan="3">
-                                        <span t-esc="gt.current_total"/>
+                                        <span t-esc="total_acumulado"/>
                                     </td>
                                     <td>
                                     </td>
