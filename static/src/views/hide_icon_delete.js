@@ -57,6 +57,7 @@ export class TestListRenderer extends ListRenderer {
     // Cambiar clase de tabla
     getRowClass(record) {
         // classnames coming from decorations
+        console.log("record", record)
         const classNames = this.props.archInfo.decorations
             .filter((decoration) => evaluateExpr(decoration.condition, record.evalContext))
             .map((decoration) => decoration.class);
@@ -113,6 +114,7 @@ export class NewListRenderer extends X2ManyField {
     }
 
     get hasSelected() {
+        console.log("seleccionados")
         return this.list.records.filter((rec) => rec.selected).length
     }
 
@@ -163,6 +165,7 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _onClickAceptarObserva() {
+        const state = this.props.record.data.state
         // Obtener valor de campo state del registro padre
         var current_model = this.field.relation;
         let selected = this.list.records.filter((rec) => rec.selected)
@@ -186,7 +189,7 @@ export class NewListRenderer extends X2ManyField {
                 model: current_model,
                 method: 'write',
                 args: [selected_list, {
-                    'revisado_state': 'observado_contable' + state,
+                    'revisado_state': 'observado_' + state,
                     [state === 'contable' ? 'observacioncontabilidad' : 'observacionjefatura']: this.descriptionObserva.text
                 }],
             }).then(function (response) {

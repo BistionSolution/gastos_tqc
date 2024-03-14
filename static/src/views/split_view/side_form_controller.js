@@ -10,11 +10,14 @@ export class SideFormController extends FormController {
     setup() {
         super.setup();
         this.actionService = useService('action');
+        console.log("SideFormController")
         onSideFormBeforeChange(this.saveButtonClicked.bind(this))
     }
 
     open(inPopup = false) {
+        console.log("Contexto", context)
         const {params, ...context} = this.props.context;
+
         this.actionService.doAction({
             name: this.env._t(`View Record`),
             res_model: this.props.resModel,

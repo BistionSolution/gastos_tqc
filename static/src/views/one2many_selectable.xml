@@ -58,13 +58,12 @@
                         <h5 class="modal-title" id="exampleModalLongTitle">Agregar descripcion de Observacion</h5>
                         <button type="button" class="btn-close" t-on-click="_onClickClose" aria-label="Close"
                                 tabindex="-1"/>
-
                     </div>
                     <div class="modal-body">
 
                     <!--  Caja de texto para colocar descripcion -->
                         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                  t-model="descriptionRechazo.text"/>
+                                  t-model="descriptionObserva.text"/>
 
                     </div>
                     <div class="modal-footer">

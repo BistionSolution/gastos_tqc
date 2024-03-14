@@ -101,20 +101,30 @@ class Liquidaciones(models.Model):
     uid_create = fields.Integer(compute='_get_current_user')
     user_id = fields.Integer(compute='_get_user_id')
 
-    current_total = fields.Float(string='Current Total', compute='_compute_amount')
+    current_total = fields.Float(string='Current Total')
 
-    @api.depends('detalleliquidaciones_id')
+    # Verificar el monto total de detalleliquidaciones_id
+    # @api.depends('detalleliquidaciones_id')
+    # def _compute_amount(self):
+    #     for record in self:
+    #         record.current_total = sum(record.detalleliquidaciones_id.mapped('monto'))
+    #
+    @api.onchange('detalleliquidaciones_id')
     def _compute_amount(self):
-        for rec in self:
-            print("RECORD : ", rec.detalleliquidaciones_id)
-            total = 0.0
-            for line in rec.detalleliquidaciones_id:
-                # if line.revisado_state != 'liquidado':
-                total += line.total_neto
-            if total > rec.saldo + (rec.saldo * 0.05):
+        for record in self:
+            # raise UserError(_('Se paso del saldo'))
+            # print("RECORD : ", rec.detalleliquidaciones_id)
+            # total = 0.0
+            total = sum(record.detalleliquidaciones_id.mapped('total_neto'))
+            for line in record.detalleliquidaciones_id:
+                print("Monto : ", line.total_neto)
+                if line.total_neto <= 0:
+                    raise UserError(_('Monto menor a 0 o igua a 0'))
+            #     # if line.revisado_state != 'liquidado':
+            #     total += line.total_neto
+            if total > record.saldo + (record.saldo * 0.05):
                 print("SALODSO PASODSO")
-                # raise UserError(_('Se paso del saldo'))
-            rec.current_total = total
+                raise UserError(_('Se paso del saldo, ingrese un monto menor'))
 
     @api.onchange('detalleliquidaciones_id')
     def _onchange_detalles(self):

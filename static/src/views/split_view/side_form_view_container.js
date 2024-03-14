@@ -32,6 +32,7 @@ export class SideFormviewContainer extends Component {
     }
 
     setResizeFormviewPanel() {
+        console.log("ACA POIBLE ERROR 2")
         if (!this.formviewPanel.el) {
             return
         }
@@ -64,13 +65,13 @@ export class SideFormviewContainer extends Component {
     }
 
     onPatchedSideFormview() {
-        const formViewEl = this.formviewContainer.el?.querySelector('.o_form_view')
+        console.log("ACA POIBLE ERROR 1")
+        // const formViewEl = this.formviewContainer.el?.querySelector('.o_form_view')
         // if (formViewEl) {
         //     console.log("ACA POIBLE ERROR 3")
         //     formViewEl.classList.remove('o_xxl_form_view')
         //     formViewEl.querySelector('.o_content > .flex-nowrap').classList.add('flex-column')
         // }
-        console.log("ACA POIBLE ERROR 3")
     }
 
     get formViewProps() {
