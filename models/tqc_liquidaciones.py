@@ -97,10 +97,9 @@ class Liquidaciones(models.Model):
 
     table_depositos = fields.Html()
 
-    current_user = fields.Integer(compute='_current_user')  # compute='_get_current_user', default=0
+    current_user = fields.Integer(compute='_current_user')
     uid_create = fields.Integer(compute='_get_current_user')
     user_id = fields.Integer(compute='_get_user_id')
-
     current_total = fields.Float(string='Current Total')
 
     # Verificar el monto total de detalleliquidaciones_id
