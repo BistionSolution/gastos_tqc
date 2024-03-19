@@ -79,7 +79,5 @@
                   action="gastos_tqc.action_auth_gastos" sequence="1"/>
         <menuitem id="menu_autorizadores_contabilidad" parent="gastos_tqc.menu_autorizadores_gasto" name="Contabilidad"
                   action="gastos_tqc.action_auth_conta_gastos" sequence="3"/>
-
     </data>
-
 </odoo>
