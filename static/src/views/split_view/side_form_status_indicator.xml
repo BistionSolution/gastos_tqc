@@ -18,24 +18,24 @@
                         aria-label="Save manually">
                     Save
                 </button>
-                <button
-                        type="button"
-                        class="o_form_button_cancel btn btn-outline-secondary py-0"
-                        t-att-disabled="props.isDisabled"
-                        data-hotkey="j"
-                        t-on-click.stop="discard"
-                        data-tooltip="Discard changes"
-                        aria-label="Discard changes">
-                    Discard
-                </button>
+<!--                <button-->
+<!--                        type="button"-->
+<!--                        class="o_form_button_cancel btn btn-outline-secondary py-0"-->
+<!--                        t-att-disabled="props.isDisabled"-->
+<!--                        data-hotkey="j"-->
+<!--                        t-on-click.stop="discard"-->
+<!--                        data-tooltip="Discard changes"-->
+<!--                        aria-label="Discard changes">-->
+<!--                    Discard-->
+<!--                </button>-->
             </div>
-            <span
-                    t-if="!props.model.root.isVirtual and indicatorMode === 'invalid'"
-                    class="text-danger small ms-2"
-                    data-tooltip="Correct issues to save, or discard changes">
-                <i class="fa fa-warning"/>
-                Unable to save
-            </span>
+<!--            <span-->
+<!--                    t-if="!props.model.root.isVirtual and indicatorMode === 'invalid'"-->
+<!--                    class="text-danger small ms-2"-->
+<!--                    data-tooltip="Correct issues to save, or discard changes">-->
+<!--                <i class="fa fa-warning"/>-->
+<!--                Unable to save-->
+<!--            </span>-->
         </div>
     </t>
 </templates>

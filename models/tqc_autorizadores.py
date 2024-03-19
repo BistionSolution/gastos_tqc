@@ -4,7 +4,6 @@ from odoo.exceptions import UserError, ValidationError
 
 import re, pyodbc
 
-
 class TqcAuth(models.Model):
     _name = 'tqc.autorizadores'
     _description = 'Autorizadores Jefatura'

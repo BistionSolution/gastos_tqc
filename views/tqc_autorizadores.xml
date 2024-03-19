@@ -24,9 +24,23 @@
             </field>
         </record>
 
+        <!--View search-->
+        <record id="view_search_autorizadores_gasto" model="ir.ui.view">
+            <field name="name">view.search.auth.gasto</field>
+            <field name="model">tqc.autorizadores</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="superior"/>
+                    <field name="subordinados"/>
+                </search>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="action_auth_gastos">
-            <field name="name">Autorizadores</field>
+            <field name="name">AutorizadoresS</field>
             <field name="res_model">tqc.autorizadores</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="gastos_tqc.view_search_autorizadores_gasto"/>
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
         </record>
 
@@ -63,8 +77,6 @@
         <menuitem id="menu_autorizadores_gasto" parent="gastos_tqc.menu_flujo_configuraciones" name="Autorizadores" sequence="4"/>
         <menuitem id="menu_autorizadores_jefatura" parent="gastos_tqc.menu_autorizadores_gasto" name="Jefatura"
                   action="gastos_tqc.action_auth_gastos" sequence="1"/>
-
-
         <menuitem id="menu_autorizadores_contabilidad" parent="gastos_tqc.menu_autorizadores_gasto" name="Contabilidad"
                   action="gastos_tqc.action_auth_conta_gastos" sequence="3"/>
 

@@ -27,15 +27,15 @@
        t-inherit-mode="primary"
        owl="1"
     >
-<!--        <xpath expr="//FormStatusIndicator" position="replace">-->
-<!--            <SideFormStatusIndicator-->
-<!--                    model="model"-->
-<!--                    discard.bind="discard"-->
-<!--                    save.bind="saveButtonClicked"-->
-<!--                    isDisabled="state.isDisabled"-->
-<!--                    fieldIsDirty="state.fieldIsDirty"-->
-<!--            />-->
-<!--        </xpath>-->
+        <xpath expr="//FormStatusIndicator" position="replace">
+            <SideFormStatusIndicator
+                    model="model"
+                    discard.bind="discard"
+                    save.bind="saveButtonClicked"
+                    isDisabled="state.isDisabled"
+                    fieldIsDirty="state.fieldIsDirty"
+            />
+        </xpath>
 
         <xpath expr="//Layout" position="inside">
             <t t-set-slot="control-panel-external-action">

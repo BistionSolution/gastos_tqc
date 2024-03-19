@@ -125,11 +125,6 @@ class Liquidaciones(models.Model):
                 print("SALODSO PASODSO")
                 raise UserError(_('Se paso del saldo, ingrese un monto menor'))
 
-    @api.onchange('detalleliquidaciones_id')
-    def _onchange_detalles(self):
-        for rec in self:
-            print("DETALLES : ", rec.detalleliquidaciones_id)
-
     def _get_document_domain(self):
         context = self._context.copy() or {}
         # obtener valor de state en la siguiente vista
