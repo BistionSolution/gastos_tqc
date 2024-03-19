@@ -522,7 +522,6 @@ class cuentaAttachment(models.Model):
     attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'attachment', 'attachment_id', 'document_id',
                                   string="Attachment")
 
-
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'
     _description = 'Vamos'

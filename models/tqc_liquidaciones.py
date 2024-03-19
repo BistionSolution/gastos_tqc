@@ -108,7 +108,7 @@ class Liquidaciones(models.Model):
     #     for record in self:
     #         record.current_total = sum(record.detalleliquidaciones_id.mapped('monto'))
     #
-    @api.onchange('detalleliquidaciones_id')
+    @api.depends('detalleliquidaciones_id')
     def _compute_amount(self):
         for record in self:
             # raise UserError(_('Se paso del saldo'))

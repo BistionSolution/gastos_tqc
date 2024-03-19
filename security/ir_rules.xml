@@ -81,5 +81,53 @@
             <field name="perm_unlink" eval="True"/>
             <field name="perm_create" eval="True"/>
         </record>
+
+        <!-- ver todos los documento attachments -->
+        <record id="ir_rule_attachment" model="ir.rule">
+            <field name="name">Mostrar todos los documentos</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_administrator'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <!-- ver todos los documento attachments -->
+        <record id="ir_rule_attachment_employee" model="ir.rule">
+            <field name="name">Mostrar todos los documentos</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_employee_gastos'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <!-- ver todos los documento attachments -->
+        <record id="ir_rule_attachment_aprobador" model="ir.rule">
+            <field name="name">Mostrar todos los documentos</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_aprobador_gastos'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <!-- ver todos los documento attachments -->
+        <record id="ir_rule_attachment_contador" model="ir.rule">
+            <field name="name">Mostrar todos los documentos</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_contador_gastos'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
     </data>
 </odoo>
