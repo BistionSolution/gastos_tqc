@@ -526,7 +526,7 @@ class depositos(models.Model):
 
 class cuentaAttachment(models.Model):
     _inherit = 'ir.attachment'
-    attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'attachment', 'attachment_id', 'document_id',
+    attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'tqc_detalle_liquidaciones_ir_attachment_rel', 'attachment_id', 'document_id',
                                   string="Attachment")
 
 class cuentaGops(models.Model):
