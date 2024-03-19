@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gastos_tqc_liquidaciones,access.tqc.liquidaciones,model_tqc_liquidaciones,base.group_user,1,1,1,1
-access_gastos_tqc_detalle,access.tqc.detalle,model_tqc_detalle_liquidaciones,base.group_user,1,1,1,1
+access_gastos_tqc_detalle_liquidaciones,access.tqc.detalle.liquidaciones,model_tqc_detalle_liquidaciones,base.group_user,1,1,1,1
 access_gastos_tqc_depositos,access.tqc.depositos,model_tqc_depositos,base.group_user,1,1,1,1
 access_gastos_tqc_tipo_documentos,access.tqc.tipo,model_tqc_tipo_documentos,base.group_user,1,1,1,1
 access_gastos_tqc_cuenta_contable,access.cuenta.contable,model_cuenta_contable_gastos,base.group_user,1,1,1,1
