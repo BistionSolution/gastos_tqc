@@ -4,7 +4,7 @@
         <record id="ir_rule_employee_gastos" model="ir.rule">
             <field name="name">Mostrar cuenta liquidaciones propia</field>
             <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
-            <field name="domain_force">[('empleado_name.user_id','=',user.id)]</field>
+            <field name="domain_force">[(1,'=',1)]</field>
             <!--            <field name="domain_force">[('empleado_name','=','09362888')]</field>-->
             <field name="groups" eval="[(4,ref('gastos_tqc.res_groups_employee_gastos'))]"/>
             <field name="perm_read" eval="True"/>
