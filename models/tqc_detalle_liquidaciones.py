@@ -225,6 +225,13 @@ class detalleLiquidaciones(models.Model):
                 #     }
                 # }
 
+    # @api.constrains('total_neto')
+    # def _check_monto(self):
+    #     for record in self:
+    #         print("Contrain ----------- monto ", record.total_neto)
+    #         if record.total_neto <= 0:
+    #             raise ValidationError("El monto debe ser mayor que cero.")
+
     def _get_price_total(self):
         self.ensure_one()
         res = {}

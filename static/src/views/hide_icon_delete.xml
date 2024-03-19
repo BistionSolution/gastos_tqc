@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
    <t t-name="owl_learn.ClickMe.RecordRow" t-inherit="web.ListRenderer.RecordRow" owl="1">
+<!--       <xpath expr="//td[hasclass('o_list_record_selector')]" position="replace">-->
+<!--            <td t-on-keydown.synthetic="(ev) => this.onCellKeydown(ev, group, record)" t-if="hasSelectors"-->
+<!--                class="o_list_record_selector" t-on-click.stop="() => this.toggleRecordSelection(record)" tabindex="-1">-->
+<!--                <CheckBox disabled="!disabledRow(record)" value="record.selected"-->
+<!--                          onChange.alike="() => this.toggleRecordSelection(record)"/>-->
+<!--            </td>-->
+<!--        </xpath>-->
        <xpath expr="//t[contains(@t-if,'displayOptionalFields')]" position="replace">
            <t t-if="displayOptionalFields or hasX2ManyAction">
                 <t t-if="hasX2ManyAction and showRemoveIcon.value">

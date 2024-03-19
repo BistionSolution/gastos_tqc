@@ -108,44 +108,48 @@ class Liquidaciones(models.Model):
     #     for record in self:
     #         record.current_total = sum(record.detalleliquidaciones_id.mapped('monto'))
     #
-    @api.depends('detalleliquidaciones_id')
-    def _compute_amount(self):
-        for record in self:
-            # raise UserError(_('Se paso del saldo'))
-            # print("RECORD : ", rec.detalleliquidaciones_id)
-            # total = 0.0
-            total = sum(record.detalleliquidaciones_id.mapped('total_neto'))
-            for line in record.detalleliquidaciones_id:
-                print("Monto : ", line.total_neto)
-                if line.total_neto <= 0:
-                    raise UserError(_('Monto menor a 0 o igua a 0'))
-            #     # if line.revisado_state != 'liquidado':
-            #     total += line.total_neto
-            if total > record.saldo + (record.saldo * 0.05):
-                print("SALODSO PASODSO")
-                raise UserError(_('Se paso del saldo, ingrese un monto menor'))
+    # @api.depends('detalleliquidaciones_id')
+    # def _compute_amount(self):
+    #     for record in self:
+    #         # raise UserError(_('Se paso del saldo'))
+    #         # print("RECORD : ", rec.detalleliquidaciones_id)
+    #         # total = 0.0
+    #         total = sum(record.detalleliquidaciones_id.mapped('total_neto'))
+    #         print("Monto ------>: ", total)
+    #         for line in record.detalleliquidaciones_id:
+    #
+    #             if line.total_neto <= 0:
+    #                 raise ValidationError(_('Monto menor igual a 0'))
+    #         #     # if line.revisado_state != 'liquidado':
+    #         #     total += line.total_neto
+    #         if total > record.saldo + (record.saldo * 0.05):
+    #             print("SALODSO PASODSO")
+    #             raise ValidationError(_('Se paso del saldo, ingrese un monto menor'))
+    #         record.current_total = total
 
     def _get_document_domain(self):
         context = self._context.copy() or {}
         # obtener valor de state en la siguiente vista
+        domain = []
+        # if context.get("mode_view", False) == 'flujo':
+        #     if self.state == 'contable':
+        #         # Agregar un elemento a la lista con
+        #         domain = []
+        #     if self.state == 'pendiente':
+        #         domain = []
+        #     # if context.get("search_default_jefatura"):
+        #     #     print("searhc JEGATURA")
+        # elif context.get("mode_view", False) == 'historial':
+        #     domain = []
+        # elif context.get("mode_view", False) == 'registro':
+        #     domain = [('state', '!=', 'historial')]
+        # else:
+        #     domain = []
 
-        if context.get("mode_view", False) == 'flujo':
-            domain = []
-            if self.state == 'contable':
-                # Agregar un elemento a la lista con
-                domain = []
-            if self.state == 'pendiente':
-                domain = []
-            # if context.get("search_default_jefatura"):
-            #     print("searhc JEGATURA")
-        elif context.get("mode_view", False) == 'historial':
-            domain = []
-        elif context.get("mode_view", False) == 'registro':
+        if context.get("mode_view", False) == 'registro':
             domain = [('state', '!=', 'historial')]
-        else:
-            domain = []
             # domain = [('state', '!=', 'historial')]
-
+        print("DOMAIN : ", domain)
         return domain
 
     @api.depends('empleado_name')
@@ -619,7 +623,15 @@ class Liquidaciones(models.Model):
                 'detalleliquidaciones_id': []
             }
             for doc in self.detalleliquidaciones_id:
+                if doc.total_neto <= 0:
+                    raise UserError(_('Monto menor igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
                 vals['detalleliquidaciones_id'].append([1, doc.id, {'state': 'historial'}])
+
+            # Verificar que la suma de los total neto no supere al saldo
+            if sum(self.detalleliquidaciones_id.mapped('total_neto')) > self.saldo + (self.saldo * 0.05):
+                raise UserError(_('Se paso del saldo, ingrese un monto menor, revisa tus documentos'))
+
+            # Saber si alguno de los documento su campo es menor o igual a cero
             self.write(vals)
             # return {
             #     'type': 'ir.actions.client',
@@ -644,6 +656,13 @@ class Liquidaciones(models.Model):
                     })
 
     def button_contable(self):
+        print("STATE : ", self.state)
+        print("STATE : ", self.detalleliquidaciones_id)
+        for doc in self.detalleliquidaciones_id:
+            print("Tota ", doc.total_neto)
+            print("REVISADO STATE : ", doc.revisado_state)
+
+        return
         if self.state == 'contable':
             for doc in self.detalleliquidaciones_id:
                 if doc.razonsocial_invisible == 'no_existe' and doc.revisado_state not in ['rechazado_jefatura',
