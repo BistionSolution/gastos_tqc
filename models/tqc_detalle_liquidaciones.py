@@ -523,7 +523,6 @@ class depositos(models.Model):
     cuenta_bancaria = fields.Char()
     fecha_contable = fields.Date()
 
-
 class cuentaAttachment(models.Model):
     _inherit = 'ir.attachment'
     attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'tqc_detalle_liquidaciones_ir_attachment_rel', 'attachment_id', 'document_id',

@@ -51,6 +51,7 @@ export class TestListRenderer extends ListRenderer {
         //     }
         // });
         this.showRemoveIcon = useState({value: false});
+        this.showObservationButton = useState({value: true});
         onWillStart(() => this._loadPro());
     }
 
@@ -93,6 +94,11 @@ export class TestListRenderer extends ListRenderer {
     }
 
     async _loadPro() {
+        const dataRecord = this.props.list.model.root.data
+        console.log("dataRecord state ", dataRecord.state)
+        if (dataRecord.state === 'jefatura'){
+            this.showObservationButton.value = false
+        }
         if (await session.user_has_group('gastos_tqc.res_groups_administrator')) {
             this.showRemoveIcon.value = false
         }

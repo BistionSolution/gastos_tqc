@@ -61,9 +61,8 @@ class Liquidaciones(models.Model):
     entrega_a_rendir = fields.Char()
     fecha_entrega = fields.Date()
     glosa_entrega = fields.Text()
-    currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False, store=True,
-                                  states={'reported': [('readonly', True)], 'approved': [('readonly', True)],
-                                          'done': [('readonly', True)]}, compute='_compute_currency_id',
+    currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False,
+                                  compute='_compute_currency_id',
                                   default=lambda self: self.env.company.currency_id)
 
     monto_entrega = fields.Monetary(currency_field='currency_id')
@@ -508,8 +507,12 @@ class Liquidaciones(models.Model):
     @api.depends("moneda")
     def _compute_currency_id(self):
         for rec in self:
+            print("Solitud------------->", rec.num_solicitud)
             if rec.moneda == 'USD':
+                print("USD------------->", rec.num_solicitud)
                 rec.currency_id = 2
+            else:
+                rec.currency_id = 154
 
     # def _action_import_gastos(self):
     #     res = {
@@ -624,7 +627,8 @@ class Liquidaciones(models.Model):
             }
             for doc in self.detalleliquidaciones_id:
                 if doc.total_neto <= 0:
-                    raise UserError(_('Monto menor igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
+                    raise UserError(
+                        _('Monto menor igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
                 vals['detalleliquidaciones_id'].append([1, doc.id, {'state': 'historial'}])
 
             # Verificar que la suma de los total neto no supere al saldo
@@ -656,13 +660,15 @@ class Liquidaciones(models.Model):
                     })
 
     def button_contable(self):
-        print("STATE : ", self.state)
-        print("STATE : ", self.detalleliquidaciones_id)
         for doc in self.detalleliquidaciones_id:
-            print("Tota ", doc.total_neto)
-            print("REVISADO STATE : ", doc.revisado_state)
+            if doc.total_neto <= 0:
+                raise UserError(
+                    _('Monto menor igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
 
-        return
+        # Verificar que la suma de los total neto no supere al saldo
+        if sum(self.detalleliquidaciones_id.mapped('total_neto')) > self.saldo + (self.saldo * 0.05):
+            raise UserError(_('Se paso del saldo, ingrese un monto menor, revisa tus documentos'))
+
         if self.state == 'contable':
             for doc in self.detalleliquidaciones_id:
                 if doc.razonsocial_invisible == 'no_existe' and doc.revisado_state not in ['rechazado_jefatura',

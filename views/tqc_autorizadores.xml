@@ -44,13 +44,13 @@
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
         </record>
 
-    <!--CONTAVILIDAD AUTORIZADORES-->
+        <!--CONTAVILIDAD AUTORIZADORES-->
         <record id="view_tree_auth_conta" model="ir.ui.view">
             <field name="name">view.tree.auth.conta</field>
             <field name="model">tqc.auth.contabilidad</field>
             <field name="arch" type="xml">
-                <tree>
-                    <field name="empleado"/>
+                <tree editable="top">
+                    <field name="empleado" options="{'no_quick_create':True,'no_create_edit':True}"/>
                 </tree>
             </field>
         </record>
@@ -61,7 +61,7 @@
             <field name="arch" type="xml">
                 <form string="Superior">
                     <group string="Contabilidad">
-                       <field name="empleado" options="{'no_quick_create':True,'no_create_edit':True}" />
+                        <field name="empleado" options="{'no_quick_create':True,'no_create_edit':True}"/>
                     </group>
                 </form>
             </field>
@@ -70,11 +70,12 @@
         <record model="ir.actions.act_window" id="action_auth_conta_gastos">
             <field name="name">Autorizadores Contabilidad</field>
             <field name="res_model">tqc.auth.contabilidad</field>
+            <field name="view_mode">tree</field>
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
         </record>
 
-
-        <menuitem id="menu_autorizadores_gasto" parent="gastos_tqc.menu_flujo_configuraciones" name="Autorizadores" sequence="4"/>
+        <menuitem id="menu_autorizadores_gasto" parent="gastos_tqc.menu_flujo_configuraciones" name="Autorizadores"
+                  sequence="4"/>
         <menuitem id="menu_autorizadores_jefatura" parent="gastos_tqc.menu_autorizadores_gasto" name="Jefatura"
                   action="gastos_tqc.action_auth_gastos" sequence="1"/>
         <menuitem id="menu_autorizadores_contabilidad" parent="gastos_tqc.menu_autorizadores_gasto" name="Contabilidad"
