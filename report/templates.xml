@@ -164,6 +164,7 @@
                                     <th>BASE INAFECTA</th>
                                     <th>IGV</th>
                                     <th>TOTAL</th>
+                                    <th>TOTAL NETO</th>
                                     <th>CTA. CONTABLE</th>
                                     <th>OBSERVACIÓN PRESENTACIÓN.</th>
                                 </tr>
@@ -199,7 +200,10 @@
                                     </td>
                                     <td style="padding: 3px;" class="text-end">
                                         <span t-esc="'%.2f'%(doc.totaldocumento)"/>
-                                        <t t-set="total_acumulado" t-value="total_acumulado + doc.totaldocumento"/>
+                                    </td>
+                                    <td style="padding: 3px;" class="text-end">
+                                        <span t-esc="'%.2f'%(doc.total_neto)"/>
+                                        <t t-set="total_acumulado" t-value="total_acumulado + doc.total_neto"/>
                                     </td>
                                     <td style="padding: 3px;">
                                         <span t-esc="doc.cuenta_contable.description"/>
