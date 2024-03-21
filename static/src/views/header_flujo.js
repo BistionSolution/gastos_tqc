@@ -11,7 +11,7 @@ export class HeaderFlujo extends Component {
         this.action = useService("action");
         onWillStart(async () => {
             const module_name = this.env.searchModel.resModel
-            console.log("module_name : ", module_name)
+            // console.log("module_name : ", module_name)
             this.countData = await this.orm.call(
                 module_name,
                 "get_count_states",

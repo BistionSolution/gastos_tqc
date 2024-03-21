@@ -51,7 +51,6 @@ export class TestListRenderer extends ListRenderer {
         //     }
         // });
         this.showRemoveIcon = useState({value: false});
-        this.showObservationButton = useState({value: true});
         onWillStart(() => this._loadPro());
     }
 
@@ -117,6 +116,17 @@ export class NewListRenderer extends X2ManyField {
         this.descriptionRechazo = useState({text: ''});
         this.showModalObserva = useState({value: false});
         this.descriptionObserva = useState({text: ''});
+        this.showObservationButton = useState({value: true});
+        onWillStart(() => this._loadPro());
+    }
+
+    async _loadPro() {
+        console.log("entro : ",this.props.record.data.state)
+        const dataRecord = this.props.record.data
+        console.log("data Reorcordd : ----->", dataRecord.state)
+        if (dataRecord.state === 'jefatura'){
+            this.showObservationButton.value = false
+        }
     }
 
     get hasSelected() {

@@ -31,7 +31,7 @@ export class SplitViewRenderer extends ListRenderer {
 
         const formViewId = this.getFormViewId()
         // console.log("form view : ", this)
-        console.log("form view : ", this.props.list.model.env.searchModel.globalContext.mode_view)
+        // console.log("form view : ", this.props.list.model.env.searchModel.globalContext.mode_view)
         useChildSubEnv({
             config: {
                 ...this.env.config,
@@ -43,9 +43,9 @@ export class SplitViewRenderer extends ListRenderer {
 
         onMounted(() => {
             // do something here
-            console.log("super this : ", this)
+            // console.log("super this : ", this)
             // console.log("super this : ", this.prop.list.model.env.searchModel.globalContext.mode_view)
-            console.log("super this : ", this.props.list.model.env.searchModel._context.mode_view)
+            // console.log("super this : ", this.props.list.model.env.searchModel._context.mode_view)
         });
 
         useExternalListener(window, 'keyup', this._onKeyUp.bind(this));
