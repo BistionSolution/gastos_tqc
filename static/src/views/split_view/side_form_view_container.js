@@ -12,7 +12,6 @@ export class SideFormviewContainer extends Component {
 
     setup() {
         super.setup();
-        console.log("AGREGADO SITE FORM")
         useChildSubEnv({
             config: {
                 ...this.env.config,
@@ -32,7 +31,6 @@ export class SideFormviewContainer extends Component {
     }
 
     setResizeFormviewPanel() {
-        console.log("ACA POIBLE ERROR 2")
         if (!this.formviewPanel.el) {
             return
         }
