@@ -58,7 +58,6 @@
     'application': True,
     'assets': {
         'web.assets_backend': [
-
             # 'gastos_tqc/static/src/views/*.js',
             # 'gastos_tqc/static/src/**/*.xml',
             # 'gastos_tqc/static/src/js/liquidacion_header.js',
@@ -76,7 +75,6 @@
             'gastos_tqc/static/src/views/split_view/side_form_control_panel.xml',
             'gastos_tqc/static/src/views/split_view/side_form_controller.xml',
             'gastos_tqc/static/src/views/split_view/side_form_view_container.xml',
-
 
             # 'gastos_tqc/static/src/views/split_view/list_controller.xml',
             'gastos_tqc/static/src/views/split_view/list_renderer.xml',
@@ -102,7 +100,6 @@
 
             'gastos_tqc/static/src/views/button_interfaz/button_interfaz.xml',
 
-
             'gastos_tqc/static/src/views/split_view/with_search.js',
 
             'gastos_tqc/static/src/views/split_view/form_view.js',
@@ -123,8 +120,10 @@
             # 'gastos_tqc/static/src/js/render_search_client.js',
             # 'gastos_tqc/static/src/js/get_cuenta_contable.js',
 
-            # 'gastos_tqc/static/src/js/list_renderer.js',
-            # 'gastos_tqc/static/src/js/web_client.js',
+            'gastos_tqc/static/src/js/list_renderer.js',
+            'gastos_tqc/static/src/js/web_client.js',
+            # dONT AUTOSAVE
+            # "gastos_tqc/static/src/js/web_no_auto_save.esm.js",
         ],
         # 'web.assets_qweb': [
         #     'gastos_tqc/static/src/xml/liquidacion_header.xml',

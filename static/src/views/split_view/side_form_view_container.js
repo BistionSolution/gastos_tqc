@@ -65,7 +65,6 @@ export class SideFormviewContainer extends Component {
     }
 
     onPatchedSideFormview() {
-        console.log("ACA POIBLE ERROR 1")
         // const formViewEl = this.formviewContainer.el?.querySelector('.o_form_view')
         // if (formViewEl) {
         //     console.log("ACA POIBLE ERROR 3")
