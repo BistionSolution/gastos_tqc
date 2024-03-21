@@ -40,75 +40,7 @@ export class SideFormController extends FormController {
 
 }
 
-const Formsetup = function () {
-    console.log("setup from CIUSTOM");
-
-    useSetupView({
-        beforeLeave: () => {
-            if (this.model.root.isDirty) {
-                if (confirm("---------- Automatically beforeLeave?")) {
-                    return this.model.root.save({noReload: true, stayInEdition: true});
-                }
-                this.model.root.discard();
-                return true;
-
-                // Return this.model.root.save({ noReload: true, stayInEdition: true });
-            }
-        },
-        beforeUnload: (ev) => {
-            console.log("beforeUnload .................")
-            this.beforeUnload(ev)
-        },
-
-    });
-    const result = oldSetup.apply(this, arguments);
-    return result;
-};
-
 SideFormController.template = 'gastos_tqc.SideFormView';
-FormController.prototype.setup = Formsetup;
-
-const onPagerUpdate = async function () {
-    console.log("onPagerUpdate .................")
-    this.model.root.askChanges();
-
-    if (this.model.root.isDirty) {
-        if (confirm("---------- Automatically onPagerUpdate?")) {
-            return oldonPagerUpdated.apply(this, arguments);
-        }
-        this.model.root.discard();
-    }
-    return oldonPagerUpdated.apply(this, arguments);
-};
-
-FormController.prototype.onPagerUpdate = onPagerUpdate;
-const ListSuper = ListController.prototype.setup;
-const Listsetup = function () {
-    console.log("setup from List CIUSTOM");
-
-    useSetupView({
-        rootRef: this.rootRef,
-        beforeLeave: () => {
-            console.log("beforeLeave .................");
-            const list = this.model.root;
-            const editedRecord = list.editedRecord;
-            console.log("editedRecord", editedRecord);
-            if (editedRecord && editedRecord.isDirty) {
-                if (confirm("---------- Automatically editedRecord?")) {
-                    if (!list.unselectRecord(true)) {
-                        throw new Error("View can't be saved");
-                    }
-                } else {
-                    this.onClickDiscard();
-                    return true;
-                }
-            }
-        },
-    });
-    const result = ListSuper.apply(this, arguments);
-    return result;
-};
-ListController.prototype.setup = Listsetup;
 
 SideFormController.components = {
     ...FormController.components,
