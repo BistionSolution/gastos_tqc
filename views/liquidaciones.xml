@@ -359,7 +359,7 @@
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}" optional="show"
                                         />
                                         <!--                                    <field name="nocliente"/>-->
-                                        <field name="cliente" class="consult_client" widget="search_client" />
+                                        <field name="cliente" class="consult_client" widget="search_client" optional="show"/>
                                         <field name="cliente_razonsocial" string="Cliente razon social" optional="show"/>
                                         <field name="code_cuenta_contable" invisible="1"/>
                                         <field name="observacionrepresentacion" string="Obs. Presentacion"
