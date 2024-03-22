@@ -105,7 +105,7 @@ class detalleLiquidaciones(models.Model):
              "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
     attachment = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id', string="Archivos",
-                                  help='You can upload your document',  attachment=True)
+                                  help='You can upload your document', attachment=True)
     # attachment_ids = fields.Many2many('ir.attachment', string="Archivos",
     #                                     help='You can upload your document',  attachment=True)
     current_user = fields.Integer(compute='_current_user')
@@ -305,12 +305,7 @@ class detalleLiquidaciones(models.Model):
                     for dat in datos:
                         cambio = dat[1]
 
-                    if rec.fechaemision.weekday() == 6:
-                        warning = {
-                            'title': "Mensaje de advertencia",
-                            'message': "Fecha domingo debe contar aprobación de su jefatura, enviar mensaje a reembolsos.go@tqc.com.pe",
-                        }
-                        return {'warning': warning}
+
                 except Exception as e:
                     raise UserError(_("Error al consultar sql exactus"))
 
@@ -318,6 +313,13 @@ class detalleLiquidaciones(models.Model):
                     raise UserError(_("No existe tipo de cambio para la fecha " + strfecha2.strftime(
                         '%Y-%m-%d') + " hasta la fecha ingresada " + strfecha.strftime('%Y-%m-%d')))
                 rec.tipocambio = cambio
+
+                if rec.fechaemision.weekday() == 6:
+                    warning = {
+                        'title': "Mensaje de advertencia",
+                        'message': "Fecha domingo debe contar aprobación de su jefatura, enviar mensaje a reembolsos.go@tqc.com.pe",
+                    }
+                    return {'warning': warning}
 
     @api.onchange('serie')
     def _onchange_serie(self):
@@ -534,10 +536,13 @@ class depositos(models.Model):
     cuenta_bancaria = fields.Char()
     fecha_contable = fields.Date()
 
+
 class cuentaAttachment(models.Model):
     _inherit = 'ir.attachment'
-    attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'tqc_detalle_liquidaciones_ir_attachment_rel', 'attachment_id', 'document_id',
+    attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'tqc_detalle_liquidaciones_ir_attachment_rel',
+                                  'attachment_id', 'document_id',
                                   string="Attachment")
+
 
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'

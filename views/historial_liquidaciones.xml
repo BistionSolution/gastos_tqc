@@ -14,8 +14,10 @@
                     <field name="fecha_entrega" string="Fecha solicitud" optional="show"/>
                     <field name="moneda" optional="show"/>
                     <field name="currency_id" string="Moneda" invisible="1" force_save="1"/>
-                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
-                    <field name="monto_rendido" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                    <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}"
+                           optional="show"/>
+                    <field name="monto_rendido" widget="monetary" options="{'currency_field': 'currency_id'}"
+                           optional="show"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
                     <!--                    <field name="observacionenvio"/>-->
                     <!--                    <field name="numeroplaca"/>-->
@@ -120,6 +122,11 @@
                                     <field name="totaldocumento" widget="monetary" string="Total Documento"
                                            options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
                                            sum="Total Documentos" optional="show"/>
+                                    <field name="total_neto" widget="monetary"
+                                           options="{'currency_field': 'currency_liquidacion_id'}" readonly="1"
+                                           force_save="1"
+                                           sum="Total neto" optional="show"
+                                    />
                                     <field name="cuenta_contable"
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                            optional="show"
