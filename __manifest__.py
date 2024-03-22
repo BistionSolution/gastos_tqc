@@ -111,7 +111,6 @@
             'gastos_tqc/static/src/views/split_view/list_arch_parser.js',
             # 'gastos_tqc/static/src/views/split_view/list_controller.js',
             'gastos_tqc/static/src/views/split_view/list_renderer.js',
-
             # 'gastos_tqc/static/src/js/modal_search.js',
             # 'gastos_tqc/static/src/js/clicked_field.js',
             'gastos_tqc/static/src/views/search_modal/search_supplier.js',
