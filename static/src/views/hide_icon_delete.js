@@ -93,11 +93,11 @@ export class TestListRenderer extends ListRenderer {
     }
 
     async _loadPro() {
-        const dataRecord = this.props.list.model.root.data
-        console.log("dataRecord state ", dataRecord.state)
-        if (dataRecord.state === 'jefatura'){
-            this.showObservationButton.value = false
-        }
+        // const dataRecord = this.props.list.model.root.data
+        // console.log("dataRecord state ", dataRecord.state)
+        // if (dataRecord.state === 'jefatura'){
+        //     this.showObservationButton.value = false
+        // }
         if (await session.user_has_group('gastos_tqc.res_groups_administrator')) {
             this.showRemoveIcon.value = false
         }
@@ -121,9 +121,8 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _loadPro() {
-        console.log("entro : ",this.props.record.data.state)
         const dataRecord = this.props.record.data
-        console.log("data Reorcordd : ----->", dataRecord.state)
+        console.log("dataRecord state ", dataRecord.state)
         if (dataRecord.state === 'jefatura'){
             this.showObservationButton.value = false
         }
