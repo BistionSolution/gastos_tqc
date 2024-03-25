@@ -13,11 +13,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-database = 'TQCBKP2'
-userbd = "TQC"
-passbd = "extqc"
-
-
 class Liquidaciones(models.Model):
     _name = 'tqc.liquidaciones'
     _description = 'Liquidaciones'
@@ -686,10 +681,10 @@ class Liquidaciones(models.Model):
 
     def send_exactus(self):
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
-        ip_conexion = "10.10.10.228"
+        ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-        user_bd = userbd
-        pass_bd = passbd
+        user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+        pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
 
         vals = {
             'detalleliquidaciones_id': []

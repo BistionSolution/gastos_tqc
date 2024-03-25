@@ -5,9 +5,6 @@ from odoo.exceptions import UserError, ValidationError
 
 import re, pyodbc
 
-database = 'TQCBKP2'
-userbd = "TQC"
-passbd = "extqc"
 class tqcImpuesto(models.Model):
     _name = 'tqc.impuestos'
     _description = 'Impuestos de TQC'
@@ -35,8 +32,8 @@ class tqcImpuesto(models.Model):
 
             ip_conexion = "10.10.10.228"
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-            user_bd = userbd
-            pass_bd = passbd
+            user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+            pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
 
             table_bd = 'tqc.impuestos'
 
