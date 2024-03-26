@@ -13,6 +13,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class Liquidaciones(models.Model):
     _name = 'tqc.liquidaciones'
     _description = 'Liquidaciones'
@@ -120,7 +121,6 @@ class Liquidaciones(models.Model):
     #             print("SALODSO PASODSO")
     #             raise UserError(_('Se paso del saldo, ingrese un monto menor'))
 
-
     def _get_document_domain(self):
         context = self._context.copy() or {}
         # obtener valor de state en la siguiente vista
@@ -222,6 +222,7 @@ class Liquidaciones(models.Model):
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
         pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
         table_bd = "tqc.liquidaciones"
         table_relations = """empleado_name OF hr.employee"""
@@ -248,7 +249,7 @@ class Liquidaciones(models.Model):
                                   CONVERT(decimal(10,2),SALDO) AS saldo,
                                   LIQUIDADO                                  
                                 FROM
-                                  tqc.ENTREGA_A_RENDIR
+                                  """ + prefix_table + """.ENTREGA_A_RENDIR
                                 WHERE LIQUIDADO != 'S'"""
 
         try:
@@ -685,6 +686,7 @@ class Liquidaciones(models.Model):
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
         pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
         vals = {
             'detalleliquidaciones_id': []
