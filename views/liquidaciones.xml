@@ -635,6 +635,7 @@
         <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
         <!--    <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_main_liquidaciones" name="Web de gastos"
+                  sequence="1"
                   action="gastos_tqc.import_exactus_register"
                   web_icon="gastos_tqc,static/description/icon.png"
                   groups="gastos_tqc.res_groups_administrator,res_groups_employee_gastos,res_groups_aprobador_gastos,res_groups_contador_gastos"/>
