@@ -703,7 +703,7 @@ class Liquidaciones(models.Model):
                     @psMensajeError varchar(250)
             SELECT	@psDocumento = ?
 
-            EXEC	@return_value = [tqc].[Exactus_CJ_Ingresar_ERC_Creditos]
+            EXEC	@return_value = [""" + prefix_table + """].[Exactus_CJ_Ingresar_ERC_Creditos]
                     @psConjunto = ?,
                     @psEntregaRendir = ?,
                     @psTipo = ?,
