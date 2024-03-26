@@ -132,6 +132,7 @@ class TqcAuth(models.Model):
     def masive_auth(self):
         id_group_emple = self.env['res.groups'].sudo().search([('full_name', '=', 'Web de Gastos / Gasto-Empleado')]).id
         id_group_aprob = self.env['res.groups'].sudo().search([('full_name', '=', 'Web de Gastos / Gasto-Aprobador')]).id
+        print("id_group_emple : ", id_group_emple)
         # Para cambiar
         # id_rrhh_group = self.env['ir.model.data'].xmlid_to_res_id('hr.group_hr_manager')
         # idall = self.env["hr.employee"].search([]).mapped("user_id").mapped("id")
