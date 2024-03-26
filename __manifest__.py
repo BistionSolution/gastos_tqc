@@ -50,6 +50,7 @@
         'wizard/search_ruc.xml',
         'wizard/search_client.xml',
         'wizard/cuenta_contable.xml',
+        'wizard/bulk_password_user.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

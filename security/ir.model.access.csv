@@ -12,3 +12,4 @@ access_gastos_tqc_impuestos,access.tqc.impuestos,model_tqc_impuestos,base.group_
 access_gastos_cuenta_contable_search,access.cuenta.contable.search,model_cuenta_contable_search,base.group_user,1,1,1,1
 access_gastos_cuenta_contable_transient,access.tqc.cuenta.contable.transient,model_cuenta_contable_transient,base.group_user,1,1,1,1
 access_gastos_cuenta_gastos_default,access.tqc.cuenta.gastos.default,model_cuenta_gastos_default,base.group_user,1,1,1,1
+access_change_bulk_password_user,access_change_bulk_password_user,model_change_bulk_password_user,,1,1,1,1
