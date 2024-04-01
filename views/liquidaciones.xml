@@ -268,9 +268,9 @@
                         <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
                                 class="oe_highlight"
                                 attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"/>
-                        <button name="volver_enviar" string="Volver a enviar" type="object"
-                                class="oe_highlight"
-                                attrs="{'invisible': [('habilitado_state','not in',['corregir'])]}"/>
+<!--                        <button name="volver_enviar" string="Volver a enviar" type="object"-->
+<!--                                class="oe_highlight"-->
+<!--                                attrs="{'invisible': [('habilitado_state','not in',['corregir'])]}"/>-->
                         <!--                        <button name="historial_go" string="Historial" type="object"-->
                         <!--                                class="oe_highlight"-->
                         <!--                              />-->

@@ -48,8 +48,8 @@
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
-                        <button name="send_exactus" string="Volver a enviar" type="object"
-                                class="oe_highlight"/>
+<!--                        <button name="send_exactus" string="Volver a enviar" type="object"-->
+<!--                                class="oe_highlight"/>-->
 
                         <field name="habilitado_state" widget="statusbar"
                                statusbar_visible="habilitado,proceso,liquidado"/>
