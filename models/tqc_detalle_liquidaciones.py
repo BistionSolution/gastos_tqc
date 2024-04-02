@@ -7,10 +7,6 @@ import datetime
 import re, pyodbc
 
 no_server = True
-database = 'TQCBKP2'
-userbd = "TQC"
-passbd = "extqc"
-
 
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
@@ -287,8 +283,8 @@ class detalleLiquidaciones(models.Model):
                 print("fecha ", strfecha2)
                 ip_conexion = "10.10.10.228"
                 data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-                user_bd = userbd
-                pass_bd = passbd
+                user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+                pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
 
                 sql_prime = """SELECT FECHA, CONVERT(decimal(10,3),MONTO) FROM tqc.TIPO_CAMBIO_HIST WHERE 
                      CONVERT(DATE, FECHA) > '""" + strfecha2.strftime(
@@ -346,6 +342,7 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('ruc')
     def _onchange_ruc(self):
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         for rec in self:
             if rec.ruc and no_server:
                 if rec.tipodocumento.descripcion == '53 - Planilla Movilidad' and len(rec.ruc) != 8:
@@ -353,12 +350,12 @@ class detalleLiquidaciones(models.Model):
                 result = ""
                 ip_conexion = "10.10.10.228"
                 data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-                user_bd = userbd
-                pass_bd = passbd
+                user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+                pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
 
-                sql_habido = """SELECT RUC FROM tqc.PROV_NO_HABIDO WHERE RUC = '""" + rec.ruc + """'"""
+                sql_habido = """SELECT RUC FROM """ + prefix_table + """.PROV_NO_HABIDO WHERE RUC = '""" + rec.ruc + """'"""
 
-                sql_prime = """SELECT TOP 1 PROVEEDOR, NOMBRE, ACTIVO FROM tqc.PROVEEDOR WHERE PROVEEDOR = '""" + rec.ruc + """'"""
+                sql_prime = """SELECT TOP 1 PROVEEDOR, NOMBRE, ACTIVO FROM """ + prefix_table + """.PROVEEDOR WHERE PROVEEDOR = '""" + rec.ruc + """'"""
                 try:
                     connection = pyodbc.connect(
                         'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +

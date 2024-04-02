@@ -239,7 +239,6 @@ class TqcAuthConta(models.Model):
         TqcAuthConta.masive_auth(self)
         return res
 
-
 class gastosEmployee(models.Model):
     _inherit = "hr.employee"
 
