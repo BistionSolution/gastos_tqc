@@ -447,13 +447,13 @@ class detalleLiquidaciones(models.Model):
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         if no_server:
             info = []
-
-            ip_conexion = "10.10.10.228"
+            ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-            user_bd = userbd
-            pass_bd = passbd
+            user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+            pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
+            prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
-            sql_prime = """SELECT PROVEEDOR, NOMBRE FROM tqc.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args[
+            sql_prime = """SELECT PROVEEDOR, NOMBRE FROM """ + prefix_table + """.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args[
                 'ruc'] + """%' OR NOMBRE LIKE '%""" + args['ruc'] + """%'"""
 
             try:
@@ -479,11 +479,13 @@ class detalleLiquidaciones(models.Model):
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         if no_server:
             info = []
-            ip_conexion = "10.10.10.228"
+            ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
             data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-            user_bd = userbd
-            pass_bd = passbd
-            sql_prime = """SELECT CLIENTE, NOMBRE FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + args[
+            user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+            pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
+            prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
+
+            sql_prime = """SELECT CLIENTE, NOMBRE FROM """ + prefix_table + """..CLIENTE WHERE CLIENTE LIKE '%""" + args[
                 'client'] + """%' OR NOMBRE LIKE '%""" + args['client'] + """%'"""
             try:
                 connection = pyodbc.connect(

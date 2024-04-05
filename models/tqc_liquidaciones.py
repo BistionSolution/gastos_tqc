@@ -621,10 +621,11 @@ class Liquidaciones(models.Model):
                 'fecha_generacion': datetime.date.today(),
                 'detalleliquidaciones_id': []
             }
+
             for doc in self.detalleliquidaciones_id:
                 if doc.total_neto <= 0:
                     raise UserError(
-                        _('Monto menor igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
+                        _('Monto menor o igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
                 vals['detalleliquidaciones_id'].append([1, doc.id, {'state': 'historial'}])
 
             # Verificar que la suma de los total neto no supere al saldo
