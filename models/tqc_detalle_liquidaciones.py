@@ -383,11 +383,12 @@ class detalleLiquidaciones(models.Model):
 
                 if not proveedores:
                     rec.razonsocial_invisible = 'no_existe'
-                    warning = {
-                        'title': "Mensaje de advertencia",
-                        'message': "Proveedor no existente en Exactus, puede ingresar el RUC pero se le marcara en rojo",
-                    }
-                    return {'warning': warning}
+                    # warning = {
+                    #     'title': "Mensaje de advertencia",
+                    #     'message': "Proveedor no existente en Exactus, puede ingresar el RUC pero se le marcara en rojo",
+                    # }
+                    # return {'warning': warning}
+                    self.env.user.notify_warning(message='Proveedor no existente en Exactus, puede ingresar el RUC pero se le marcara en rojo')
                 else:
                     for proveedor in proveedores:
                         result = proveedor[1]

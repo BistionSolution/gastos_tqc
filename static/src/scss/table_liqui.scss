@@ -12,113 +12,59 @@
   background: #5D737E;
 }
 
-.table-liquidacion {
-  height: auto !important;
 
-  .o_list_renderer .o_list_table tbody > tr > td.o_list_text:not(.o_list_record_selector):not(.o_handle_cell):not(.o_list_button):not(.o_list_record_remove) {
-    white-space: nowrap !important;
+.o_list_renderer .o_list_table tbody > tr > td.o_list_text:not(.o_list_record_selector):not(.o_handle_cell):not(.o_list_button):not(.o_list_record_remove) {
+  white-space: nowrap !important;
+}
+
+.text-truncate {
+  white-space: normal !important;
+}
+
+.o_list_table {
+  //table-layout: auto !important;
+}
+
+.o_form_sheet {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.o_list_table {
+  //.text-danger, .text-warning {
+  //  color: #fff !important;
+  //}
+
+  .text-warning {
+    background: #fbe89c !important;
+    position: relative;
   }
 
-  .text-truncate {
-    white-space: normal !important;
+  .o_attachments {
+    overflow-x: hidden;
+    height: 25px;
+    //height: auto;
   }
 
-  .o_list_table {
-    table-layout: auto !important;
-  }
-
-  .o_form_sheet {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  .o_list_table {
-    //.text-danger, .text-warning {
-    //  color: #fff !important;
-    //}
-
-    .text-warning {
-      background: #fbe89c !important;
-      position: relative;
-    }
-
+  .o_selected_row {
     .o_attachments {
-      overflow-x: hidden;
-      height: 25px;
-      //height: auto;
+      overflow-x: clip;
+      height: auto;
     }
+  }
 
-    .o_selected_row {
-      .o_attachments {
-        overflow-x: clip;
-        height: auto;
-      }
-    }
+  .text-muted {
+    background: rgba(0, 0, 0, 0.1);
+  }
 
-    .text-muted {
-      background: rgba(0, 0, 0, 0.1);
-    }
-
-    .consult_ruc {
-      .text-warning:hover:after {
-        background: #111;
-        background: rgba(0, 0, 0, .8);
-        border-radius: .5em;
-        bottom: 2em;
-        color: #fff;
-        content: 'No activo';
-        display: block;
-        left: 4em;
-        padding: .3em 1em;
-        position: absolute;
-        text-shadow: 0 1px 0 #000;
-        white-space: nowrap;
-        z-index: 1000;
-        user-select: none;
-      }
-
-      .text-warning:hover:before {
-        border: solid;
-        border-color: #111 transparent;
-        border-color: rgba(0, 0, 0, .8) transparent;
-        border-width: .4em .4em 0 .4em;
-        bottom: 1.6em;
-        content: "";
-        display: block;
-        left: 5em;
-        position: absolute;
-        user-select: none;
-        z-index: 99;
-      }
-    }
-
-
-    .text-danger {
-      background-color: #ffe4e5 !important;
-    }
-
-    .text-danger {
-      &.table-info {
-        background-color: #ffb9bd !important;
-
-        &:active {
-          background-color: #ffb9bd;
-          color: #fff;
-        }
-      }
-    }
-
-    .o_data_cell.text-danger {
-      position: relative;
-    }
-
-    .o_data_cell.text-danger:hover:after {
+  .consult_ruc {
+    .text-warning:hover:after {
       background: #111;
       background: rgba(0, 0, 0, .8);
       border-radius: .5em;
       bottom: 2em;
       color: #fff;
-      content: 'No existe';
+      content: 'No activo';
       display: block;
       left: 4em;
       padding: .3em 1em;
@@ -129,7 +75,7 @@
       user-select: none;
     }
 
-    .o_data_cell.text-danger:hover:before {
+    .text-warning:hover:before {
       border: solid;
       border-color: #111 transparent;
       border-color: rgba(0, 0, 0, .8) transparent;
@@ -143,8 +89,58 @@
       z-index: 99;
     }
   }
-}
 
+
+  .text-danger {
+    background-color: #ffe4e5 !important;
+  }
+
+  .text-danger {
+    &.table-info {
+      background-color: #ffb9bd !important;
+
+      &:active {
+        background-color: #ffb9bd;
+        color: #fff;
+      }
+    }
+  }
+
+  .o_data_cell.text-danger {
+    position: relative;
+  }
+
+  .o_data_cell.text-danger:hover:after {
+    background: #111;
+    background: rgba(0, 0, 0, .8);
+    border-radius: .5em;
+    bottom: 2em;
+    color: #fff;
+    content: 'No existe';
+    display: block;
+    left: 4em;
+    padding: .3em 1em;
+    position: absolute;
+    text-shadow: 0 1px 0 #000;
+    white-space: nowrap;
+    z-index: 1000;
+    user-select: none;
+  }
+
+  .o_data_cell.text-danger:hover:before {
+    border: solid;
+    border-color: #111 transparent;
+    border-color: rgba(0, 0, 0, .8) transparent;
+    border-width: .4em .4em 0 .4em;
+    bottom: 1.6em;
+    content: "";
+    display: block;
+    left: 5em;
+    position: absolute;
+    user-select: none;
+    z-index: 99;
+  }
+}
 
 .consult_ruc {
   overflow: visible !important;

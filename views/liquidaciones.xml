@@ -16,7 +16,7 @@
                     <field name="fecha_entrega" string="Fecha solicitud" optional="show"/>
                     <field name="fecha_contable" invisible="1"/>
                     <field name="moneda" optional="show"/>
-                    <field name="currency_id" string="Moneda" optional="show"/>
+                    <field name="currency_id" string="Moneda" invisible="1"/>
                     <field name="monto_entrega" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
                     <field name="saldo" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
                     <!--                    <field name="observacionenvio"/>-->
@@ -92,7 +92,7 @@
                                     <!--                                section_and_note_one2many-->
                                     <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
-                                          decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']">
+                                          decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']" limit="200">
                                         <field name="liquidacion_id" invisible="1"/>
                                         <field name="uid_create" invisible="1"/>
                                         <field name="state_liqui" invisible="1"/>
@@ -223,7 +223,7 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <!-- Colocar esto dentro de tree atrributo: js_class="gastos_view_name"-->
-                <tree js_class="split_views" create="0">
+                <tree js_class="split_views" create="0" class="table-liquidacion">
                     <field name="empleado_name"
                            groups="gastos_tqc.res_groups_administrator,gastos_tqc.res_groups_aprobador_gastos" optional="show"/>
                     <field name="num_solicitud" optional="show"/>
@@ -302,7 +302,7 @@
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}">
                                     <tree editable="top" decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
-                                          decoration-danger="revisado_state == 'rechazado'">
+                                          decoration-danger="revisado_state == 'rechazado'" limit="200">
                                         <field name="tipodocumento" string="Tipo doc."
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}" optional="show"/>
                                         <field name="codetipo" invisible="1" optional="show"/>
