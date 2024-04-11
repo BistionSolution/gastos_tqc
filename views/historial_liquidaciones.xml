@@ -48,8 +48,8 @@
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
-<!--                        <button name="send_exactus" string="Volver a enviar" type="object"-->
-<!--                                class="oe_highlight"/>-->
+                        <!--                        <button name="send_exactus" string="Volver a enviar" type="object"-->
+                        <!--                                class="oe_highlight"/>-->
 
                         <field name="habilitado_state" widget="statusbar"
                                statusbar_visible="habilitado,proceso,liquidado"/>
@@ -79,10 +79,9 @@
                             >
                                 <!--                                section_and_note_one2many-->
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
-                                      decoration-warning="revisado_state == 'corregido'"
+                                      decoration-warning="revisado_state in ['corregido','observado_contable']"
                                       decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"
-                                      limit="200"
-                                >
+                                      limit="200">
                                     <!--                                    decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"-->
                                     <field name="tipodocumento" string="Tipo doc."
                                            options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
@@ -94,7 +93,8 @@
                                            optional="show"/>
                                     <field name="attachment" optional="show" widget="many2many_binary"/>
                                     <field name="ruc" string="Ruc proveedor" class="consult_ruc"
-                                           decoration-danger="razonsocial_invisible == 'no_existe'" optional="show"/>
+                                           decoration-danger="razonsocial_invisible == 'no_existe'"
+                                           decoration-warning="razonsocial_invisible == 'no_activo'" optional="show"/>
                                     <field name="moneda" optional="show"/>
                                     <field name="razonsocial_invisible" invisible="1"/>
                                     <field name="proveedor_razonsocial" string="Proveedor Razon social" readonly="1"

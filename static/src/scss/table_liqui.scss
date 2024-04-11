@@ -22,12 +22,16 @@
 }
 
 .o_list_table {
-  //table-layout: auto !important;
+  //table-layout: fixed !important;
 }
 
 .o_form_sheet {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+
+.o_list_renderer .o_list_table .o_column_sortable:not(.o_handle_cell){
+  width: 100%;
 }
 
 .o_list_table {

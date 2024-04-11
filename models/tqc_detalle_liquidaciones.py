@@ -201,7 +201,6 @@ class detalleLiquidaciones(models.Model):
     def _onchange_cuentacontable(self):
         for rec in self:
             if rec.cuenta_contable:
-                print("cuenta contable ", rec.cuenta_contable.codigo)
                 if rec.cuenta_contable.codigo == '63.4.3.3.0.00.00':
                     print("Mostrar campo de observacion de representacion")
                     warning = {
@@ -271,22 +270,21 @@ class detalleLiquidaciones(models.Model):
 
     @api.onchange('fechaemision')
     def _onchange_fecha(self):
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         for rec in self:
-
             if rec.fechaemision and no_server:
                 cambio = 0
                 strfecha = rec.fechaemision
                 print("fecha ", strfecha)
                 # restar 3 dias a la fecha y guardarla en una variable
                 strfecha2 = strfecha - datetime.timedelta(days=3)
-                print("fecha ", strfecha2)
-                ip_conexion = "10.10.10.228"
+                ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
                 data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
                 user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
                 pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
 
-                sql_prime = """SELECT FECHA, CONVERT(decimal(10,3),MONTO) FROM tqc.TIPO_CAMBIO_HIST WHERE 
+                sql_prime = """SELECT FECHA, CONVERT(decimal(10,3),MONTO) FROM """ + prefix_table + """.TIPO_CAMBIO_HIST WHERE 
                      CONVERT(DATE, FECHA) > '""" + strfecha2.strftime(
                     '%Y-%m-%d') + """' AND CONVERT(DATE, FECHA) <= '""" + strfecha.strftime(
                     '%Y-%m-%d') + """'  AND TIPO_CAMBIO = 'TCV'"""
@@ -348,14 +346,14 @@ class detalleLiquidaciones(models.Model):
                 if rec.tipodocumento.descripcion == '53 - Planilla Movilidad' and len(rec.ruc) != 8:
                     raise UserError('El campo RUC debe contener numero DNI (8 dígitos)')
                 result = ""
-                ip_conexion = "10.10.10.228"
+                ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
                 data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
                 user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
                 pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
 
                 sql_habido = """SELECT RUC FROM """ + prefix_table + """.PROV_NO_HABIDO WHERE RUC = '""" + rec.ruc + """'"""
-
                 sql_prime = """SELECT TOP 1 PROVEEDOR, NOMBRE, ACTIVO FROM """ + prefix_table + """.PROVEEDOR WHERE PROVEEDOR = '""" + rec.ruc + """'"""
+
                 try:
                     connection = pyodbc.connect(
                         'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -399,18 +397,17 @@ class detalleLiquidaciones(models.Model):
 
     @api.onchange('cliente')
     def _onchange_cliente(self):
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         for rec in self:
             if rec.cliente and no_server:
-                print("que fuentes")
                 result = ""
-
-                ip_conexion = "10.10.10.228"
+                ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
                 data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
-                user_bd = userbd
-                pass_bd = passbd
+                user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+                pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
 
-                sql_prime = """SELECT TOP 1 * FROM tqc.CLIENTE WHERE CLIENTE LIKE '%""" + rec.cliente + """'"""
+                sql_prime = """SELECT TOP 1 * FROM """ + prefix_table + """.CLIENTE WHERE CLIENTE LIKE '%""" + rec.cliente + """'"""
                 try:
                     connection = pyodbc.connect(
                         'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -542,7 +539,6 @@ class cuentaAttachment(models.Model):
     attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'tqc_detalle_liquidaciones_ir_attachment_rel',
                                   'attachment_id', 'document_id',
                                   string="Attachment")
-
 
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'

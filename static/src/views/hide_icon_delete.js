@@ -57,7 +57,6 @@ export class TestListRenderer extends ListRenderer {
     // Cambiar clase de tabla
     getRowClass(record) {
         // classnames coming from decorations
-        console.log("record", record)
         const classNames = this.props.archInfo.decorations
             .filter((decoration) => evaluateExpr(decoration.condition, record.evalContext))
             .map((decoration) => decoration.class);
@@ -123,13 +122,12 @@ export class NewListRenderer extends X2ManyField {
     async _loadPro() {
         const dataRecord = this.props.record.data
         console.log("dataRecord state ", dataRecord.state)
-        if (dataRecord.state === 'jefatura'){
+        if (dataRecord.state === 'jefatura') {
             this.showObservationButton.value = false
         }
     }
 
     get hasSelected() {
-        console.log("seleccionados")
         return this.list.records.filter((rec) => rec.selected).length
     }
 
@@ -145,6 +143,15 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _onClickAceptar() {
+        // Obtener valor de campo state del registro padre
+        const saveButton = document.querySelector('.o_form_button_save');
+
+        // Verifica si el botón existe para evitar errores
+        if (saveButton) {
+            // Dispara el evento de clic en el botón
+            saveButton.click();
+        }
+
         const state = this.props.record.data.state
         var current_model = this.field.relation;
         let selected = this.list.records.filter((rec) => rec.selected)
@@ -180,6 +187,15 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _onClickAceptarObserva() {
+        // Obtener valor de campo state del registro padre
+        const saveButton = document.querySelector('.o_form_button_save');
+
+        // Verifica si el botón existe para evitar errores
+        if (saveButton) {
+            // Dispara el evento de clic en el botón
+            saveButton.click();
+        }
+
         const state = this.props.record.data.state
         // Obtener valor de campo state del registro padre
         var current_model = this.field.relation;
@@ -212,10 +228,20 @@ export class NewListRenderer extends X2ManyField {
             });
         }
         this.showModalObserva.value = false
+        // buscar el boton por clase o_form_button_save  y hacer click
+
+
     }
 
     async restaurarRecord() {
         // Obtener valor de campo state del registro padre
+        const saveButton = document.querySelector('.o_form_button_save');
+
+        // Verifica si el botón existe para evitar errores
+        if (saveButton) {
+            // Dispara el evento de clic en el botón
+            saveButton.click();
+        }
         const state = this.props.record.data.state
         var current_model = this.field.relation;
         let selected = this.list.records.filter((rec) => rec.selected)
