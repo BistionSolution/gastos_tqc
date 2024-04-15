@@ -230,7 +230,7 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <!-- Colocar esto dentro de tree atrributo: js_class="gastos_view_name"-->
-                <tree js_class="split_views" create="0" class="table-liquidacion" limit="10">
+                <tree js_class="split_views" create="0" class="table-liquidacion">
                     <field name="current_user" invisible="1"/>
                     <!--                    <field name="empleado_name"/>-->
                     <field name="state" invisible="1"/>

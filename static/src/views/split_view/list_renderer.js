@@ -89,7 +89,7 @@ export class SplitViewRenderer extends ListRenderer {
     async onCellClicked(record, column, ev) {
 
         // si record.data.saldo es menor a 0, no hacer nada
-        if (record.data.saldo < 0) {
+        if (record.data.saldo < 0 || record.data.habilitado_state === 'liquidado') {
             return;
         }
         // Agregar clase al elemento padre clickeado
@@ -117,7 +117,6 @@ export class SplitViewRenderer extends ListRenderer {
         //     return;
         // }
         if (ev.target.special_click) {
-            console.log("gopp")
             return;
         }
 
@@ -131,21 +130,15 @@ export class SplitViewRenderer extends ListRenderer {
     }
 
     async closeSideFormview() {
-        console.log("closeSideFormview")
         await this.callSideFormBeforeChangeFunctions();
-        console.log("closeSideFormview 2")
         this.sideFormView.show = false;
         this.sideFormView.id = false;
-        console.log("closeSideFormview 3")
         this.keepFocusRow()
     }
 
     keepFocusRow() {
-        console.log("keepFocusRow")
         this.tableRef.el.querySelector('tbody').classList.add('o_keyboard_navigation');
-        console.log("keepFocusRow 2")
         const focusRow = this.tableRef.el.querySelector(`[data-id='${this.recordDatapointID}']`);
-        console.log("keepFocusRow 3", focusRow)
         if (focusRow){
             focusRow.focus();
         }
