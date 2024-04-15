@@ -156,12 +156,51 @@ class Liquidaciones(models.Model):
 
     @api.depends()
     def _current_user(self):
+        get_all_liquidated = []
         for record in self:
-
+            # capturar en get_all_liquidated todos los registros que esten liquidados
+            get_all_liquidated.append(record.num_solicitud)
             if self.env.uid in record.empleado_name.superior.mapped('user_id').mapped('id'):
                 record.current_user = 1
             else:
                 record.current_user = 0
+        placeholders = ', '.join(['?'] * len(get_all_liquidated))
+        driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
+        ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
+        data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
+        user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
+        pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
+        prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
+
+        sql_prime_super = f"""SELECT
+                                 ENTREGA_A_RENDIR AS external_id,
+                                 ENTREGA_A_RENDIR AS num_solicitud,
+                                 EMPLEADO AS empleado_name,
+                                 MONEDA AS moneda,
+                                 APLICACION AS glosa_entrega,
+                                 FECHA_ENTREGA AS fecha_entrega,
+                                 CONVERT(decimal(10,2),MONTO) AS monto_entrega,
+                                 CONVERT(decimal(10,2),SALDO) AS saldo,
+                                 LIQUIDADO                                  
+                               FROM
+                                 {prefix_table}.ENTREGA_A_RENDIR
+                               WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
+        try:
+            connection = pyodbc.connect(
+                'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
+                data_base + ';UID=' + user_bd + ';PWD=' + pass_bd)
+            cursor = connection.cursor()
+            cursor.execute(sql_prime_super, get_all_liquidated)
+            idusers = cursor.fetchall()
+            element_liquidated = []
+            for user in idusers:
+                if user[1] in get_all_liquidated:
+                    if user[8] == 'S':
+                        element_liquidated.append(user[1])
+        except Exception as e:
+            raise UserError(_(e))
+        self.env['tqc.liquidaciones'].search([('num_solicitud', 'in', element_liquidated)]).write(
+            {'habilitado_state': 'liquidado', 'state': 'liquidado'})
 
     @api.depends()
     def _get_user_id(self):
@@ -262,11 +301,9 @@ class Liquidaciones(models.Model):
             # company_table = self.capturar_empresa_db(sql)  # capture table of company from exactus
             # if company_table CONTAIN "EMPLEADO" then logic calculate states of the employees ('CES')
             posiUser = []
-            print("table_bd : ", table_bd)
             nom_module = table_bd.replace(".", "_")
             dataExternalSQL = self.get_external_field(
                 table_relations)  # Devuelve un arreglo de los nombres de las tablas relacionadas
-            print("dataExternalSQL : ", dataExternalSQL)
             for data in dataExternalSQL[0]:
                 posiUser.append(campList.index(data))  # inicia posicion de elemento
 
@@ -503,9 +540,7 @@ class Liquidaciones(models.Model):
     @api.depends("moneda")
     def _compute_currency_id(self):
         for rec in self:
-            print("Solitud------------->", rec.num_solicitud)
             if rec.moneda == 'USD':
-                print("USD------------->", rec.num_solicitud)
                 rec.currency_id = 2
             else:
                 rec.currency_id = 154
