@@ -244,14 +244,17 @@ class detalleLiquidaciones(models.Model):
         # Compute 'price_subtotal'.
         # saldo_liqudacion = self.liquidacion_id.saldo
         monto_igv = (self.base_afecta * self.impuesto.impuesto1) / 100
+        monto_igv = round(monto_igv, 2)
         totaldocumento = monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos
+        totaldocumento = round(totaldocumento, 2)  # Redondeo a dos decimales
+
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
-                res['total_neto'] = totaldocumento / self.tipocambio
+                res['total_neto'] = round(totaldocumento / self.tipocambio,2)
             elif self.currency_liquidacion_id.name == 'PEN' and self.currency_id.name == 'USD':
-                res['total_neto'] = totaldocumento * self.tipocambio
+                res['total_neto'] = round(totaldocumento * self.tipocambio,2)
             else:
                 res['total_neto'] = totaldocumento
         # In case of multi currency, round before it's use for computing debit credit
