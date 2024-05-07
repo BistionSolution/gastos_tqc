@@ -316,6 +316,7 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <!-- Colocar esto dentro de tree atrributo: js_class="gastos_view_name"-->
+<!--                js_class="split_views"-->
                 <tree js_class="split_views" create="0" class="table-liquidacion">
                     <field name="current_user" invisible="1"/>
                     <!--                    <field name="empleado_name"/>-->
@@ -397,7 +398,8 @@
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}">
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
-                                          decoration-danger="revisado_state == 'rechazado'" limit="200" default_order="date desc" editable="top">
+                                          decoration-danger="revisado_state == 'rechazado'" limit="200" default_order="create_date desc">
+                                        <field name="create_date" invisible="1"/>
                                         <field name="tipodocumento" string="Tipo doc."
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                                optional="show"/>
@@ -488,7 +490,7 @@
                                                 <field name="numero"
                                                        attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"
                                                        force_save="1"/>
-                                                <field name="fechaemision" string="Fecha emisión" optional="show"/>
+                                                <field name="fechaemision" string="Fecha emisión"/>
                                                 <field name="tipocambio" string="Tipo cambio" readonly="1"
                                                        force_save="1"/>
                                                 <field name="ruc" string="Ruc proveedor" class="consult_ruc"
