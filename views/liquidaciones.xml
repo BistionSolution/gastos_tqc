@@ -288,8 +288,8 @@
                                         </group>
                                         <group string="Archivos adjuntos">
                                             <field name="attachment" widget="many2many_binary"
-                                               optional="show"
-                                               attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
+                                                   optional="show"
+                                                   attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         </group>
                                         <group>
                                             <field name="state" invisible="1"/>
@@ -317,7 +317,7 @@
                 <!--                js_class="registro_tqc_tree_selections" class="gastos_tqc"-->
                 <!--                create="0" delete="0" -->
                 <!-- Colocar esto dentro de tree atrributo: js_class="gastos_view_name"-->
-<!--                js_class="split_views"-->
+                <!--                js_class="split_views"-->
                 <tree js_class="split_views" create="0" class="table-liquidacion">
                     <field name="current_user" invisible="1"/>
                     <!--                    <field name="empleado_name"/>-->
@@ -363,7 +363,7 @@
                         <field name="user_id" invisible="1"/>
                         <field name="state" invisible="1"/>
                         <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
-                                class="oe_highlight"
+                                class="oe_highlight button-generar"
                                 attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"/>
                         <!--                        <button name="volver_enviar" string="Volver a enviar" type="object"-->
                         <!--                                class="oe_highlight"-->
@@ -399,7 +399,8 @@
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}">
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
-                                          decoration-danger="revisado_state == 'rechazado'" limit="200" default_order="create_date asc">
+                                          decoration-danger="revisado_state == 'rechazado'" limit="200"
+                                          default_order="create_date asc">
                                         <field name="create_date" invisible="1"/>
                                         <field name="tipodocumento" string="Tipo doc."
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
@@ -496,10 +497,14 @@
                                                        force_save="1"/>
                                                 <field name="ruc" string="Ruc proveedor" class="consult_ruc"
                                                        decoration-danger="razonsocial_invisible == 'no_existe'"
-                                                       decoration-warning="razonsocial_invisible == 'no_activo'"/>
+                                                       decoration-warning="razonsocial_invisible == 'no_activo'"
+                                                       widget="search_supplier"/>
+                                                />
                                                 <field name="razonsocial_invisible" invisible="1"/>
                                                 <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
-                                                <field name="cliente" class="consult_client"/>
+                                                <field name="cliente" class="consult_client"
+                                                       widget="search_client"
+                                                />
                                                 <field name="cliente_razonsocial" string="Cliente razon social"/>
                                                 <field name="code_cuenta_contable" invisible="1"/>
                                                 <!--                                    <field name="state"/>-->
