@@ -94,7 +94,7 @@
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
                                           decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"
-                                          limit="200">
+                                          limit="200" >
                                         <field name="liquidacion_id" invisible="1"/>
                                         <field name="uid_create" invisible="1"/>
                                         <field name="state_liqui" invisible="1"/>
@@ -397,7 +397,7 @@
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}">
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
-                                          decoration-danger="revisado_state == 'rechazado'" limit="200">
+                                          decoration-danger="revisado_state == 'rechazado'" limit="200" default_order="date desc" editable="top">
                                         <field name="tipodocumento" string="Tipo doc."
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                                optional="show"/>
@@ -493,11 +493,10 @@
                                                        force_save="1"/>
                                                 <field name="ruc" string="Ruc proveedor" class="consult_ruc"
                                                        decoration-danger="razonsocial_invisible == 'no_existe'"
-                                                       decoration-warning="razonsocial_invisible == 'no_activo'"
-                                                       widget="search_supplier"/>
+                                                       decoration-warning="razonsocial_invisible == 'no_activo'"/>
                                                 <field name="razonsocial_invisible" invisible="1"/>
                                                 <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
-                                                <field name="cliente" class="consult_client" widget="search_client"/>
+                                                <field name="cliente" class="consult_client"/>
                                                 <field name="cliente_razonsocial" string="Cliente razon social"/>
                                                 <field name="code_cuenta_contable" invisible="1"/>
                                                 <!--                                    <field name="state"/>-->

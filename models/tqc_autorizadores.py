@@ -11,6 +11,28 @@ class TqcAuth(models.Model):
     superior = fields.Many2one("hr.employee", string='Superior', required=1)
     subordinados = fields.Many2many("hr.employee", string="Subordinado", required=1)
 
+    def write(self, vals):
+        # EJECUTA ANTES DE MODIFICAR
+        res = super().write(vals)
+        self.cal_all_auth()
+        self.masive_auth()
+        return res
+
+    @api.model
+    def create(self, vals):
+        res = super().create(vals)
+        self.cal_all_auth()
+        self.masive_auth()
+        return res
+
+    def unlink(self):
+        for record in self:
+            print("record : ", record)
+        self.cal_all_auth()
+        self.masive_auth()
+        super(TqcAuth, self).unlink()
+
+
     def load_autorizadores(self):
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
@@ -80,7 +102,7 @@ class TqcAuth(models.Model):
                             vjson = {'superior': id_register}
 
                         original_id = self.env[table_bd].sudo().create(vjson).id
-                        self.env.cr.commit()
+
                         # Si funciona
                         self.env["ir.model.data"].sudo().create(
                             {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
@@ -97,11 +119,7 @@ class TqcAuth(models.Model):
         for rec in all_employee:
             superior = self.env["tqc.autorizadores"].search([('subordinados', "in", rec.id)])
             if superior:
-
                 ids_superior = superior.mapped('superior').mapped('id')
-                if rec.id == 312:
-                    print("name 2 : ", rec.name)
-                    print("SUPERIORES 2  : ", ids_superior)
                 self.env["hr.employee"].browse(rec.id).sudo().write({'superior': [(6, 0, ids_superior)]})
                 self.env.cr.commit()
             else:
@@ -110,12 +128,7 @@ class TqcAuth(models.Model):
 
             subords = self.env["tqc.autorizadores"].search([('superior', '=', rec.id)])
             if subords:
-
                 ids_subord = subords.mapped('subordinados').mapped('id')
-                if rec.id == 312:
-                    print("name 2 : ", rec.name)
-                    print("SUPERIORES 2  : ", subords)
-                    print("supord 2  : ", ids_subord)
                 self.env["hr.employee"].browse(rec.id).sudo().write({'subordinados': [(6, 0, ids_subord)]})
                 self.env.cr.commit()
             else:

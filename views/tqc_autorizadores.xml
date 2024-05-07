@@ -4,7 +4,7 @@
             <field name="name">view.tree.auth.gasto</field>
             <field name="model">tqc.autorizadores</field>
             <field name="arch" type="xml">
-                <tree create="0" edit="0" delete="0">
+                <tree editable="top">
                     <field name="superior"/>
                     <field name="subordinados" widget="many2many_tags"/>
                 </tree>
@@ -15,7 +15,7 @@
             <field name="name">view.form.aut.gasto</field>
             <field name="model">tqc.autorizadores</field>
             <field name="arch" type="xml">
-                <form string="Superior" create="0" edit="0" delete="0">
+                <form string="Superior">
                     <group string="Jefatura">
                         <field name="superior"/>
                         <field name="subordinados"/>
