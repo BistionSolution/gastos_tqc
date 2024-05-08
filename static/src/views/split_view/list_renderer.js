@@ -87,11 +87,18 @@ export class SplitViewRenderer extends ListRenderer {
     }
 
     async onCellClicked(record, column, ev) {
-
-        // si record.data.saldo es menor a 0, no hacer nada
-        if (record.data.saldo < 0 || record.data.habilitado_state === 'liquidado') {
-            return;
+        console.log("THIS : ", this.props.list.model.rootParams.context.mode_view)
+        console.log("record : ", record)
+        if (this.props.list.model.rootParams.context.mode_view !== 'historial') {
+            // si record.data.saldo es menor a 0, no hacer nada
+            if (record.data.saldo < 0) {
+                return;
+            }
+            if (record.data.habilitado_state === 'liquidado') {
+                return;
+            }
         }
+
         // Agregar clase al elemento padre clickeado
         const element = ev.target.closest('td')
         const focusRow = this.tableRef.el.querySelector(`[data-id='${this.recordDatapointID}']`);
@@ -139,7 +146,7 @@ export class SplitViewRenderer extends ListRenderer {
     keepFocusRow() {
         this.tableRef.el.querySelector('tbody').classList.add('o_keyboard_navigation');
         const focusRow = this.tableRef.el.querySelector(`[data-id='${this.recordDatapointID}']`);
-        if (focusRow){
+        if (focusRow) {
             focusRow.focus();
         }
         // agregar clase a focusRow
