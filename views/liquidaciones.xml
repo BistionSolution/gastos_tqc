@@ -400,7 +400,7 @@
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
                                           decoration-danger="revisado_state == 'rechazado'" limit="200"
-                                          default_order="create_date asc">
+                                          default_order="create_date desc">
                                         <field name="create_date" invisible="1"/>
                                         <field name="tipodocumento" string="Tipo doc."
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"

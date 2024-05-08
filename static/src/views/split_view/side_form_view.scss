@@ -1,7 +1,12 @@
 .o_control_panel_side_form {
   display: flex;
 }
-.wrap-all{
+
+.o_content {
+  overflow: hidden !important;
+}
+
+.wrap-all {
   display: flex;
   //overflow-y: scroll;
   flex-direction: column;
@@ -19,12 +24,72 @@
     background: #e2f0fc !important;
   }
 
-  .o_form_sheet{
+  .o_form_sheet {
     margin: 0 !important;
     max-width: 100% !important;
   }
-  tr.o_data_row:active{
+
+  tr.o_data_row:active {
     //background: red;
+  }
+}
+
+.formview-panel {
+  .formview-container {
+    height: 100%;
+  }
+
+  .o_xxs_form_view {
+    height: 100%;
+  }
+
+
+  //.table-liquidacion {
+  //  height: 100%;
+  //
+  //  .o_form_sheet_bg {
+  //    height: 100%;
+  //
+  //    .o_form_sheet {
+  //      height: 100%;
+  //
+  //      .o_notebook {
+  //        height: 100%;
+  //
+  //        .o_notebook_content {
+  //          height: 100%;
+  //
+  //          .tab-pane {
+  //            height: 100%;
+  //
+  //            div {
+  //              height: 100%;
+  //
+  //              div {
+  //                height: 100%;
+  //
+  //                .o_list_renderer {
+  //                  height: 100%;
+  //                }
+  //              }
+  //            }
+  //          }
+  //        }
+  //      }
+  //    }
+  //
+  //  }
+  //}
+}
+
+.formview-panel {
+  table {
+    overflow: scroll;
+
+    thead {
+      position: sticky;
+      top: 0;
+    }
   }
 }
 
@@ -34,6 +99,7 @@
   //display: flex;
   //flex-direction: column;
   //gap: 0.48em;
+  position: relative;
 
   .action-buttons {
     display: flex;
@@ -51,10 +117,9 @@
 
       .o_form_view_container {
         width: 100%;
-        height: unset;
 
         .o_content {
-          overflow: unset;
+          overflow: unset !important;
 
           .o-form-buttonbox .btn.oe_stat_button, .o-form-buttonbox > .o_field_widget {
             width: 33%;
