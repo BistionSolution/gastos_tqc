@@ -49,7 +49,7 @@ export class SideFormviewContainer extends Component {
                 move: event => {
                     let {x, y} = event.target.dataset
                     Object.assign(event.target.style, {
-                        width: `${event.rect.width}px`,
+                        width: `100%`,
                         height: `${event.rect.height}px`,
                         transform: `translate(${x}px, ${y}px)`
                     })

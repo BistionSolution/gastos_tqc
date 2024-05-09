@@ -43,43 +43,42 @@
     height: 100%;
   }
 
+  .table-liquidacion {
+    height: 100%;
 
-  //.table-liquidacion {
-  //  height: 100%;
-  //
-  //  .o_form_sheet_bg {
-  //    height: 100%;
-  //
-  //    .o_form_sheet {
-  //      height: 100%;
-  //
-  //      .o_notebook {
-  //        height: 100%;
-  //
-  //        .o_notebook_content {
-  //          height: 100%;
-  //
-  //          .tab-pane {
-  //            height: 100%;
-  //
-  //            div {
-  //              height: 100%;
-  //
-  //              div {
-  //                height: 100%;
-  //
-  //                .o_list_renderer {
-  //                  height: 100%;
-  //                }
-  //              }
-  //            }
-  //          }
-  //        }
-  //      }
-  //    }
-  //
-  //  }
-  //}
+    .o_form_sheet_bg {
+      height: 100%;
+
+      .o_form_sheet {
+        height: 100%;
+
+        .o_notebook {
+          height: 100%;
+
+          .o_notebook_content {
+            height: 100%;
+
+            .tab-pane {
+              height: 100%;
+
+              .o_field_widget {
+                height: 100%;
+
+                .o_field_x2many {
+                  height: 100%;
+
+                  .o_list_renderer {
+                    height: 100%;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
 }
 
 .formview-panel {
@@ -89,6 +88,7 @@
     thead {
       position: sticky;
       top: 0;
+      z-index: 2;
     }
   }
 }
@@ -119,7 +119,7 @@
         width: 100%;
 
         .o_content {
-          overflow: unset !important;
+          //overflow: unset !important;
 
           .o-form-buttonbox .btn.oe_stat_button, .o-form-buttonbox > .o_field_widget {
             width: 33%;
