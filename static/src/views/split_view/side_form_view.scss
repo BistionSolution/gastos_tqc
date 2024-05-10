@@ -46,14 +46,45 @@
   .table-liquidacion {
     height: 100%;
 
-    .o_form_sheet_bg {
-      height: 100%;
+    .o_notebook {
+      height: calc(100% - 50px);
 
-      .o_form_sheet {
+      .o_notebook_content {
         height: 100%;
 
-        .o_notebook {
+        .tab-pane {
           height: 100%;
+
+          .o_field_widget {
+            height: 100%;
+
+            .o_field_x2many {
+              height: 100%;
+              margin-right: 0 !important;
+
+              .o_list_renderer {
+                height: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .o_form_sheet_bg {
+
+      width: 100%;
+      overflow: unset !important;
+
+      .o_form_sheet {
+        padding-right: 0;
+        height: 100%;
+
+
+        .o_notebook {
+          //height: 100%;
+          height: calc(100% - 50px);
+          //overflow-x: scroll;
 
           .o_notebook_content {
             height: 100%;

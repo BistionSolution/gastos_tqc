@@ -74,7 +74,6 @@
                         <page string="Detalle Liquidaciones">
                             <field name="uid_create" invisible="1"/>
                             <field name="detalleliquidaciones_id"
-                                   class="o_field_one2many custom-control custom-checkbox"
                                    options="{'create':false ,'create_edit': false}"
                                    readonly="1"
                             >
