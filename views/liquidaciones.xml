@@ -47,6 +47,10 @@
                                 attrs="{'invisible':[('state','!=','contable')]}"
                                 class="oe_highlight"
                                 groups="gastos_tqc.res_groups_contador_gastos,gastos_tqc.res_groups_administrator"/>
+                        <button string="Restaurar" name="button_restaurar" type="object"
+                                attrs="{'invisible':[('state','!=','contable')]}"
+                                class="oe_highlight"
+                                groups="gastos_tqc.res_groups_administrator"/>
                         <button string="Enviar a exactus" name="send_exactus" type="object"
                                 attrs="{'invisible':[('state','!=','pendiente')]}"
                                 class="oe_highlight"

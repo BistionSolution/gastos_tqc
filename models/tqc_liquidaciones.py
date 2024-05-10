@@ -716,6 +716,13 @@ class Liquidaciones(models.Model):
                         'revisado_state': 'aprobado_contable'
                     })
 
+    def button_restaurar(self):
+        self.write({'state': 'habilitado', 'habilitado_state': 'habilitado'})
+        for doc in self.detalleliquidaciones_id:
+            doc.write({
+                'state': 'document'
+            })
+
     def send_exactus(self):
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
