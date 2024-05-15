@@ -119,7 +119,7 @@
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <field name="tipocambio" string="Tipo cambio" readonly="1" force_save="1"
                                                optional="show"/>
-                                        <field name="razonsocial_invisible" invisible="1" optional="show"/>
+                                        <field name="razonsocial_invisible" invisible="1"/>
                                         <field name="ruc" string="Ruc proveedor" class="consult_ruc"
                                                decoration-danger="razonsocial_invisible == 'no_existe'"
                                                decoration-warning="razonsocial_invisible == 'no_activo'"
@@ -400,7 +400,7 @@
                         <notebook>
                             <page string="Documentos">
                                 <field name="detalleliquidaciones_id"
-                                       attrs="{'readonly':[('habilitado_state','in',['proceso'])]}">
+                                       attrs="{'readonly':[('habilitado_state','in',['proceso'])]}" mode="tree,form">
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
                                           decoration-danger="revisado_state == 'rechazado'" limit="200"

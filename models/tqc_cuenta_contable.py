@@ -19,6 +19,7 @@ class cuentaContable(models.Model):
     descripcioncentrocosto = fields.Char()
 
 
+
 class cuentaContableSearch(models.Model):
     _name = 'cuenta.contable.search'
     _description = 'Buscar Liquidaciones'
