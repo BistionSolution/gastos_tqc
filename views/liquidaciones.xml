@@ -83,6 +83,7 @@
                             <field name="fecha_contable"
                                    attrs="{'invisible':['|',('uid_create','not in',[1,2]),('state', '!=', 'pendiente')], 'required':[('state', '=', 'pendiente')]}"
                             />
+                            <field name="currency_id" invisible="1"/>
                         </group>
 
                         <notebook>
@@ -612,7 +613,9 @@
                                                decoration-warning="totaldocumento > 700 and codetipo == '01 - Factura'"
                                         />
                                         <field name="total_neto" widget="monetary"
-                                               options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"
+                                               options="{'currency_field': 'currency_liquidacion_id'}"
+                                               readonly="1"
+                                               force_save="1"
                                                sum="Total Neto"/>
                                         <field name="cuenta_contable"
                                                options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"

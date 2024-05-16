@@ -8,6 +8,7 @@ import re, pyodbc
 
 no_server = True
 
+
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
     _description = 'Detalle de Liquidaciones'
@@ -50,11 +51,7 @@ class detalleLiquidaciones(models.Model):
                                   states={'reported': [('readonly', True)], 'approved': [('readonly', True)],
                                           'done': [('readonly', True)]}, compute='_compute_currency_id',
                                   default=lambda self: self.env.company.currency_id)
-    currency_liquidacion_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=False,
-                                              states={'reported': [('readonly', True)],
-                                                      'approved': [('readonly', True)],
-                                                      'done': [('readonly', True)]},
-                                              related='liquidacion_id.currency_id', store=True)
+    currency_liquidacion_id = fields.Many2one('res.currency', string='Currency', related='liquidacion_id.currency_id')
 
     useraprobacionjefatura = fields.Monetary(currency_field='currency_id', string="Monto aprobado jefatura")
     fechaaprobacionjefatura = fields.Datetime()
@@ -240,6 +237,7 @@ class detalleLiquidaciones(models.Model):
 
     def _get_price_total(self):
         self.ensure_one()
+        print("Cambio peee")
         res = {}
         # Compute 'price_subtotal'.
         # saldo_liqudacion = self.liquidacion_id.saldo
@@ -250,11 +248,13 @@ class detalleLiquidaciones(models.Model):
 
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
+        print("self.currency_liquidacion_id.name; ", self.currency_liquidacion_id.name)
+        print("self.cself.currency_id.name ; ", self.currency_id.name)
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
-                res['total_neto'] = round(totaldocumento / self.tipocambio,2)
+                res['total_neto'] = round(totaldocumento / self.tipocambio, 2)
             elif self.currency_liquidacion_id.name == 'PEN' and self.currency_id.name == 'USD':
-                res['total_neto'] = round(totaldocumento * self.tipocambio,2)
+                res['total_neto'] = round(totaldocumento * self.tipocambio, 2)
             else:
                 res['total_neto'] = totaldocumento
         # In case of multi currency, round before it's use for computing debit credit
@@ -389,7 +389,8 @@ class detalleLiquidaciones(models.Model):
                     #     'message': "Proveedor no existente en Exactus, puede ingresar el RUC pero se le marcara en rojo",
                     # }
                     # return {'warning': warning}
-                    self.env.user.notify_warning(message='Proveedor no existente en Exactus, puede ingresar el RUC pero se le marcara en rojo')
+                    self.env.user.notify_warning(
+                        message='Proveedor no existente en Exactus, puede ingresar el RUC pero se le marcara en rojo')
                 else:
                     for proveedor in proveedores:
                         result = proveedor[1]
@@ -454,8 +455,9 @@ class detalleLiquidaciones(models.Model):
             pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
             prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
-            sql_prime = """SELECT PROVEEDOR, NOMBRE FROM """ + prefix_table + """.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + args[
-                'ruc'] + """%' OR NOMBRE LIKE '%""" + args['ruc'] + """%'"""
+            sql_prime = """SELECT PROVEEDOR, NOMBRE FROM """ + prefix_table + """.PROVEEDOR WHERE PROVEEDOR LIKE '%""" + \
+                        args[
+                            'ruc'] + """%' OR NOMBRE LIKE '%""" + args['ruc'] + """%'"""
 
             try:
                 connection = pyodbc.connect(
@@ -486,8 +488,9 @@ class detalleLiquidaciones(models.Model):
             pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
             prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
-            sql_prime = """SELECT CLIENTE, NOMBRE FROM """ + prefix_table + """..CLIENTE WHERE CLIENTE LIKE '%""" + args[
-                'client'] + """%' OR NOMBRE LIKE '%""" + args['client'] + """%'"""
+            sql_prime = """SELECT CLIENTE, NOMBRE FROM """ + prefix_table + """..CLIENTE WHERE CLIENTE LIKE '%""" + \
+                        args[
+                            'client'] + """%' OR NOMBRE LIKE '%""" + args['client'] + """%'"""
             try:
                 connection = pyodbc.connect(
                     'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -542,6 +545,7 @@ class cuentaAttachment(models.Model):
     attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'tqc_detalle_liquidaciones_ir_attachment_rel',
                                   'attachment_id', 'document_id',
                                   string="Attachment")
+
 
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'

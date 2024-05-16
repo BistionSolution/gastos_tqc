@@ -539,11 +539,15 @@ class Liquidaciones(models.Model):
 
     @api.depends("moneda")
     def _compute_currency_id(self):
+        id_usd = self.env["res.currency"].search([('name', '=', 'USD')])[0].id
+        id_pen = self.env["res.currency"].search([('name', '=', 'PEN')])[0].id
+        print("id_usd", id_usd)
+        print("id_pen", id_pen)
         for rec in self:
             if rec.moneda == 'USD':
-                rec.currency_id = 2
+                rec.currency_id = id_usd
             else:
-                rec.currency_id = 154
+                rec.currency_id = id_pen
 
     # def _action_import_gastos(self):
     #     res = {
