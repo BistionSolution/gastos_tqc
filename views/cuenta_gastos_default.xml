@@ -88,7 +88,7 @@
             <field name="code">action = model.get_account_contable()</field>
         </record>
 
-        <menuitem id="menu_cuenta_default" action="gastos_tqc.action_first_cuenta"
+        <menuitem id="menu_cuenta_default_get" action="gastos_tqc.action_first_cuenta"
                   parent="gastos_tqc.menu_flujo_configuraciones" sequence="6"
                   name="Traer cuentas contables"/>
     </data>
