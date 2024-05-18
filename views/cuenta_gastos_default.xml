@@ -8,6 +8,8 @@
                 <tree editable="bottom">
                     <field name="codigo"/>
                     <field name="description"/>
+                    <field name="department_id"/>
+                    <field name="active" widget="boolean"/>
                 </tree>
             </field>
         </record>
@@ -23,6 +25,8 @@
                         <group>
                             <field name="codigo"/>
                             <field name="description"/>
+                            <field name="department_id"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>
@@ -73,7 +77,19 @@
         <!--            </field>-->
         <!--        </record>-->
 
-        <menuitem id="menu_cuenta_default" action="gastos_tqc.action_view_cuenta_gastos_default" parent="gastos_tqc.menu_flujo_configuraciones" sequence="3"
+        <menuitem id="menu_cuenta_default" action="gastos_tqc.action_view_cuenta_gastos_default"
+                  parent="gastos_tqc.menu_flujo_configuraciones" sequence="3"
                   name="Cuentas contables"/>
+
+        <record id="action_first_cuenta" model="ir.actions.server">
+            <field name="name">action.server.cuenta.tqc</field>
+            <field name="model_id" ref="gastos_tqc.model_cuenta_gastos_default"/>
+            <field name="state">code</field>
+            <field name="code">action = model.get_account_contable()</field>
+        </record>
+
+        <menuitem id="menu_cuenta_default" action="gastos_tqc.action_first_cuenta"
+                  parent="gastos_tqc.menu_flujo_configuraciones" sequence="6"
+                  name="Traer cuentas contables"/>
     </data>
 </odoo>

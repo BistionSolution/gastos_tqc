@@ -37,7 +37,8 @@ class detalleLiquidaciones(models.Model):
     totaldocumento = fields.Monetary(currency_field='currency_id', required=1)
     total_neto = fields.Monetary(currency_field='currency_id', required=1)
 
-    cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
+    cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1,
+                                      domain=lambda self: self._get_cuenta_domain())
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
     codetipo = fields.Char(compute="_depend_tipocode")
     code_cuenta_contable = fields.Char(compute="_depend_cuentacontable")
@@ -135,6 +136,21 @@ class detalleLiquidaciones(models.Model):
         for record in self:
             record.uid_create = record.liquidacion_id.uid_create
             record.state_liqui = record.liquidacion_id.state
+
+    def _get_cuenta_domain(self):
+        domain = []
+        # si pertenece al grupo de contabilidad o es adminstrador
+        if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos'):
+            return domain
+
+        # si es adminstrador:
+        if self.env.user.has_group('gastos_tqc.res_groups_administrator'):
+            return domain
+
+        # Obtener el centro de costo del usuario
+        print("user ", self.env.user.department_id.id)
+        domain.append(('department_id', '=', self.env.user.department_id.id))
+        return domain
 
     # totaldocumento no debe ser meno a 0
     # @api.constrains('totaldocumento')
@@ -237,7 +253,6 @@ class detalleLiquidaciones(models.Model):
 
     def _get_price_total(self):
         self.ensure_one()
-        print("Cambio peee")
         res = {}
         # Compute 'price_subtotal'.
         # saldo_liqudacion = self.liquidacion_id.saldo
@@ -248,8 +263,6 @@ class detalleLiquidaciones(models.Model):
 
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
-        print("self.currency_liquidacion_id.name; ", self.currency_liquidacion_id.name)
-        print("self.cself.currency_id.name ; ", self.currency_id.name)
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
                 res['total_neto'] = round(totaldocumento / self.tipocambio, 2)
