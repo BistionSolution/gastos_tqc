@@ -139,17 +139,8 @@ class detalleLiquidaciones(models.Model):
 
     def _get_cuenta_domain(self):
         domain = []
-        # si pertenece al grupo de contabilidad o es adminstrador
-        if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos'):
-            return domain
 
-        # si es adminstrador:
-        if self.env.user.has_group('gastos_tqc.res_groups_administrator'):
-            return domain
-
-        # Obtener el centro de costo del usuario
-        print("user ", self.env.user.department_id.id)
-        domain.append(('department_id', '=', self.env.user.department_id.id))
+        domain.append(('department_id', '=', self.liquidacion_id.empleado_name.department_id.id))
         return domain
 
     # totaldocumento no debe ser meno a 0
