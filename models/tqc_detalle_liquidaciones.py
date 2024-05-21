@@ -216,7 +216,9 @@ class detalleLiquidaciones(models.Model):
     @api.onchange('totaldocumento')
     def _check_detraction(self):
         for rec in self:
-            if rec.total_neto > 700 and rec.codetipo in ['01 - Factura']:
+            print("total neto ", rec.totaldocumento, rec.codetipo)
+            if rec.totaldocumento > 700 and rec.codetipo in ['01 - Factura']:
+                print("RARO ", rec.totaldocumento, rec.codetipo)
                 warning = {
                     'title': "Mensaje de advertencia",
                     'message': "Factura mas de 700 se encuentra afecta a detracción (por adquisición de servicios) o retención (por adquisición de bienes)",
