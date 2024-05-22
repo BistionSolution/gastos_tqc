@@ -14,6 +14,7 @@ class detalleLiquidaciones(models.Model):
     _description = 'Detalle de Liquidaciones'
 
     liquidacion_id = fields.Many2one('tqc.liquidaciones')
+    empleado_id = fields.Many2one('hr.employee', related='liquidacion_id.empleado_name')
     tipo = fields.Char()
     subtipo = fields.Char()
     serie = fields.Char()
@@ -37,8 +38,7 @@ class detalleLiquidaciones(models.Model):
     totaldocumento = fields.Monetary(currency_field='currency_id', required=1)
     total_neto = fields.Monetary(currency_field='currency_id', required=1)
 
-    cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1,
-                                      domain=lambda self: self._get_cuenta_domain())
+    cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
     codetipo = fields.Char(compute="_depend_tipocode")
     code_cuenta_contable = fields.Char(compute="_depend_cuentacontable")
@@ -138,10 +138,27 @@ class detalleLiquidaciones(models.Model):
             record.state_liqui = record.liquidacion_id.state
 
     def _get_cuenta_domain(self):
-        domain = []
+        context = self._context.copy() or {}
+        # obtener valor de state en la siguiente vista
 
-        domain.append(('department_id', '=', self.liquidacion_id.empleado_name.department_id.id))
+        # dame solo las cuentas que esten activas
+        print("Campo liquidacion_id :", context.get("liquidacion_id", False))
+        print("Campo perosnalziad :", context.get('empleado_id'))
+        domain = []
+        print("Empoelado dar : ", self.empleado_id)
+        print("rESPONSE : ", self.empleado_id.department_id.id)
+        domain.append(('department_id', '=', self.empleado_id.department_id.id))
+        print("domain here es :corre", domain)
         return domain
+
+    @api.onchange('empleado_id')
+    def _onchange_empleado_id(self):
+        if self.empleado_id:
+            # Define aquí la lógica para el dominio basado en el empleado_id
+            domain = [('department_id', '=', self.empleado_id.department_id.id)]
+        else:
+            domain = []
+        return {'domain': {'cuenta_contable': domain}}
 
     # totaldocumento no debe ser meno a 0
     # @api.constrains('totaldocumento')
