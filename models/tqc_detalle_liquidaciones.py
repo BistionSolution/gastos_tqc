@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 import datetime
@@ -7,7 +6,6 @@ import datetime
 import re, pyodbc
 
 no_server = True
-
 
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
@@ -140,15 +138,9 @@ class detalleLiquidaciones(models.Model):
     def _get_cuenta_domain(self):
         context = self._context.copy() or {}
         # obtener valor de state en la siguiente vista
-
         # dame solo las cuentas que esten activas
-        print("Campo liquidacion_id :", context.get("liquidacion_id", False))
-        print("Campo perosnalziad :", context.get('empleado_id'))
         domain = []
-        print("Empoelado dar : ", self.empleado_id)
-        print("rESPONSE : ", self.empleado_id.department_id.id)
         domain.append(('department_id', '=', self.empleado_id.department_id.id))
-        print("domain here es :corre", domain)
         return domain
 
     @api.onchange('empleado_id')
