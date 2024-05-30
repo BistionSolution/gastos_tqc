@@ -711,7 +711,7 @@ class Liquidaciones(models.Model):
                     })
 
     def prove_email(self):
-        template_id = self.env.ref("gastos_tqc.email_template_enviar_jefatura").id
+        template_id = self.env.ref("gastos_tqc.email_template_probar").id
         template = self.env['mail.template'].browse(template_id)
         emails = self.env['tqc.auth.contabilidad'].search([]).mapped('empleado').mapped('work_email')
         email_to = ','.join(emails)
