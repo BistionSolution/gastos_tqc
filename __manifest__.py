@@ -29,6 +29,7 @@
         'security/ir_rules.xml',
 
         'data/cuenta_gastos_default.xml',
+        'data/mail_template.xml',
 
         'report/templates.xml',
         'report/report_sheets.xml',

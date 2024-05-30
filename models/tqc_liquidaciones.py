@@ -50,7 +50,7 @@ class Liquidaciones(models.Model):
     muestreocontabilidad = fields.Boolean()
 
     detalleliquidaciones_id = fields.One2many('tqc.detalle.liquidaciones', 'liquidacion_id', 'Detalles',
-                                              domain=lambda self: self._get_document_domain())
+                                              domain=lambda self: self._get_document_domain(), order='create_date asc')
     detalle_historial = fields.One2many('tqc.detalle.liquidaciones', 'liquidacion_id', 'Detalles',
                                         domain=[('state', '=', 'historial')])
 
@@ -120,6 +120,7 @@ class Liquidaciones(models.Model):
     #         if total > record.saldo + (record.saldo * 0.05):
     #             print("SALODSO PASODSO")
     #             raise UserError(_('Se paso del saldo, ingrese un monto menor'))
+
 
     def _get_document_domain(self):
         context = self._context.copy() or {}
@@ -691,6 +692,9 @@ class Liquidaciones(models.Model):
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
                                               'observado_contable', 'observado_jefatura']:
+                    template_id = self.env.ref("gastos_tqc.email_template_enviar_jefatura").id
+                    template = self.env['mail.template'].browse(template_id)
+                    template.send_mail(self.id, force_send=True)
                     doc.write({
                         'revisado_state': 'aprobado_jefatura'
                     })
@@ -716,6 +720,9 @@ class Liquidaciones(models.Model):
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
                                               'observado_contable', 'observado_jefatura']:
+                    template_id = self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id
+                    template = self.env['mail.template'].browse(template_id)
+                    template.send_mail(self.id, force_send=True)
                     doc.write({
                         'revisado_state': 'aprobado_contable'
                     })

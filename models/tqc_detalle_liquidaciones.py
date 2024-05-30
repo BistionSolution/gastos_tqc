@@ -105,14 +105,22 @@ class detalleLiquidaciones(models.Model):
     state_liqui = fields.Char(compute='_get_current_user')
     message_error = fields.Char(String='Mensaje Error respuesta')
 
+    sequence = fields.Integer('Secuencia', default=0)
+
     @api.model
     def create(self, vals):
-        templates = super(detalleLiquidaciones, self).create(vals)
-        # fix attachment ownership
-        for template in templates:
-            if template.attachment:
-                template.attachment.write({'res_model': self._name, 'res_id': template.id})
-        return templates
+        last_record = self.search([], order='sequence desc', limit=1)
+        vals['sequence'] = last_record.sequence + 1 if last_record else 0
+        return super(detalleLiquidaciones, self).create(vals)
+
+    # @api.model
+    # def create(self, vals):
+    #     templates = super(detalleLiquidaciones, self).create(vals)
+    #     # fix attachment ownership
+    #     for template in templates:
+    #         if template.attachment:
+    #             template.attachment.write({'res_model': self._name, 'res_id': template.id})
+    #     return templates
 
     @api.depends("moneda")
     def _compute_currency_id(self):
@@ -258,13 +266,12 @@ class detalleLiquidaciones(models.Model):
         res = {}
         # Compute 'price_subtotal'.
         # saldo_liqudacion = self.liquidacion_id.saldo
-        monto_igv = (self.base_afecta * self.impuesto.impuesto1) / 100
-        monto_igv = round(monto_igv, 2)
-        totaldocumento = monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos
-        totaldocumento = round(totaldocumento, 2)  # Redondeo a dos decimales
+        monto_igv = round((self.base_afecta * self.impuesto.impuesto1) / 100, 2)
+        totaldocumento = round(monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos, 2)  # Redondeo a dos decimales
 
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
+
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
                 res['total_neto'] = round(totaldocumento / self.tipocambio, 2)
@@ -535,6 +542,17 @@ class detalleLiquidaciones(models.Model):
 
     def search_cod_client(self):
         pass
+
+    def open_edit_form(self):
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'tqc.detalle.liquidaciones',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'view_id': self.env.ref('gastos_tqc.view_form_detalles_liquidaciones').id,
+            'target': 'new',
+        }
 
 
 class depositos(models.Model):

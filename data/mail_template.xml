@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<odoo>
+   <data>
+        <!--ENVIO DE CORREO AL QUE APRUEBA PRIMERO -->
+       <record id="email_template_enviar_jefatura" model="mail.template">
+           <field name="name">Email jefatura aprobacion</field>
+           <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+           <field name="email_from">${object.empleado_name.address_id.email}</field>
+           <field name="email_to" >${object.empleado_name.address_id.email}</field>
+           <field name="subject">MENSAJE POR ENVIAR A APROBACIÓN DE: ${object.empleado_name.name or 'n/a' }</field>
+           <field name="auto_delete" eval="True"/>
+
+           <field name="body_html"><![CDATA[
+                <p>Hola.</p>
+                <p>Tiene una solicitud por aprobar de ${object.empleado_name.name}
+                </p>
+                <p>Fecha de solicitud: ${object.create_date}</p>
+                <br/>
+                <p>Gracias.</p>
+                 ]]>
+           </field>
+       </record>
+
+       <record id="email_template_enviar_contabilidad" model="mail.template">
+           <field name="name">Email contabilidad aprobacion</field>
+           <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+           <field name="email_from">${object.empleado_name.address_id.email}</field>
+           <field name="email_to" >${object.empleado_name.address_id.email}</field>
+           <field name="subject">MENSAJE POR ENVIAR A APROBACIÓN DE: ${object.empleado_name.name or 'n/a' }</field>
+           <field name="auto_delete" eval="True"/>
+
+           <field name="body_html"><![CDATA[
+                <p>Hola.</p>
+                <p>Tiene una solicitud por aprobar de ${object.empleado_name.name}
+                </p>
+                <p>Fecha de solicitud: ${object.create_date}</p>
+                <br/>
+                <p>Gracias.</p>
+                 ]]>
+           </field>
+       </record>
+
+   </data>
+</odoo>

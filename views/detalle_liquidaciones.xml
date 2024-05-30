@@ -6,7 +6,101 @@
             <field name="res_model">tqc.detalle.liquidaciones</field>
         </record>
 
+        <record id="view_form_detalles_liquidaciones" model="ir.ui.view">
+            <field name="name">view.form.detalles.liquidaciones</field>
+            <field name="model">tqc.detalle.liquidaciones</field>
+            <field name="arch" type="xml">
+                <form string="Detalle de liquidaciones" create="1" edit="1">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="tipodocumento" string="Tipo doc."
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                                <field name="codetipo" invisible="1"/>
+                                <field name="serie"
+                                       attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"
+                                       force_save="1"/>
+                                <!--                                     widget="many2many_binary"-->
+                                <field name="numero"
+                                       attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"
+                                       force_save="1"/>
+                                <field name="fechaemision" string="Fecha emisión"/>
+                                <field name="tipocambio" string="Tipo cambio" readonly="1"
+                                       force_save="1"/>
+                                <field name="ruc" string="Ruc proveedor" class="consult_ruc"
+                                       decoration-danger="razonsocial_invisible == 'no_existe'"
+                                       decoration-warning="razonsocial_invisible == 'no_activo'"
+                                       widget="search_supplier"/>
+                                />
+                                <field name="razonsocial_invisible" invisible="1"/>
+                                <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
+                                <field name="cliente" class="consult_client"
+                                       widget="search_client"
+                                />
+                                <field name="cliente_razonsocial" string="Cliente razon social"/>
+                                <field name="code_cuenta_contable" invisible="1"/>
+                                <!--                                    <field name="state"/>-->
+                                <!--                                    <field name="subtipo"/>-->
+                            </group>
+                            <group>
+                                <field name="empleado_id" invisible="1"/>
+                                <field name="liquidacion_id" invisible="1"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="moneda"/>
+
+                                <field name="currency_liquidacion_id" invisible="1"/>
+                                <field name="base_afecta" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"
+                                       attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad','Vale Otros Gastos'])]}"
+                                       force_save="1"/>
+                                <field name="base_inafecta" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="impuesto"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                       attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','01 - Factura No Gravada','53 - Planilla Movilidad','Vale Otros Gastos'])]}"
+                                       force_save="1"/>
+                                <field name="icbper"
+                                       attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','Vale Otros Gastos'])]}"
+                                       force_save="1"/>
+                                <field name="otros_tributos"
+                                       attrs="{'readonly':[('codetipo','in',['03 - Boleta de Venta','Vale Otros Gastos'])]}"
+                                       force_save="1"/>
+                                <field name="montoigv" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}" readonly="1"
+                                       force_save="1"
+                                       string="Monto IGV"/>
+                                <field name="totaldocumento" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}" readonly="1"
+                                       force_save="1"
+                                       sum="Total Documentos"
+                                       decoration-warning="totaldocumento > 700 and codetipo == '01 - Factura'"/>
+                                <field name="total_neto" widget="monetary"
+                                       options="{'currency_field': 'currency_liquidacion_id'}"
+                                       readonly="1"
+                                       force_save="1"
+                                       sum="Total neto"
+                                />
+                                <field name="cuenta_contable"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
+                                />
+                                <!--                                    <field name="nocliente"/>-->
+
+                            </group>
+                        </group>
+                        <group string="Observaciones">
+                            <field name="observacionrepresentacion" string="Obs. Presentacion"
+                            />
+                        </group>
+                        <group string="Archivos adjuntos">
+                            <field name="attachment" widget="many2many_binary"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <menuitem id="menu_detalles_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="6"
-                  name="Detalles liquidaciones" action="gastos_tqc.action_view_detalles_liquidaciones" groups="gastos_tqc.res_groups_administrator"/>
+                  name="Detalles liquidaciones" action="gastos_tqc.action_view_detalles_liquidaciones"
+                  groups="gastos_tqc.res_groups_administrator"/>
     </data>
 </odoo>

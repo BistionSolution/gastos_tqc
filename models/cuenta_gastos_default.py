@@ -85,11 +85,15 @@ And substring(cen.CENTRO_COSTO,1,2) in ('22','23','41','42','43','44','45','49',
 
             for user in idusers:
                 variJson = {}
+                sumNom = f'{user[0]}-{user[1]}'
+                print("uSER ", user)
                 existId = True
-                sumNom = "{}.{}".format(nom_module, user[0])  # (nombre modulo) + (id del sql)
                 try:
+                    print("sumNom ", sumNom)
                     id_register = self.env.ref(sumNom).id
+                    print("NICE XD ", sumNom)
                 except ValueError:
+                    print("NO NICE")
                     existId = False
 
                 def populate_variJson():
@@ -112,8 +116,10 @@ And substring(cen.CENTRO_COSTO,1,2) in ('22','23','41','42','43','44','45','49',
                 populate_variJson()
 
                 if existId:
+                    print("QUYE GFFES ")
                     self.env[table_bd].browse(id_register).write(variJson)
                 else:
+                    print("QUYE GFFES  XDXDXD")
                     original_id = self.env[table_bd].create(variJson).id
                     self.env["ir.model.data"].create({
                         'name': f'{user[0]}-{user[1]}',

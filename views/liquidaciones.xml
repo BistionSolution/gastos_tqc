@@ -406,8 +406,8 @@
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}" mode="tree,form">
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
-                                          decoration-danger="revisado_state == 'rechazado'" limit="200"
-                                          default_order="create_date desc">
+                                          decoration-danger="revisado_state == 'rechazado'" limit="200">
+                                        <field name="sequence" invisible="1"/>
                                         <field name="liquidacion_id" invisible="1"/>
                                         <field name="create_date" invisible="1"/>
                                         <field name="tipodocumento" string="Tipo doc."
