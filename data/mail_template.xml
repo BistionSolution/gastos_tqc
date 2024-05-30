@@ -1,44 +1,77 @@
 <?xml version="1.0" ?>
 <odoo>
-   <data>
+    <data>
         <!--ENVIO DE CORREO AL QUE APRUEBA PRIMERO -->
-       <record id="email_template_enviar_jefatura" model="mail.template">
-           <field name="name">Email jefatura aprobacion</field>
-           <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
-           <field name="email_from">${object.empleado_name.address_id.email}</field>
-           <field name="email_to" >${object.empleado_name.address_id.email}</field>
-           <field name="subject">MENSAJE POR ENVIAR A APROBACIÓN DE: ${object.empleado_name.name or 'n/a' }</field>
-           <field name="auto_delete" eval="True"/>
+        <record id="email_template_enviar_jefatura" model="mail.template">
+            <field name="name">Email jefatura aprobacion</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="email_from">Aprobaciones pendientes &lt;aprobacionesexactus@tqc.com.pe&gt;</field>
+            <field name="email_to">{{object.empleado_name.superior.work_email}}</field>
+            <field name="subject">Aprobación pendiente en jefatura de: ${object.empleado_name.name or 'n/a' }</field>
+            <field name="auto_delete" eval="True"/>
 
-           <field name="body_html"><![CDATA[
-                <p>Hola.</p>
-                <p>Tiene una solicitud por aprobar de ${object.empleado_name.name}
-                </p>
-                <p>Fecha de solicitud: ${object.create_date}</p>
-                <br/>
-                <p>Gracias.</p>
-                 ]]>
-           </field>
-       </record>
+            <field name="body_html" type="html">
+                 <div style="margin: 0px; padding: 0px;">
+                    <!--enviar enlace para entra a la vista de solicitud-->
+                    <p>Hola.</p>
+                    <br/>
+                    <p>
+                        Tiene una solicitud por aprobar de
+                        <t t-out="object.empleado_name.name or ''"/>
+                    </p>
+                     <p>
+                        Numero de solicitud:
+                        <t t-out="object.num_solicitud or ''"/>
+                    </p>
+                    <!--                        Falta codigo de cuenta bancaria-->
+                    <p>
+                        Correo de empleado:
+                        <t t-out="object.empleado_name.work_email or ''"/>
+                        <br/>
+                        <!--                        Fecha de solicitud:-->
+                        <!--                        <t t-out="object.create_date or ''"/>-->
+                    </p>
+                    <p>
+                        Gracias.
+                    </p>
+                </div>
+            </field>
+        </record>
 
-       <record id="email_template_enviar_contabilidad" model="mail.template">
-           <field name="name">Email contabilidad aprobacion</field>
-           <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
-           <field name="email_from">${object.empleado_name.address_id.email}</field>
-           <field name="email_to" >${object.empleado_name.address_id.email}</field>
-           <field name="subject">MENSAJE POR ENVIAR A APROBACIÓN DE: ${object.empleado_name.name or 'n/a' }</field>
-           <field name="auto_delete" eval="True"/>
+        <record id="email_template_enviar_contabilidad" model="mail.template">
+            <field name="name">Email contabilidad aprobacion</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="email_from">Aprobaciones pendientes &lt;aprobacionesexactus@tqc.com.pe&gt;</field>
+            <field name="email_to">{{ctx.get('email_to', 'default@example.com')}}</field>
+            <field name="subject">Aprobación pendiente en contabilidad de: ${object.empleado_name.name or 'n/a' }</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <!--enviar enlace para entra a la vista de solicitud-->
+                    <p>Hola.</p>
+                    <br/>
+                    <p>
+                        Tiene una solicitud por aprobar de:
+                        <t t-out="object.empleado_name.name or ''"/>
+                    </p>
+                    <p>
+                        Numero de solicitud:
+                        <t t-out="object.num_solicitud or ''"/>
+                    </p>
+                    <!--                        Falta codigo de cuenta bancaria-->
+                    <p>
+                        Correo de empleado:
+                        <t t-out="object.empleado_name.work_email or ''"/>
+                        <br/>
+                        <!--                        Fecha de solicitud:-->
+                        <!--                        <t t-out="object.create_date or ''"/>-->
+                    </p>
+                    <p>
+                        Gracias.
+                    </p>
+                </div>
+            </field>
+        </record>
 
-           <field name="body_html"><![CDATA[
-                <p>Hola.</p>
-                <p>Tiene una solicitud por aprobar de ${object.empleado_name.name}
-                </p>
-                <p>Fecha de solicitud: ${object.create_date}</p>
-                <br/>
-                <p>Gracias.</p>
-                 ]]>
-           </field>
-       </record>
-
-   </data>
+    </data>
 </odoo>

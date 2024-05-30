@@ -674,10 +674,15 @@ class Liquidaciones(models.Model):
 
             # Saber si alguno de los documento su campo es menor o igual a cero
             self.write(vals)
-            # return {
-            #     'type': 'ir.actions.client',
-            #     'tag': 'reload',
-            # }
+            template = self.env['mail.template'].browse(self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id)
+            emails = self.env['tqc.auth.contabilidad'].search([]).mapped('empleado').mapped('work_email')
+            email_to = ','.join(emails)
+            # Parámetros adicionales
+            ctx = {
+                'email_to': email_to
+            }
+            template.with_context(ctx).send_mail(self.id, force_send=True)
+
             return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
         else:
             raise UserError(_("Los documentos estan vacios"))
@@ -692,12 +697,29 @@ class Liquidaciones(models.Model):
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
                                               'observado_contable', 'observado_jefatura']:
-                    template_id = self.env.ref("gastos_tqc.email_template_enviar_jefatura").id
+                    template_id = self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id
                     template = self.env['mail.template'].browse(template_id)
-                    template.send_mail(self.id, force_send=True)
+                    emails = self.env['tqc.auth.contabilidad'].search([]).mapped('empleado').mapped('work_email')
+                    email_to = ','.join(emails)
+                    # Parámetros adicionales
+                    ctx = {
+                        'email_to': email_to
+                    }
+                    template.with_context(ctx).send_mail(self.id, force_send=True)
                     doc.write({
                         'revisado_state': 'aprobado_jefatura'
                     })
+
+    def prove_email(self):
+        template_id = self.env.ref("gastos_tqc.email_template_enviar_jefatura").id
+        template = self.env['mail.template'].browse(template_id)
+        emails = self.env['tqc.auth.contabilidad'].search([]).mapped('empleado').mapped('work_email')
+        email_to = ','.join(emails)
+        # Parámetros adicionales
+        ctx = {
+            'email_to': email_to
+        }
+        template.with_context(ctx).send_mail(self.id, force_send=True)
 
     def button_contable(self):
         for doc in self.detalleliquidaciones_id:
@@ -720,7 +742,7 @@ class Liquidaciones(models.Model):
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
                                               'observado_contable', 'observado_jefatura']:
-                    template_id = self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id
+                    template_id = self.env.ref("gastos_tqc.email_template_enviar_jefatura").id
                     template = self.env['mail.template'].browse(template_id)
                     template.send_mail(self.id, force_send=True)
                     doc.write({
