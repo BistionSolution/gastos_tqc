@@ -99,7 +99,7 @@
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
                                           decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"
-                                          limit="200" default_order="create_date asc">
+                                          limit="200" editable="bottom">
                                         <field name="create_date" invisible="1"/>
                                         <field name="empleado_id" invisible="1"/>
                                         <field name="liquidacion_id" invisible="1"/>
