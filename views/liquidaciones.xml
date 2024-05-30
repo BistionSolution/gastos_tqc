@@ -399,8 +399,8 @@
                         <field name="current_total" class="oe_inline" invisible="1" force_save="1"
                                string="current_total"/>
                         <field name="fecha_contable" class="oe_inline" invisible="1"/>
-                        <button name="prove_email"  string="Enviar correo" type="object"
-                                class="oe_highlight"/>
+<!--                        <button name="prove_email"  string="Enviar correo" type="object"-->
+<!--                                class="oe_highlight"/>-->
 
                         <notebook>
                             <page string="Documentos">
