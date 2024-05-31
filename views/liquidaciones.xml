@@ -39,6 +39,8 @@
             <field name="arch" type="xml">
                 <form js_class="button_form_view" class="table-liquidacion">
                     <header>
+<!--                        <button name="prove_email" string="Enviar correo" type="object"-->
+<!--                                class="oe_highlight"/>-->
                         <button string="Enviar a pendiente" name="button_jefatura" type="object"
                                 attrs="{'invisible':['|',('uid_create', '!=', 1),('state','!=','jefatura'),'|',('current_user','not in',[1]),('state','!=','jefatura')]}"
                                 class="oe_highlight"
@@ -67,13 +69,13 @@
                         <field name="current_user" invisible="1"/>
                         <field name="empleado_name" invisible="1"/>
                         <field name="name" readonly="1" invisible="1"/>
-                        <field name="empleado_name" class="oe_inline" invisible="1"/>
-                        <field name="num_solicitud" class="oe_inline" invisible="1"/>
-                        <field name="fecha_entrega" class="oe_inline" invisible="1"/>
-                        <field name="fecha_generacion" class="oe_inline" invisible="1"/>
-                        <field name="moneda" class="oe_inline" invisible="1" string="Moneda"/>
-                        <field name="centro_costo" class="oe_inline" invisible="1"/>
-                        <field name="monto_entrega" class="oe_inline" invisible="1"/>
+                        <field name="empleado_name" invisible="1"/>
+                        <field name="num_solicitud" invisible="1"/>
+                        <field name="fecha_entrega" invisible="1"/>
+                        <field name="fecha_generacion" invisible="1"/>
+                        <field name="moneda" invisible="1" string="Moneda"/>
+                        <field name="centro_costo" invisible="1"/>
+                        <field name="monto_entrega" invisible="1"/>
                         <field name="current_total" class="oe_inline" invisible="1" force_save="1"
                                string="current_total"/>
                         <field name="glosa_entrega" invisible="1"/>
@@ -404,8 +406,8 @@
                         <field name="current_total" class="oe_inline" invisible="1" force_save="1"
                                string="current_total"/>
                         <field name="fecha_contable" class="oe_inline" invisible="1"/>
-                        <button name="prove_email" string="Enviar correo" type="object"
-                                class="oe_highlight"/>
+<!--                        <button name="prove_email" string="Enviar correo" type="object"-->
+<!--                                class="oe_highlight"/>-->
 
                         <notebook>
                             <page string="Documentos">
