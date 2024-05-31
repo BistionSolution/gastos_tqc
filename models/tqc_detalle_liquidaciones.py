@@ -279,6 +279,8 @@ class detalleLiquidaciones(models.Model):
                 res['total_neto'] = round(totaldocumento * self.tipocambio, 2)
             else:
                 res['total_neto'] = totaldocumento
+        else:
+            res['total_neto'] = totaldocumento
         # In case of multi currency, round before it's use for computing debit credit
         return res
 

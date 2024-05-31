@@ -31,6 +31,14 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="font-family:Helvetica,Arial,sans-serif; width:150px; height:40px; color:#283166; background:rgba(40,49,102,0.3); border-bottom:1px solid #283166">
+                                    <b style="margin-left:5px">Glosa</b>
+                                </td>
+                                <td style="font-family:Helvetica,Arial,sans-serif; width:150px; height:40px; color:#283166; background:rgba(40,49,102,0.3); border-bottom:1px solid #283166">
+                                    <t t-out="object.glosa_entrega or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="font-family:Helvetica,Arial,sans-serif; height:40px; color:#283166; background:rgba(40,49,102,0); border-bottom:1px solid #283166">
                                     <b style="margin-left:5px">Fecha Entrega</b>
                                 </td>
@@ -48,13 +56,12 @@
                             </tr>
                             <tr>
                                 <td style="font-family:Helvetica,Arial,sans-serif; height:40px; color:#283166; background:rgba(40,49,102,0); border-bottom:1px solid #283166">
-                                    <b style="margin-left:5px">Monto</b>
+                                    <b style="margin-left:5px">Monto entrega</b>
                                 </td>
                                 <td style="font-family:Helvetica,Arial,sans-serif; height:40px; color:#283166; background:rgba(40,49,102,0); border-bottom:1px solid #283166">
                                     <t t-out="object.monto_entrega or ''"/>
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -64,9 +71,10 @@
         <record id="email_template_probar" model="mail.template">
             <field name="name">Email jefatura aprobacion</field>
             <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
-            <field name="email_from">Aprobaciones pendientes &lt;aprobacionesexactus@tqc.com.pe&gt;</field>
+            <field name="email_from">Aprobaciones pendientes &lt;aprobacionesexactus@tqc.Scom.pe&gt;</field>
             <field name="email_to">pierreblas1234@gmail.com</field>
-            <field name="subject">Aprobación pendiente en jefatura de: {{object.empleado_name.name or 'n/a'}}</field>
+            <field name="subject">Aprobación pendiente en contabilidad de: {{object.empleado_name.name or 'n/a'}}
+            </field>
             <field name="auto_delete" eval="True"/>
 
             <field name="body_html" type="html">
@@ -145,6 +153,14 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="font-family:Helvetica,Arial,sans-serif; width:150px; height:40px; color:#283166; background:rgba(40,49,102,0.3); border-bottom:1px solid #283166">
+                                    <b style="margin-left:5px">Glosa</b>
+                                </td>
+                                <td style="font-family:Helvetica,Arial,sans-serif; width:150px; height:40px; color:#283166; background:rgba(40,49,102,0.3); border-bottom:1px solid #283166">
+                                    <t t-out="object.glosa_entrega or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="font-family:Helvetica,Arial,sans-serif; height:40px; color:#283166; background:rgba(40,49,102,0); border-bottom:1px solid #283166">
                                     <b style="margin-left:5px">Fecha Entrega</b>
                                 </td>
@@ -162,7 +178,7 @@
                             </tr>
                             <tr>
                                 <td style="font-family:Helvetica,Arial,sans-serif; height:40px; color:#283166; background:rgba(40,49,102,0); border-bottom:1px solid #283166">
-                                    <b style="margin-left:5px">Monto</b>
+                                    <b style="margin-left:5px">Monto entrega</b>
                                 </td>
                                 <td style="font-family:Helvetica,Arial,sans-serif; height:40px; color:#283166; background:rgba(40,49,102,0); border-bottom:1px solid #283166">
                                     <t t-out="object.monto_entrega or ''"/>
