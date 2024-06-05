@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record id="ir_cron_process_email_queue" model="ir.cron">
+            <field name="name">Process Email Queue</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="state">code</field>
+            <field name="code">model.send_email()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">True</field>
+            <field name="active">False</field>
+        </record>
+    </data>
+</odoo>

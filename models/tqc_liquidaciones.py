@@ -655,38 +655,56 @@ class Liquidaciones(models.Model):
     #     return res
 
     def generate_liquidacion(self):
-        if self.detalleliquidaciones_id:
-            vals = {
-                'habilitado_state': 'proceso',
-                'state': 'contable',
-                'fecha_generacion': datetime.date.today(),
-                'detalleliquidaciones_id': []
-            }
-
-            for doc in self.detalleliquidaciones_id:
-                if doc.total_neto <= 0:
-                    raise UserError(
-                        _('Monto menor o igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
-                vals['detalleliquidaciones_id'].append([1, doc.id, {'state': 'historial'}])
-
-            # Verificar que la suma de los total neto no supere al saldo
-            if sum(self.detalleliquidaciones_id.mapped('total_neto')) > self.saldo + (self.saldo * 0.05):
-                raise UserError(_('Se paso del saldo, ingrese un monto menor, revisa tus documentos'))
-
-            # Saber si alguno de los documento su campo es menor o igual a cero
-            self.write(vals)
-            template = self.env['mail.template'].sudo().browse(self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id)
-            emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
-            email_to = ','.join(emails)
-            # Parámetros adicionales
-            ctx = {
-                'email_to': email_to
-            }
-            template.with_context(ctx).send_mail(self.id, force_send=True)
-
-            return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
-        else:
+        if not self.detalleliquidaciones_id:
             raise UserError(_("Los documentos estan vacios"))
+
+        print("HGosito")
+        vals = {
+            'habilitado_state': 'proceso',
+            'state': 'contable',
+            'fecha_generacion': datetime.date.today(),
+            'detalleliquidaciones_id': []
+        }
+
+        for doc in self.detalleliquidaciones_id:
+            if doc.total_neto <= 0:
+                raise UserError(
+                    _('Monto menor o igual a 0 existente en documentos, vuelva a revisar antes de generar la liquidacion'))
+            vals['detalleliquidaciones_id'].append([1, doc.id, {'state': 'historial'}])
+
+        # Verificar que la suma de los total neto no supere al saldo
+        if sum(self.detalleliquidaciones_id.mapped('total_neto')) > self.saldo + (self.saldo * 0.05):
+            raise UserError(_('Se paso del saldo, ingrese un monto menor, revisa tus documentos'))
+
+        # Saber si alguno de los documento su campo es menor o igual a cero
+        self.write(vals)
+
+        template = self.env['mail.template'].sudo().browse(
+            self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id)
+        emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
+        email_to = ','.join(emails)
+        # Parámetros adicionales
+        ctx = {
+            'email_to': email_to
+        }
+        template.with_context(ctx).send_mail(self.id, force_send=True)
+
+        return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
+
+    async def send_email(self):
+        # Enviar correo a contabilidad
+        print("int email--------------------->")
+        template = self.env['mail.template'].sudo().browse(
+            self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id)
+        emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
+        email_to = ','.join(emails)
+        # Parámetros adicionales
+        ctx = {
+            'email_to': email_to
+        }
+        template.with_context(ctx).send_mail(self.id, force_send=True)
+        print("Finish email--------------------->")
+
         # self.env["tqc.detalle.liquidaciones"].browse(self.id).write(
         #     {
         #         'state': 'historial'

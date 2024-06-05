@@ -115,11 +115,11 @@
                                         <field name="serie"
                                                optional="show"
                                                attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"/>
-                                        <field name="attachment" widget="many2many_binary" optional="show"
-                                               attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),]}"/>
                                         <field name="numero"
                                                optional="show"
                                                attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"/>
+                                        <field name="attachment" widget="many2many_binary" optional="show"
+                                               attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),]}"/>
                                         <field name="fechaemision" string="Fecha emisión"
                                                optional="show"
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
@@ -130,7 +130,6 @@
                                                decoration-danger="razonsocial_invisible == 'no_existe'"
                                                decoration-warning="razonsocial_invisible == 'no_activo'"
                                                optional="show"
-
                                                widget="search_supplier"
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura')]}"/>
                                         <field name="proveedor_razonsocial" string="Proveedor Razon social"
