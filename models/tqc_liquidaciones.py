@@ -121,7 +121,6 @@ class Liquidaciones(models.Model):
     #             print("SALODSO PASODSO")
     #             raise UserError(_('Se paso del saldo, ingrese un monto menor'))
 
-
     def _get_document_domain(self):
         context = self._context.copy() or {}
         # obtener valor de state en la siguiente vista
@@ -715,18 +714,19 @@ class Liquidaciones(models.Model):
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
                                               'observado_contable', 'observado_jefatura']:
-                    template_id = self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id
-                    template = self.env['mail.template'].sudo().browse(template_id)
-                    emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
-                    email_to = ','.join(emails)
-                    # Parámetros adicionales
-                    ctx = {
-                        'email_to': email_to
-                    }
-                    template.with_context(ctx).send_mail(self.id, force_send=True)
+
                     doc.write({
                         'revisado_state': 'aprobado_jefatura'
                     })
+            template_id = self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id
+            template = self.env['mail.template'].sudo().browse(template_id)
+            emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
+            email_to = ','.join(emails)
+            # Parámetros adicionales
+            ctx = {
+                'email_to': email_to
+            }
+            template.with_context(ctx).send_mail(self.id, force_send=True)
 
     def prove_email(self):
         template_id = self.env.ref("gastos_tqc.email_template_probar").id
@@ -760,11 +760,17 @@ class Liquidaciones(models.Model):
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
                                               'observado_contable', 'observado_jefatura']:
-                    template = self.env['mail.template'].sudo().browse(self.env.ref("gastos_tqc.email_template_enviar_jefatura").id)
-                    template.send_mail(self.id, force_send=True)
                     doc.write({
                         'revisado_state': 'aprobado_contable'
                     })
+
+            template = self.env['mail.template'].sudo().browse(
+                self.env.ref("gastos_tqc.email_template_enviar_jefatura").id)
+            template.send_mail(self.id, force_send=True)
+
+    def get_email_from(self):
+        all_emails = (superior.work_email for superior in self.empleado_name.superior if superior.work_email)
+        return ', '.join(all_emails)
 
     def button_restaurar(self):
         self.write({'state': 'habilitado', 'habilitado_state': 'habilitado'})

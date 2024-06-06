@@ -39,8 +39,8 @@
             <field name="arch" type="xml">
                 <form js_class="button_form_view" class="table-liquidacion">
                     <header>
-<!--                        <button name="prove_email" string="Enviar correo" type="object"-->
-<!--                                class="oe_highlight"/>-->
+                        <button name="prove_email" string="Enviar correo" type="object"
+                                class="oe_highlight"/>
                         <button string="Enviar a pendiente" name="button_jefatura" type="object"
                                 attrs="{'invisible':['|',('uid_create', '!=', 1),('state','!=','jefatura'),'|',('current_user','not in',[1]),('state','!=','jefatura')]}"
                                 class="oe_highlight"
