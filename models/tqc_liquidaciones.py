@@ -519,13 +519,8 @@ class Liquidaciones(models.Model):
                         'mode_view': 'flujo'},
             "domain": domain,
             'help': """
-                <p class="o_view_nocontent_smiling_face">
-                    Create a new operation type
-                  </p><p>
-                    The operation type system allows you to assign each stock
-                    operation a specific type which will alter its views accordingly.
-                    On the operation type you could e.g. specify if packing is needed by default,
-                    if it should show the customer.
+                <p class="o_view_nocontent_empty_folder">
+                    No hay registros
                   </p>
                 """
         }
@@ -718,15 +713,17 @@ class Liquidaciones(models.Model):
         # Saber si alguno de los documento su campo es menor o igual a cero
         self.write(vals)
 
-        template = self.env['mail.template'].sudo().browse(
-            self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id)
-        emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
-        email_to = ','.join(emails)
-        # Parámetros adicionales
-        ctx = {
-            'email_to': email_to
-        }
-        template.with_context(ctx).send_mail(self.id, force_send=True)
+        # Si parametro active_send_email es True, enviar correo
+        if self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.active_email'):
+            template = self.env['mail.template'].sudo().browse(
+                self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id)
+            emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
+            email_to = ','.join(emails)
+            # Parámetros adicionales
+            ctx = {
+                'email_to': email_to
+            }
+            template.with_context(ctx).send_mail(self.id, force_send=True)
 
         return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
 
@@ -758,15 +755,16 @@ class Liquidaciones(models.Model):
                     doc.write({
                         'revisado_state': 'aprobado_jefatura'
                     })
-            template_id = self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id
-            template = self.env['mail.template'].sudo().browse(template_id)
-            emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
-            email_to = ','.join(emails)
-            # Parámetros adicionales
-            ctx = {
-                'email_to': email_to
-            }
-            template.with_context(ctx).send_mail(self.id, force_send=True)
+            if self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.active_email'):
+                template_id = self.env.ref("gastos_tqc.email_template_enviar_contabilidad").id
+                template = self.env['mail.template'].sudo().browse(template_id)
+                emails = self.env['tqc.auth.contabilidad'].sudo().search([]).mapped('empleado').mapped('work_email')
+                email_to = ','.join(emails)
+                # Parámetros adicionales
+                ctx = {
+                    'email_to': email_to
+                }
+                template.with_context(ctx).send_mail(self.id, force_send=True)
 
     def prove_email(self):
         template_id = self.env.ref("gastos_tqc.email_template_probar").id
@@ -803,10 +801,10 @@ class Liquidaciones(models.Model):
                     doc.write({
                         'revisado_state': 'aprobado_contable'
                     })
-
-            template = self.env['mail.template'].sudo().browse(
-                self.env.ref("gastos_tqc.email_template_enviar_jefatura").id)
-            template.send_mail(self.id, force_send=True)
+            if self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.active_email'):
+                template = self.env['mail.template'].sudo().browse(
+                    self.env.ref("gastos_tqc.email_template_enviar_jefatura").id)
+                template.send_mail(self.id, force_send=True)
 
     def get_email_from(self):
         all_emails = (superior.work_email for superior in self.empleado_name.superior if superior.work_email)

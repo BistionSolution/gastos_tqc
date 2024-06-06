@@ -76,6 +76,15 @@
                             <button string="Cambiar contraseña" name="action_changes_pass" type="object" class="oe_highlight"/>
                         </div>
                     </div>
+                    <h2>Activar envio de correos</h2>
+                    <div class="row mt16 o_settings_container" name="catalog_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="variant_options-2">
+                            <div class="o_setting_right_pane">
+                                <label for="active_email"/>
+                                <field name="active_email" widget="boolean_toggle"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </xpath>
         </field>

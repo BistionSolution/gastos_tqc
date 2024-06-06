@@ -15,6 +15,7 @@ class ResConfigSettings(models.TransientModel):
     max_serie = fields.Integer("Serie máximo caracteres")
     min_serie = fields.Integer("Serie minimo caracteres")
     pass_user_gastos = fields.Char("Contraseña")
+    active_email = fields.Boolean("Activar envio de correo")
 
     @api.model
     def set_values(self):
@@ -24,6 +25,7 @@ class ResConfigSettings(models.TransientModel):
         self.env['ir.config_parameter'].sudo().set_param('gastos_tqc.username_exactus', self.username_exactus)
         self.env['ir.config_parameter'].sudo().set_param('gastos_tqc.password_exactus', self.password_exactus)
         self.env['ir.config_parameter'].sudo().set_param('gastos_tqc.pass_user_gastos', self.pass_user_gastos)
+        self.env['ir.config_parameter'].sudo().set_param('gastos_tqc.active_email', self.active_email)
         self.env['ir.config_parameter'].sudo().set_param('gastos_tqc.max_serie', self.max_serie)
         self.env['ir.config_parameter'].sudo().set_param('gastos_tqc.min_serie', self.min_serie)
         super(ResConfigSettings, self).set_values()
@@ -38,6 +40,7 @@ class ResConfigSettings(models.TransientModel):
         res['username_exactus'] = val.get_param('gastos_tqc.username_exactus')
         res['password_exactus'] = val.get_param('gastos_tqc.password_exactus')
         res['pass_user_gastos'] = val.get_param('gastos_tqc.pass_user_gastos')
+        res['active_email'] = val.get_param('gastos_tqc.active_email')
         res['max_serie'] = val.get_param('gastos_tqc.max_serie')
         res['min_serie'] = val.get_param('gastos_tqc.min_serie')
         return res
