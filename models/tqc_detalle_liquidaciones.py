@@ -37,6 +37,7 @@ class detalleLiquidaciones(models.Model):
     total_neto = fields.Monetary(currency_field='currency_id', required=1)
 
     cuenta_contable = fields.Many2one('cuenta.gastos.default', required=1)
+    department_id = fields.Many2one('hr.department', related='empleado_id.department_id')
     tipodocumento = fields.Many2one('tqc.tipo.documentos', required=1)
     codetipo = fields.Char(compute="_depend_tipocode")
     code_cuenta_contable = fields.Char(compute="_depend_cuentacontable")
@@ -113,7 +114,13 @@ class detalleLiquidaciones(models.Model):
         vals['sequence'] = last_record.sequence + 1 if last_record else 0
         return super(detalleLiquidaciones, self).create(vals)
 
-    # @api.model
+    # @api.depends()
+    # def compute_departments_id(self):
+    #     for rec in self:
+    #         print("empleado_id ", rec.empleado_id.department_id)
+    #         rec.department_id = rec.empleado_id.department_id
+
+     # @api.model
     # def create(self, vals):
     #     templates = super(detalleLiquidaciones, self).create(vals)
     #     # fix attachment ownership
@@ -151,14 +158,17 @@ class detalleLiquidaciones(models.Model):
         domain.append(('department_id', '=', self.empleado_id.department_id.id))
         return domain
 
-    @api.onchange('empleado_id')
-    def _onchange_empleado_id(self):
-        if self.empleado_id:
-            # Define aquí la lógica para el dominio basado en el empleado_id
-            domain = [('department_id', '=', self.empleado_id.department_id.id)]
-        else:
-            domain = []
-        return {'domain': {'cuenta_contable': domain}}
+    # @api.onchange('empleado_id')
+    # def _onchange_empleado_id(self):
+    #     print("DOMAIN ----------> HERE")
+    #     if self.empleado_id:
+    #         # Define aquí la lógica para el dominio basado en el empleado_id
+    #         domain = [('department_id', '=', self.empleado_id.department_id.id)]
+    #     else:
+    #         domain = []
+    #
+    #     print("DOMAIN ----------> ", domain)
+    #     return {'domain': {'cuenta_contable': domain}}
 
     # totaldocumento no debe ser meno a 0
     # @api.constrains('totaldocumento')

@@ -6,9 +6,7 @@
             <field name="name">Email jefatura aprobacion</field>
             <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
             <field name="email_from">Aprobaciones pendientes &lt;aprobacionesexactus@tqc.com.pe&gt;</field>
-            <field name="email_to"><![CDATA[
-        <t t-esc="', '.join(superior.work_email for superior in object.empleado_name.superior if superior.work_email)"/>
-        ]]></field>
+            <field name="email_to"><![CDATA[<t t-esc="', '.join(superior.work_email for superior in object.empleado_name.superior if superior.work_email)"/>]]></field>
             <field name="subject">Aprobación pendiente en jefatura de: {{object.empleado_name.name or 'n/a' }}</field>
             <field name="auto_delete" eval="True"/>
 
