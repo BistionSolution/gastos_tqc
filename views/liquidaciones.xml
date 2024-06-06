@@ -340,7 +340,7 @@
                     <!--                    <field name="empleado_name"/>-->
                     <field name="state" invisible="1"/>
                     <field name="empleado_name"
-                           groups="gastos_tqc.res_groups_administrator,gastos_tqc.res_groups_aprobador_gastos"
+
                            optional="show"/>
                     <field name="num_solicitud" optional="show"/>
                     <field name="tipo_documento" optional="show"/>
@@ -397,7 +397,7 @@
                         <!--                        <field name="state" widget="statusbar" statusbar_visible="draft,jefatura,contable"/>-->
                         <!--                    </header>-->
                         <field name="name" readonly="1" invisible="1"/>
-                        <field name="empleado_name" class="oe_inline" invisible="1"/>
+                        <field name="empleado_name" />
                         <field name="num_solicitud" class="oe_inline" invisible="1"/>
                         <field name="fecha_entrega" class="oe_inline" invisible="1"/>
                         <field name="fecha_generacion" class="oe_inline" invisible="1"/>
@@ -751,6 +751,13 @@
             </field>
         </record>
 
+        <record id="action_flujo_approve" model="ir.actions.server">
+            <field name="name">action.server.flujo.approve</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="state">code</field>
+            <field name="code">action = model.view_flujo_approve()</field>
+        </record>
+
         <!--      <record id="action_view_filter_gastos" model="ir.actions.act_window">-->
         <!--        <field name="name">Liquidaciones</field>-->
         <!--        <field name="res_model">tqc.liquidaciones</field>-->
@@ -850,7 +857,7 @@
                   groups="gastos_tqc.res_groups_administrator,res_groups_employee_gastos,res_groups_aprobador_gastos,res_groups_contador_gastos"/>
         <!--    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
-                  name="Flujo aprobaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>loca
+                  name="Flujo aprobaciones" action="gastos_tqc.action_flujo_approve"/>loca
         <!-- menu categories -->
         <!--
             <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>

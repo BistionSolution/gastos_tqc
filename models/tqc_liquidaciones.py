@@ -465,13 +465,14 @@ class Liquidaciones(models.Model):
     def import_exactus_register(self):
         self.importar_exactus()
         uid = self.env.uid
+        print("UID : ", uid)
         res = {
             "name": "Web Gastos",
             "type": "ir.actions.act_window",
             "res_model": "tqc.liquidaciones",
             "view_type": "form",
             "view_mode": "form,tree",
-            "target": "current",
+            "target": "main",
             'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
                       (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
             'domain': [('empleado_name.user_id', '=', uid), ('habilitado_state', '!=', 'liquidado')],
@@ -486,6 +487,37 @@ class Liquidaciones(models.Model):
 
                                  </p>
                                """
+        }
+        return res
+
+    @api.model
+    def view_flujo_approve(self):
+        # Obtener id del usuario
+        user_id = self.env.uid
+
+        res = {
+            "name": "Flujo de aprobaciones",
+            "type": "ir.actions.act_window",
+            "res_model": "tqc.liquidaciones",
+            "view_type": "form",
+            "view_mode": "tree,form",
+            'views': [(self.env.ref("gastos_tqc.view_tree_tqc_liquidaciones").id, 'tree'),
+                      (self.env.ref("gastos_tqc.view_form_tqc_liquidaciones").id, 'form')],
+            "search_view_id": self.env.ref("gastos_tqc.search_view_gastos_tqc_filter").id,
+            "target": "main",
+            "context": {'search_default_contable': True,
+                        'mode_view': 'flujo'},
+            "domain": [('habilitado_state', 'in', ['proceso']), ('empleado_name.superior.user_id', 'in', [user_id])],
+            'help': """
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new operation type
+                  </p><p>
+                    The operation type system allows you to assign each stock
+                    operation a specific type which will alter its views accordingly.
+                    On the operation type you could e.g. specify if packing is needed by default,
+                    if it should show the customer.
+                  </p>
+                """
         }
         return res
 
@@ -714,7 +746,6 @@ class Liquidaciones(models.Model):
             for doc in self.detalleliquidaciones_id:
                 if doc.revisado_state not in ['liquidado', 'rechazado_jefatura', 'rechazado_contable',
                                               'observado_contable', 'observado_jefatura']:
-
                     doc.write({
                         'revisado_state': 'aprobado_jefatura'
                     })
