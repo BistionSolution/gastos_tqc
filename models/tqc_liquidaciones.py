@@ -472,7 +472,7 @@ class Liquidaciones(models.Model):
             "res_model": "tqc.liquidaciones",
             "view_type": "form",
             "view_mode": "form,tree",
-            "target": "main",
+            "target": "current",
             'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
                       (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
             'domain': [('empleado_name.user_id', '=', uid), ('habilitado_state', '!=', 'liquidado')],
@@ -481,12 +481,12 @@ class Liquidaciones(models.Model):
             # 'clear_breadcrumb': True,
             # "nodestroy": True,
             'help': """
-                               <p class="o_view_nocontent_smiling_face">
-                                   No hay registros para mostrar
-                                 </p><p>
+               <p class="o_view_nocontent_smiling_face">
+                   No hay registros para mostrar
+                 </p><p>
 
-                                 </p>
-                               """
+                 </p>
+               """
         }
         return res
 
@@ -494,13 +494,17 @@ class Liquidaciones(models.Model):
     def view_flujo_approve(self):
         # Obtener id del usuario
         user_id = self.env.uid
-        domain = [('habilitado_state', 'in', ['proceso']),('empleado_name.superior.user_id', 'in', [user_id])]
-        # si usuario pertenece a un grupo
-        # if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos') or self.env.user.has_group(
-        #         'gastos_tqc.res_groups_administrator'):
-        #     # agregar otra condicion al doamin
-        #     domain = [('habilitado_state', 'in', ['proceso'])]
 
+        domain = [('habilitado_state', 'in', ['proceso']), ('empleado_name.superior.user_id', 'in', [user_id])]
+        # records = self.env['tqc.liquidaciones'].search(domain)
+        # print("Número de registros encontrados:", len(records))
+        # si usuario pertenece a un grupo
+        if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos') or self.env.user.has_group(
+                'gastos_tqc.res_groups_administrator'):
+            # agregar otra condicion al doamin
+            domain = [('habilitado_state', 'in', ['proceso'])]
+
+        print("DOMAIN : ", domain)
         res = {
             "name": "Flujo de aprobaciones",
             "type": "ir.actions.act_window",
@@ -510,8 +514,8 @@ class Liquidaciones(models.Model):
             'views': [(self.env.ref("gastos_tqc.view_tree_tqc_liquidaciones").id, 'tree'),
                       (self.env.ref("gastos_tqc.view_form_tqc_liquidaciones").id, 'form')],
             "search_view_id": self.env.ref("gastos_tqc.search_view_gastos_tqc_filter").id,
-            "target": "main",
-            "context": {'search_default_contable': True,
+            "target": "current",
+            "context": {'search_default_contable': 1,
                         'mode_view': 'flujo'},
             "domain": domain,
             'help': """
@@ -526,7 +530,6 @@ class Liquidaciones(models.Model):
                 """
         }
         return res
-
 
     @api.model
     def create(self, vals):
@@ -1035,7 +1038,7 @@ class Liquidaciones(models.Model):
             'views': [
                 [self.env.ref("gastos_tqc.view_form_historial_liquidaciones").id, 'form'],
                 [self.env.ref("gastos_tqc.view_tree_historial_liquidaciones").id, 'tree']],
-            "target": "main",
+            "target": "current",
             # "context": {'no_breadcrumbs': True},
             'clear_breadcrumb': True,
             "nodestroy": True,
