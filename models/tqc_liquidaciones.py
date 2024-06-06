@@ -494,6 +494,12 @@ class Liquidaciones(models.Model):
     def view_flujo_approve(self):
         # Obtener id del usuario
         user_id = self.env.uid
+        domain = [('habilitado_state', 'in', ['proceso']),('empleado_name.superior.user_id', 'in', [user_id])]
+        # si usuario pertenece a un grupo
+        if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos') or self.env.user.has_group(
+                'gastos_tqc.res_groups_administrator'):
+            #agregar otra condicion al doamin
+            domain = [('habilitado_state', 'in', ['proceso'])]
 
         res = {
             "name": "Flujo de aprobaciones",
@@ -507,7 +513,7 @@ class Liquidaciones(models.Model):
             "target": "main",
             "context": {'search_default_contable': True,
                         'mode_view': 'flujo'},
-            "domain": [('habilitado_state', 'in', ['proceso']), ('empleado_name.superior.user_id', 'in', [user_id])],
+            "domain": domain,
             'help': """
                 <p class="o_view_nocontent_smiling_face">
                     Create a new operation type
@@ -520,6 +526,7 @@ class Liquidaciones(models.Model):
                 """
         }
         return res
+
 
     @api.model
     def create(self, vals):
@@ -688,7 +695,6 @@ class Liquidaciones(models.Model):
         if not self.detalleliquidaciones_id:
             raise UserError(_("Los documentos estan vacios"))
 
-        print("HGosito")
         vals = {
             'habilitado_state': 'proceso',
             'state': 'contable',
