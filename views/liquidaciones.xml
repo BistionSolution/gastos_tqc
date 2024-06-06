@@ -857,7 +857,7 @@
                   groups="gastos_tqc.res_groups_administrator,res_groups_employee_gastos,res_groups_aprobador_gastos,res_groups_contador_gastos"/>
         <!--    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
-                  name="Flujo aprobaciones" action="gastos_tqc.action_flujo_approve"/>loca
+                  name="Flujo aprobaciones" action="gastos_tqc.action_view_pendiente_liquidaciones"/>loca
         <!-- menu categories -->
         <!--
             <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>

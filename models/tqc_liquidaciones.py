@@ -496,10 +496,10 @@ class Liquidaciones(models.Model):
         user_id = self.env.uid
         domain = [('habilitado_state', 'in', ['proceso']),('empleado_name.superior.user_id', 'in', [user_id])]
         # si usuario pertenece a un grupo
-        if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos') or self.env.user.has_group(
-                'gastos_tqc.res_groups_administrator'):
-            #agregar otra condicion al doamin
-            domain = [('habilitado_state', 'in', ['proceso'])]
+        # if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos') or self.env.user.has_group(
+        #         'gastos_tqc.res_groups_administrator'):
+        #     # agregar otra condicion al doamin
+        #     domain = [('habilitado_state', 'in', ['proceso'])]
 
         res = {
             "name": "Flujo de aprobaciones",
