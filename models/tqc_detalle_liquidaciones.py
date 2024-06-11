@@ -7,6 +7,7 @@ import re, pyodbc
 
 no_server = True
 
+
 class detalleLiquidaciones(models.Model):
     _name = 'tqc.detalle.liquidaciones'
     _description = 'Detalle de Liquidaciones'
@@ -108,11 +109,28 @@ class detalleLiquidaciones(models.Model):
 
     sequence = fields.Integer('Secuencia', default=0)
 
+    # @api.model
+    # def create(self, vals):
+    #     last_record = self.search([], order='sequence desc', limit=1)
+    #     vals['sequence'] = last_record.sequence + 1 if last_record else 0
+    #     return super(detalleLiquidaciones, self).create(vals)
+
     @api.model
     def create(self, vals):
-        last_record = self.search([], order='sequence desc', limit=1)
-        vals['sequence'] = last_record.sequence + 1 if last_record else 0
-        return super(detalleLiquidaciones, self).create(vals)
+        templates = super(detalleLiquidaciones, self).create(vals)
+
+        # fix attachment ownership
+        for template in templates:
+            if template.attachment:
+                template.attachment.write({'res_model': self._name, 'res_id': template.id})
+        return templates
+
+    def fix_existing_attachments(self):
+        # Obtener todos los registros relevantes
+        all_records = self.sudo().search([])
+        for record in all_records:
+            record.attachment.write({'res_model': self._name, 'res_id': record.id})
+
 
     # @api.depends()
     # def compute_departments_id(self):
@@ -120,7 +138,7 @@ class detalleLiquidaciones(models.Model):
     #         print("empleado_id ", rec.empleado_id.department_id)
     #         rec.department_id = rec.empleado_id.department_id
 
-     # @api.model
+    # @api.model
     # def create(self, vals):
     #     templates = super(detalleLiquidaciones, self).create(vals)
     #     # fix attachment ownership
@@ -277,7 +295,8 @@ class detalleLiquidaciones(models.Model):
         # Compute 'price_subtotal'.
         # saldo_liqudacion = self.liquidacion_id.saldo
         monto_igv = round((self.base_afecta * self.impuesto.impuesto1) / 100, 2)
-        totaldocumento = round(monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos, 2)  # Redondeo a dos decimales
+        totaldocumento = round(monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos,
+                               2)  # Redondeo a dos decimales
 
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
@@ -584,11 +603,13 @@ class depositos(models.Model):
     cuenta_bancaria = fields.Char()
     fecha_contable = fields.Date()
 
+
 class cuentaAttachment(models.Model):
     _inherit = 'ir.attachment'
     attach_rel = fields.Many2many('tqc.detalle.liquidaciones', 'tqc_detalle_liquidaciones_ir_attachment_rel',
                                   'attachment_id', 'document_id',
                                   string="Attachment")
+
 
 class cuentaGops(models.Model):
     _name = 'tqc.transit.detalle'
