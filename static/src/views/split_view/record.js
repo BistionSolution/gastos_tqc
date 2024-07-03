@@ -4,10 +4,11 @@ import {ListController} from '@web/views/list/list_controller';
 import {CheckBox} from '@web/core/checkbox/checkbox';
 
 import {patch} from '@web/core/utils/patch';
-import {onWillStart, useSubEnv} from '@odoo/owl';
-import {sideFormBus} from "../../../../../nice/web_listview_side_formview/static/src/list_controller";
+import {onWillStart, EventBus, useSubEnv} from '@odoo/owl';
 
-patch(ListController.prototype, 'gastos_tqc', {
+export const sideFormBus = new EventBus()
+
+patch(ListController.prototype, 'web_listview_side_formview', {
 
     setup() {
         this._super();
@@ -52,6 +53,7 @@ patch(ListController.prototype, 'gastos_tqc', {
         await record2update.load();
         this.model.notify();
     },
+
 })
 
 ListController.components = {

@@ -99,6 +99,7 @@
             'gastos_tqc/static/src/lib/interact.min.js',
 
             'gastos_tqc/static/src/views/split_view/hooks.js',
+            'gastos_tqc/static/src/views/split_view/record.js',
 
             'gastos_tqc/static/src/views/button_interfaz/button_interfaz.js',
 

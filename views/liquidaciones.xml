@@ -400,7 +400,7 @@
                         <!--                        <field name="state" widget="statusbar" statusbar_visible="draft,jefatura,contable"/>-->
                         <!--                    </header>-->
                         <field name="name" readonly="1" invisible="1"/>
-                        <field name="empleado_name" />
+                        <field name="empleado_name" invisible="1"/>
                         <field name="num_solicitud" class="oe_inline" invisible="1"/>
                         <field name="fecha_entrega" class="oe_inline" invisible="1"/>
                         <field name="fecha_generacion" class="oe_inline" invisible="1"/>

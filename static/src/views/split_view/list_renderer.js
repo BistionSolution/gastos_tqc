@@ -140,7 +140,7 @@ export class SplitViewRenderer extends ListRenderer {
         await this.callSideFormBeforeChangeFunctions();
         this.sideFormView.show = false;
         this.sideFormView.id = false;
-        this.keepFocusRow()
+        // this.keepFocusRow()
     }
 
     keepFocusRow() {

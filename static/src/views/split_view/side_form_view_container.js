@@ -69,6 +69,11 @@ export class SideFormviewContainer extends Component {
         //     formViewEl.classList.remove('o_xxl_form_view')
         //     formViewEl.querySelector('.o_content > .flex-nowrap').classList.add('flex-column')
         // }
+        const formViewEl = this.formviewContainer.el?.querySelector('.o_form_view')
+        if (formViewEl) {
+            formViewEl.classList.remove('o_xxl_form_view')
+            formViewEl.querySelector('.o_content > .flex-nowrap')?.classList.add('flex-column')
+        }
     }
 
     get formViewProps() {

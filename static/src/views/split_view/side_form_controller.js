@@ -4,7 +4,8 @@ import {useService} from '@web/core/utils/hooks';
 import {FormController} from '@web/views/form/form_controller';
 import {ListController} from "@web/views/list/list_controller";
 import {SideFormStatusIndicator} from './side_form_status_indicator';
-import {onSideFormBeforeChange} from "./hooks";
+import {onSideFormBeforeChange, clearSideFormBeforeChangeFunctions} from "./hooks";
+import {onWillUnmount} from '@odoo/owl';
 import {useSetupView} from "@web/views/view_hook";
 
 const oldSetup = FormController.prototype.setup;
@@ -18,12 +19,13 @@ export class SideFormController extends FormController {
         this.actionService = useService('action');
         console.log("SideFormController")
         onSideFormBeforeChange(this.saveButtonClicked.bind(this))
+        onWillUnmount(clearSideFormBeforeChangeFunctions)
     }
 
     open(inPopup = false) {
-        console.log("Open ---------------")
-
-        console.log("Contexto", context)
+        if (!inPopup) {
+            return this.actionService.switchView('form', {resId: this.props.resId})
+        }
         const {params, ...context} = this.props.context;
 
         this.actionService.doAction({
@@ -33,7 +35,7 @@ export class SideFormController extends FormController {
             views: [[false, 'form']],
             type: 'ir.actions.act_window',
             view_mode: 'form',
-            target: inPopup ? 'new' : 'current',
+            target: 'new',
             context: context,
         });
     }
