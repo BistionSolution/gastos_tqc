@@ -318,10 +318,6 @@ class Liquidaciones(models.Model):
             # _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
             for user in idusers:
-                if user[1] == '000000017694':
-                    _logger.info('VALOR TODO: ->>>>>>>>>>>>>>>>>>>>>>>>>> %s' % (user))
-                    _logger.info('VALOR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: %s' % (user[6]))
-                    _logger.info('SALDO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: %s' % (user[7]))
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
                 variJson = {}
@@ -334,11 +330,7 @@ class Liquidaciones(models.Model):
                 register = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
                 if id_register != 0:  # SI EXISTE ACTUALIZA
-                    if user[1] == '000000017694':
-                        _logger.info('here update -----------------> %s')
                     if register.habilitado_state == 'liquidado':  # si ya se encuentra liquidado crea otra liquidacion
-                        if user[1] == '000000017694':
-                            _logger.info('INTER LOIQUIDATED ---------->>>>>>>>>>>>> %s')
                         cont = 0
                         for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                             if i == 0:
@@ -392,13 +384,10 @@ class Liquidaciones(models.Model):
                         self.env.cr.commit()
                     if register.habilitado_state == 'habilitado':
                         variJsonNew = {}
-                        print("user[8] : ", user[8])
                         if user[8] == 'S':
                             variJsonNew['habilitado_state'] = 'liquidado'
-                        if user[1] == '000000017694':
-                            _logger.info('actualizando ---------->>>>>>>>>>>>> %s')
+
                         variJsonNew['saldo'] = user[7]
-                        print("variJsonNew : ", variJsonNew)
                         self.env[table_bd].browse(id_register).sudo().write(variJsonNew)
                         self.env.cr.commit()
 
@@ -824,7 +813,7 @@ class Liquidaciones(models.Model):
         user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
         pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
-
+        print("PARAMETROS : ", driver_version, ip_conexion, data_base, user_bd, pass_bd, prefix_table)
         vals = {
             'detalleliquidaciones_id': []
         }
@@ -894,7 +883,7 @@ class Liquidaciones(models.Model):
 
             for document in self.detalleliquidaciones_id:
                 # == 'aprobado_contable'
-                if document.revisado_state in ['aprobado_jefatura', 'aprobado_contable']:
+                if document.revisado_state in ['aprobado_jefatura', 'aprobado_contable', 'send_error']:
                     values = (
                         (document.serie + "-" + document.numero) if document.numero and document.serie else None,
                         # Numero factura
@@ -962,7 +951,8 @@ class Liquidaciones(models.Model):
 
                     # Si no hay error cambia estado a liquidado
                     if idusers[1]:
-                        vals['detalleliquidaciones_id'].append([1, document.id, {'revisado_state': 'liquidado'}])
+                        vals['detalleliquidaciones_id'].append(
+                            [1, document.id, {'revisado_state': 'liquidado', 'message_error': ''}])
 
                     else:
                         print("ERROR : ", idusers[2])

@@ -49,14 +49,16 @@
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
-                        <!--                        <button name="send_exactus" string="Volver a enviar" type="object"-->
-                        <!--                                class="oe_highlight"/>-->
+                                                <button name="send_exactus" string="Volver a enviar" type="object"
+                                                        class="oe_highlight"/>
 
                         <field name="habilitado_state" widget="statusbar"
                                statusbar_visible="habilitado,proceso,liquidado"/>
                     </header>
                     <group>
                         <field name="name" readonly="1" invisible="1"/>
+                        <field name="state"/>
+                        <field name="habilitado_state" />
                         <field name="empleado_name" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="num_solicitud" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="fecha_entrega" class="oe_inline" readonly="1" invisible="1"/>
