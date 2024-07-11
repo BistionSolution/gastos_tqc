@@ -156,15 +156,24 @@ class Liquidaciones(models.Model):
 
     @api.depends()
     def _current_user(self):
-        get_all_liquidated = []
+
         for record in self:
             # capturar en get_all_liquidated todos los registros que esten liquidados
-            get_all_liquidated.append(record.num_solicitud)
             print("RECORD : ", record.empleado_name)
             if self.env.uid in record.empleado_name.sudo().superior.mapped('user_id').mapped('id'):
                 record.current_user = 1
             else:
                 record.current_user = 0
+
+
+
+    # ni idea para que funciona, creo que para buscar registro no loquidados
+    def search_liquid_record(self):
+        get_all_liquidated = []
+        record_liquideted = self.env['tqc.liquidaciones'].search([('habilitado_state', '=', 'liquidado')])
+        for record in record_liquideted:
+            get_all_liquidated.append(record.num_solicitud)
+
         placeholders = ', '.join(['?'] * len(get_all_liquidated))
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
@@ -174,18 +183,18 @@ class Liquidaciones(models.Model):
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
         sql_prime_super = f"""SELECT
-                                 ENTREGA_A_RENDIR AS external_id,
-                                 ENTREGA_A_RENDIR AS num_solicitud,
-                                 EMPLEADO AS empleado_name,
-                                 MONEDA AS moneda,
-                                 APLICACION AS glosa_entrega,
-                                 FECHA_ENTREGA AS fecha_entrega,
-                                 CONVERT(decimal(10,2),MONTO) AS monto_entrega,
-                                 CONVERT(decimal(10,2),SALDO) AS saldo,
-                                 LIQUIDADO                                  
-                               FROM
-                                 {prefix_table}.ENTREGA_A_RENDIR
-                               WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
+                                         ENTREGA_A_RENDIR AS external_id,
+                                         ENTREGA_A_RENDIR AS num_solicitud,
+                                         EMPLEADO AS empleado_name,
+                                         MONEDA AS moneda,
+                                         APLICACION AS glosa_entrega,
+                                         FECHA_ENTREGA AS fecha_entrega,
+                                         CONVERT(decimal(10,2),MONTO) AS monto_entrega,
+                                         CONVERT(decimal(10,2),SALDO) AS saldo,
+                                         LIQUIDADO                                  
+                                       FROM
+                                         {prefix_table}.ENTREGA_A_RENDIR
+                                       WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
         try:
             connection = pyodbc.connect(
                 'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -214,7 +223,6 @@ class Liquidaciones(models.Model):
     def _get_current_user(self):
         # data_id = model_obj._get_id('module_name', 'view_id_which_you_want_refresh')
         # view_id = model_obj.browse(data_id).res_id
-        user_now = self.env.uid
 
         # ['|', ('empleado_name.superior.user_id', 'in', [self.env.uid]), ('empleado_name.user_id', '=', self.env.uid)]
         for record in self:
