@@ -147,6 +147,18 @@ class detalleLiquidaciones(models.Model):
     #             template.attachment.write({'res_model': self._name, 'res_id': template.id})
     #     return templates
 
+    # Comprueba si ya existe documentos con el mismo numero y serie
+    @api.onchange('serie', 'numero', 'ruc')
+    def _onchange_serie_number(self):
+        for record in self:
+            # Verificar que el numero y serie y proveedor no se repita en registros anteriores
+            if record.serie and record.numero and record.ruc:
+                count = self.search_count([('serie', '=', record.serie), ('numero', '=', record.numero),
+                                           ('ruc', '=', record.ruc)])
+                if count >= 2:
+                    raise ValidationError(
+                        f'El número de serie y proveedor ya existe en un registro anterior, verifique por favor. {count}')
+
     @api.depends("moneda")
     def _compute_currency_id(self):
         for rec in self:

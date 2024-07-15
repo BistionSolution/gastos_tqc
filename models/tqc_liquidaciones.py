@@ -264,6 +264,7 @@ class Liquidaciones(models.Model):
 
     @api.model
     def importar_exactus(self):
+        print("IMPORTAR- ----------------------->")
         global dataExternalSQL
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
@@ -320,6 +321,7 @@ class Liquidaciones(models.Model):
             cursor.execute(sql_prime_super)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
+            print("IDUSERS  -------->: ", idusers)
             # current_locale = locale.getlocale()
             # print("LENGUAJE LOCAL : ", current_locale)
             # _logger.info('LENGUAJE extraAAAAAA')
@@ -422,8 +424,10 @@ class Liquidaciones(models.Model):
                             cont += 1
                             continue
                         variJson['{}'.format(campList[i])] = user[i]
-
+                    print("variJson: ", variJson)
                     original_id = self.env[table_bd].sudo().create(variJson).id
+                    print("ORIGINAL ID : ", original_id)
+
                     # Si funciona
                     self.env["ir.model.data"].sudo().create(
                         {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
