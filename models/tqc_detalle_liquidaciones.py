@@ -155,7 +155,7 @@ class detalleLiquidaciones(models.Model):
             if record.serie and record.numero and record.ruc:
                 count = self.search_count([('serie', '=', record.serie), ('numero', '=', record.numero),
                                            ('ruc', '=', record.ruc)])
-                if count >= 2:
+                if count >= 1:
                     raise ValidationError(
                         f'El número de serie y proveedor ya existe en un registro anterior, verifique por favor. {count}')
 
