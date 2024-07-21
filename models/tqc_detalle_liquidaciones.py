@@ -29,8 +29,8 @@ class detalleLiquidaciones(models.Model):
     tipocambio = fields.Float(required=1, digits=(12, 3))
     fechaemision = fields.Date(required=1)
 
-    base_afecta = fields.Monetary(currency_field='currency_id', required=1)
-    base_inafecta = fields.Monetary(currency_field='currency_id', required=1)
+    base_afecta = fields.Monetary(currency_field='currency_id', digits=(12, 2), required=1)
+    base_inafecta = fields.Monetary(currency_field='currency_id', digits=(12, 2), required=1)
     montoigv = fields.Monetary(currency_field='currency_id', required=1)
     impuesto = fields.Many2one('tqc.impuestos', required=1)
     # Totales
@@ -130,7 +130,6 @@ class detalleLiquidaciones(models.Model):
         all_records = self.sudo().search([])
         for record in all_records:
             record.attachment.write({'res_model': self._name, 'res_id': record.id})
-
 
     # @api.depends()
     # def compute_departments_id(self):
@@ -304,11 +303,20 @@ class detalleLiquidaciones(models.Model):
     def _get_price_total(self):
         self.ensure_one()
         res = {}
-        # Compute 'price_subtotal'.
-        # saldo_liqudacion = self.liquidacion_id.saldo
-        monto_igv = round((self.base_afecta * self.impuesto.impuesto1) / 100, 2)
-        totaldocumento = round(monto_igv + self.base_afecta + self.base_inafecta + self.icbper + self.otros_tributos,
-                               2)  # Redondeo a dos decimales
+
+        # Redondear los valores de base_afecta, impuesto1, etc.
+        base_afecta_rounded = round(self.base_afecta, 2)
+        impuesto1_rounded = round(self.impuesto.impuesto1, 2)
+        base_inafecta_rounded = round(self.base_inafecta, 2)
+        icbper_rounded = round(self.icbper, 2)
+        otros_tributos_rounded = round(self.otros_tributos, 2)
+
+        # Calcular el monto IGV redondeando el resultado
+        monto_igv = round((base_afecta_rounded * impuesto1_rounded) / 100, 2)
+
+        # Calcular el total del documento redondeando el resultado
+        totaldocumento = round(
+            monto_igv + base_afecta_rounded + base_inafecta_rounded + icbper_rounded + otros_tributos_rounded, 2)
 
         res['montoigv'] = monto_igv
         res['totaldocumento'] = totaldocumento
@@ -322,7 +330,8 @@ class detalleLiquidaciones(models.Model):
                 res['total_neto'] = totaldocumento
         else:
             res['total_neto'] = totaldocumento
-        # In case of multi currency, round before it's use for computing debit credit
+
+        # En caso de multi-moneda, redondear antes de usar para el cálculo de débito y crédito
         return res
 
     # @api.onchange('base_inafecta')

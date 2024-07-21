@@ -44,9 +44,16 @@
     position: relative;
   }
 
+  .o_many2many_binary_cell {
+    padding: 0 !important;
+  }
+
   .o_attachments {
     overflow-x: hidden;
     height: 25px;
+    .o_attachment{
+      padding: 0 !important;
+    }
     //height: auto;
   }
 
