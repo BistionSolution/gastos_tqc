@@ -115,21 +115,21 @@ class detalleLiquidaciones(models.Model):
     #     vals['sequence'] = last_record.sequence + 1 if last_record else 0
     #     return super(detalleLiquidaciones, self).create(vals)
 
-    @api.model
-    def create(self, vals):
-        templates = super(detalleLiquidaciones, self).create(vals)
-
-        # fix attachment ownership
-        for template in templates:
-            if template.attachment:
-                template.attachment.write({'res_model': self._name, 'res_id': template.id})
-        return templates
-
-    def fix_existing_attachments(self):
-        # Obtener todos los registros relevantes
-        all_records = self.sudo().search([])
-        for record in all_records:
-            record.attachment.write({'res_model': self._name, 'res_id': record.id})
+    # @api.model
+    # def create(self, vals):
+    #     templates = super(detalleLiquidaciones, self).create(vals)
+    #
+    #     # fix attachment ownership
+    #     for template in templates:
+    #         if template.attachment:
+    #             template.attachment.write({'res_model': self._name, 'res_id': template.id})
+    #     return templates
+    #
+    # def fix_existing_attachments(self):
+    #     # Obtener todos los registros relevantes
+    #     all_records = self.sudo().search([])
+    #     for record in all_records:
+    #         record.attachment.write({'res_model': self._name, 'res_id': record.id})
 
     # @api.depends()
     # def compute_departments_id(self):

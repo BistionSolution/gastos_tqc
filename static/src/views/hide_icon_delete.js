@@ -183,7 +183,6 @@ export class NewListRenderer extends X2ManyField {
                 }],
             }).then(function (response) {
                 self.rendererProps.list.model.load()
-                self.rendererProps.list.close();
             });
         }
         this.showModalDescription.value = false
