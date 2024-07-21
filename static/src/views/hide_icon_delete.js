@@ -143,11 +143,13 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _onClickAceptar() {
+        console.log("entro")
         // Obtener valor de campo state del registro padre
         const saveButton = document.querySelector('.o_form_button_save');
 
         // Verifica si el botón existe para evitar errores
         if (saveButton) {
+            console.log("entro sabebutoin")
             // Dispara el evento de clic en el botón
             saveButton.click();
         }
