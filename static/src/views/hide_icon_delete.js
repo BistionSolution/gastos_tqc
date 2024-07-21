@@ -155,10 +155,10 @@ export class NewListRenderer extends X2ManyField {
         }
 
         const state = this.props.record.data.state
-        var current_model = this.field.relation;
+        let current_model = this.field.relation;
         let selected = this.list.records.filter((rec) => rec.selected)
         this.list.records
-        var selected_list = []
+        let selected_list = []
         selected.forEach((rec) => {
             if (rec.data.id) {
                 selected_list.push(parseInt(rec.data.id))
@@ -171,8 +171,8 @@ export class NewListRenderer extends X2ManyField {
 
             }
         })
-        var self = this;
-        if (selected_list.length != 0) {
+        const self = this;
+        if (selected_list.length !== 0) {
             // this.showModalDescription.value = true
             await rpc.query({
                 model: current_model,
