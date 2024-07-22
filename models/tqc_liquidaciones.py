@@ -174,18 +174,18 @@ class Liquidaciones(models.Model):
         _logger.info('placeholders  ----------> : %s' % placeholders)
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
-        data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gasto4s')
+        data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
         user_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.username_exactus')
         pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
         # Logging para verificar los valores
-        _logger.info('Driver Version: %s' % driver_version)
-        _logger.info('IP Connection: %s' % ip_conexion)
-        _logger.info('Database: %s' % data_base)
-        _logger.info('User: %s' % user_bd)
-        _logger.info('Password: %s' % pass_bd)
-        _logger.info('Prefix Table: %s' % prefix_table)
+        # _logger.info('Driver Version: %s' % driver_version)
+        # _logger.info('IP Connection: %s' % ip_conexion)
+        # _logger.info('Database: %s' % data_base)
+        # _logger.info('User: %s' % user_bd)
+        # _logger.info('Password: %s' % pass_bd)
+        # _logger.info('Prefix Table: %s' % prefix_table)
 
         sql_prime_super = f"""SELECT
                                  ENTREGA_A_RENDIR AS external_id,
