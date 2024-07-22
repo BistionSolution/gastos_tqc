@@ -179,6 +179,12 @@ class Liquidaciones(models.Model):
         pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
+        # Logging para verificar los valores
+        _logger.info('Driver Version: %s' % driver_version)
+        _logger.info('IP Connection: %s' % ip_conexion)
+        _logger.info('Database: %s' % data_base)
+        _logger.info('User: %s' % user_bd)
+        _logger.info('Password: %s' % pass_bd)
         _logger.info('Prefix Table: %s' % prefix_table)
 
         sql_prime_super = f"""SELECT
