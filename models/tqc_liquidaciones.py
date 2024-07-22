@@ -159,11 +159,13 @@ class Liquidaciones(models.Model):
         get_all_habilitado = []
         for record in self:
             # capturar en get_all_liquidated todos los registros que esten liquidados
-            get_all_habilitado.append(record.num_solicitud)
+            if record.habilitado_state == 'habilitado':
+                get_all_habilitado.append(record.num_solicitud)
             if self.env.uid in record.empleado_name.sudo().superior.mapped('user_id').mapped('id'):
                 record.current_user = 1
             else:
                 record.current_user = 0
+        _logger.info('All liquidados ----------> : %s' % get_all_habilitado)
         self.search_habilitado_record(get_all_habilitado)
 
     def search_habilitado_record(self, get_all_habilitado):
