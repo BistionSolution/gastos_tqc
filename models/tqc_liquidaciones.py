@@ -166,10 +166,12 @@ class Liquidaciones(models.Model):
             else:
                 record.current_user = 0
         _logger.info('All liquidados ----------> : %s' % get_all_habilitado)
-        self.search_habilitado_record(get_all_habilitado)
+        self._search_habilitado_record(get_all_habilitado)
 
-    def search_habilitado_record(self, get_all_habilitado):
+    def _search_habilitado_record(self, get_all_habilitado):
+        _logger.info('leego  ----------> : %s' % get_all_habilitado)
         placeholders = ', '.join(['?'] * len(get_all_habilitado))
+        _logger.info('placeholders  ----------> : %s' % get_all_habilitado)
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gasto4s')
@@ -177,7 +179,6 @@ class Liquidaciones(models.Model):
         pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
-        _logger.info('SQL Query placeholders: ', placeholders)
         _logger.info('Prefix Table: %s' % prefix_table)
 
         sql_prime_super = f"""SELECT
