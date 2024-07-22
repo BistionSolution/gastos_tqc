@@ -143,19 +143,18 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _onClickAceptar() {
-        console.log("entro elñiminar")
         const self = this;
 
         self.rendererProps.list.model.load()
         // Obtener valor de campo state del registro padre
-        const saveButton = document.querySelector('.o_form_button_save');
-
-        // Verifica si el botón existe para evitar errores
-        if (saveButton) {
-            console.log("entro sabebutoin")
-            // Dispara el evento de clic en el botón
-            saveButton.click();
-        }
+        // const saveButton = document.querySelector('.o_form_button_save');
+        //
+        // // Verifica si el botón existe para evitar errores
+        // if (saveButton) {
+        //     console.log("entro sabebutoin")
+        //     // Dispara el evento de clic en el botón
+        //     saveButton.click();
+        // }
 
         const state = this.props.record.data.state
         let current_model = this.field.relation;
@@ -191,14 +190,17 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _onClickAceptarObserva() {
-        // Obtener valor de campo state del registro padre
-        const saveButton = document.querySelector('.o_form_button_save');
+        const self = this;
 
-        // Verifica si el botón existe para evitar errores
-        if (saveButton) {
-            // Dispara el evento de clic en el botón
-            saveButton.click();
-        }
+        self.rendererProps.list.model.load()
+        // // Obtener valor de campo state del registro padre
+        // const saveButton = document.querySelector('.o_form_button_save');
+        //
+        // // Verifica si el botón existe para evitar errores
+        // if (saveButton) {
+        //     // Dispara el evento de clic en el botón
+        //     saveButton.click();
+        // }
 
         const state = this.props.record.data.state
         // Obtener valor de campo state del registro padre
@@ -217,7 +219,6 @@ export class NewListRenderer extends X2ManyField {
                 }
             }
         })
-        var self = this;
         if (selected_list.length !== 0) {
             // this.showModalDescription.value = true
             await rpc.query({
@@ -238,14 +239,17 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async restaurarRecord() {
-        // Obtener valor de campo state del registro padre
-        const saveButton = document.querySelector('.o_form_button_save');
+        const self = this;
 
-        // Verifica si el botón existe para evitar errores
-        if (saveButton) {
-            // Dispara el evento de clic en el botón
-            saveButton.click();
-        }
+        self.rendererProps.list.model.load()
+        // // Obtener valor de campo state del registro padre
+        // const saveButton = document.querySelector('.o_form_button_save');
+        //
+        // // Verifica si el botón existe para evitar errores
+        // if (saveButton) {
+        //     // Dispara el evento de clic en el botón
+        //     saveButton.click();
+        // }
         const state = this.props.record.data.state
         var current_model = this.field.relation;
         let selected = this.list.records.filter((rec) => rec.selected)
@@ -263,7 +267,6 @@ export class NewListRenderer extends X2ManyField {
 
             }
         })
-        var self = this;
         if (selected_list.length !== 0) {
             // this.showModalDescription.value = true
             var response = await rpc.query({
