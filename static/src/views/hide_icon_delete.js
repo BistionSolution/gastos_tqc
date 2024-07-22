@@ -143,7 +143,10 @@ export class NewListRenderer extends X2ManyField {
     }
 
     async _onClickAceptar() {
-        console.log("entro")
+        console.log("entro elñiminar")
+        const self = this;
+
+        self.rendererProps.list.model.load()
         // Obtener valor de campo state del registro padre
         const saveButton = document.querySelector('.o_form_button_save');
 
@@ -171,7 +174,6 @@ export class NewListRenderer extends X2ManyField {
 
             }
         })
-        const self = this;
         if (selected_list.length !== 0) {
             // this.showModalDescription.value = true
             await rpc.query({

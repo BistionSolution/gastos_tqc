@@ -99,7 +99,7 @@ class detalleLiquidaciones(models.Model):
              "\nEl tipo 'Exportacion' es para exportacion de solicitudes" +
              "\nEl tipo 'Restaurar es para volverlos a su estado anterior de exportados")
     attachment = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id', string="Archivos",
-                                  help='You can upload your document', attachment=True)
+                                  help='You can upload your document')
     # attachment_ids = fields.Many2many('ir.attachment', string="Archivos",
     #                                     help='You can upload your document',  attachment=True)
     current_user = fields.Integer(compute='_current_user')
@@ -115,21 +115,21 @@ class detalleLiquidaciones(models.Model):
     #     vals['sequence'] = last_record.sequence + 1 if last_record else 0
     #     return super(detalleLiquidaciones, self).create(vals)
 
-    # @api.model
-    # def create(self, vals):
-    #     templates = super(detalleLiquidaciones, self).create(vals)
-    #
-    #     # fix attachment ownership
-    #     for template in templates:
-    #         if template.attachment:
-    #             template.attachment.write({'res_model': self._name, 'res_id': template.id})
-    #     return templates
-    #
-    # def fix_existing_attachments(self):
-    #     # Obtener todos los registros relevantes
-    #     all_records = self.sudo().search([])
-    #     for record in all_records:
-    #         record.attachment.write({'res_model': self._name, 'res_id': record.id})
+    @api.model
+    def create(self, vals):
+        templates = super(detalleLiquidaciones, self).create(vals)
+
+        # fix attachment ownership
+        for template in templates:
+            if template.attachment:
+                template.attachment.write({'res_model': self._name, 'res_id': template.id})
+        return templates
+
+    def fix_existing_attachments(self):
+        # Obtener todos los registros relevantes
+        all_records = self.sudo().search([])
+        for record in all_records:
+            record.attachment.write({'res_model': self._name, 'res_id': record.id})
 
     # @api.depends()
     # def compute_departments_id(self):
