@@ -177,6 +177,9 @@ class Liquidaciones(models.Model):
         pass_bd = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.password_exactus')
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
+        _logger.info('SQL Query placeholders: ', placeholders)
+        _logger.info('Prefix Table: %s' % prefix_table)
+
         sql_prime_super = f"""SELECT
                                  ENTREGA_A_RENDIR AS external_id,
                                  ENTREGA_A_RENDIR AS num_solicitud,
@@ -203,6 +206,7 @@ class Liquidaciones(models.Model):
                     if user[8] == 'S':
                         element_liquidated.append(user[1])
         except Exception as e:
+            _logger.error('Error: %s' % str(e))
             raise UserError(_(e))
         self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
             {'habilitado_state': 'liquidado', 'state': 'liquidado'})
@@ -361,7 +365,6 @@ class Liquidaciones(models.Model):
             cursor.execute(sql_prime_super)
             idusers = cursor.fetchall()  # GUARDA TODOS LOS REGISTROS DE SQL
 
-            print("IDUSERS  -------->: ", idusers)
             # current_locale = locale.getlocale()
             # print("LENGUAJE LOCAL : ", current_locale)
             # _logger.info('LENGUAJE extraAAAAAA')
