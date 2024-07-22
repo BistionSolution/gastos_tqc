@@ -166,7 +166,8 @@ class Liquidaciones(models.Model):
             else:
                 record.current_user = 0
         _logger.info('All liquidados ----------> : %s' % get_all_habilitado)
-        self._search_habilitado_record(get_all_habilitado)
+        if get_all_habilitado:
+            self._search_habilitado_record(get_all_habilitado)
 
     def _search_habilitado_record(self, get_all_habilitado):
         _logger.info('leego  ----------> : %s' % get_all_habilitado)
