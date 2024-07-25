@@ -316,7 +316,6 @@ class Liquidaciones(models.Model):
 
     @api.model
     def importar_exactus(self):
-        print("IMPORTAR- ----------------------->")
         global dataExternalSQL
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
@@ -485,7 +484,7 @@ class Liquidaciones(models.Model):
             raise UserError(_(e))
 
     @api.model
-    def import_exactus(self):
+    def import_exactus_view(self):
         self.importar_exactus()
         res = {
             "name": "Liquidaciones",
@@ -496,7 +495,7 @@ class Liquidaciones(models.Model):
             "target": "current",
             'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
                       (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
-            'domain': [('habilitado_state', '!=', 'liquidado')],
+            'domain': [],
             "context": {'search_default_filtro_rendir': 1},
             'search_view_id': [self.env.ref("gastos_tqc.search_register_filter").id, 'search'],
             # 'clear_breadcrumb': True,
