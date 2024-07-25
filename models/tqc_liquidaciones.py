@@ -494,7 +494,7 @@ class Liquidaciones(models.Model):
             "target": "current",
             'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
                       (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
-            'domain': [],
+            'domain': [('habilitado_state', '!=', 'liquidado')],
             "context": {'search_default_filtro_rendir': 1},
             'search_view_id': [self.env.ref("gastos_tqc.search_register_filter").id, 'search'],
             # 'clear_breadcrumb': True,
