@@ -314,9 +314,7 @@ class Liquidaciones(models.Model):
     def print_pdf(self):
         return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
 
-    @api.model
     def importar_exactus(self):
-        print("IMPORTAR- ----------------------->")
         global dataExternalSQL
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
@@ -485,7 +483,7 @@ class Liquidaciones(models.Model):
             raise UserError(_(e))
 
     @api.model
-    def import_exactus(self):
+    def import_exactus_view(self):
         self.importar_exactus()
         res = {
             "name": "Liquidaciones",
@@ -515,7 +513,6 @@ class Liquidaciones(models.Model):
     def import_exactus_register(self):
         self.importar_exactus()
         uid = self.env.uid
-        print("UID : ", uid)
         res = {
             "name": "Web Gastos",
             "type": "ir.actions.act_window",
