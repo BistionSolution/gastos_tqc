@@ -110,5 +110,8 @@ class tipoDocumento(models.Model):
 
     def all_sincronizar(self):
         tipoDocumento.load_impuestos(self)
+
+        self.env['total.integrator'].action_planned_import()
         self.env['tqc.impuestos'].load_impuestos()
+
         # self.env['tqc.autorizadores'].load_autorizadores()

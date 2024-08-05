@@ -380,7 +380,6 @@ class Liquidaciones(models.Model):
                 # user[6] = (user[6]) / 100
                 # user[7] = (user[7]) / 100
                 variJson = {}
-
                 # register = self.env.ref(sumNom)  # obtiene id de su respectivo modelo
                 # id_register = self.env.ref(sumNom).id
                 id_register = self.env["ir.model.data"].sudo().search(
@@ -409,6 +408,10 @@ class Liquidaciones(models.Model):
                                 cont += 1
                                 continue
                             variJson['{}'.format(campList[i])] = user[i]
+
+                        employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
+                        if not employee:
+                            continue
 
                         original_id = self.env[table_bd].create(variJson).id
                         # Si funciona
@@ -447,10 +450,15 @@ class Liquidaciones(models.Model):
                             variJsonNew['habilitado_state'] = 'liquidado'
 
                         variJsonNew['saldo'] = user[7]
+                        variJsonNew['empleado_name'] = self.env['hr.employee'].sudo().search(
+                            [('id_integrador', '=', user[2])]).id
                         self.env[table_bd].browse(id_register).sudo().write(variJsonNew)
                         self.env.cr.commit()
 
                 else:  # CREA NUEVO REGISTRO
+                    employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
+                    if not employee:
+                        continue
                     cont = 0
                     for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                         if i == 0:
