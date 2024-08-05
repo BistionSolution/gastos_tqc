@@ -67,7 +67,6 @@ export class FormView extends View {
     }
 
     async loadView(props) {
-        console.log("ACA props")
         // determine view type
         let descr = viewRegistry.get(props.type);
         const type = descr.type;
