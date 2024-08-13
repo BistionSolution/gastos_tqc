@@ -152,9 +152,13 @@ class detalleLiquidaciones(models.Model):
         for record in self:
             # Verificar que el numero y serie y proveedor no se repita en registros anteriores
             if record.serie and record.numero and record.ruc:
-                count = self.search_count([('serie', '=', record.serie), ('numero', '=', record.numero),
-                                           ('ruc', '=', record.ruc)])
-                if count >= 2:
+                existing_records = self.env['modelo.detalles'].search([
+                    ('serie', '=', self.serie),
+                    ('numero', '=', self.numero),
+                    ('ruc', '=', self.ruc),
+                    ('id', '!=', self.id)
+                ])
+                if existing_records:
                     raise ValidationError(
                         f'El número de serie y proveedor ya existe en un registro anterior, verifique por favor. {count}')
 

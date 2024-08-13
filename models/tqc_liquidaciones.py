@@ -166,8 +166,8 @@ class Liquidaciones(models.Model):
             else:
                 record.current_user = 0
         _logger.info('All liquidados ----------> : %s' % get_all_habilitado)
-        if get_all_habilitado:
-            self._search_habilitado_record(get_all_habilitado)
+        # if get_all_habilitado:
+        #     self._search_habilitado_record(get_all_habilitado)
 
     def _search_habilitado_record(self, get_all_habilitado):
         _logger.info('leego  ----------> : %s' % get_all_habilitado)
@@ -187,7 +187,7 @@ class Liquidaciones(models.Model):
         _logger.info('User: %s' % user_bd)
         _logger.info('Password: %s' % pass_bd)
         _logger.info('Prefix Table: %s' % prefix_table)
-
+        element_liquidated = []
         sql_prime_super = f"""SELECT
                                  ENTREGA_A_RENDIR AS external_id,
                                  ENTREGA_A_RENDIR AS num_solicitud,
@@ -208,7 +208,7 @@ class Liquidaciones(models.Model):
             cursor = connection.cursor()
             cursor.execute(sql_prime_super, get_all_habilitado)
             idusers = cursor.fetchall()
-            element_liquidated = []
+
             for user in idusers:
                 if user[1] in get_all_habilitado:
                     if user[8] == 'S':
