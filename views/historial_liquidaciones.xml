@@ -272,7 +272,7 @@
         (0, 0, {'view_mode': 'tree', 'view_id': ref('gastos_tqc.view_tree_historial_liquidaciones')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_historial_liquidaciones')})]"/>
             <field name="context">{'mode_view':'historial','search_default_group_by_employee':1}</field>
-            <field name="domain">[]</field>
+            <field name="domain">[('habilitado_state','!=','habilitado')]</field>
 <!--            ('fecha_generacion', '!=', False)-->
             <field name="target">main</field>
             <field name="help" type="html">

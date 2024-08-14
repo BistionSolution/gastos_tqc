@@ -149,18 +149,34 @@ class detalleLiquidaciones(models.Model):
     # Comprueba si ya existe documentos con el mismo numero y serie
     @api.onchange('serie', 'numero', 'ruc')
     def _onchange_serie_number(self):
-        for record in self:
-            # Verificar que el numero y serie y proveedor no se repita en registros anteriores
-            if record.serie and record.numero and record.ruc:
-                existing_records = self.env['modelo.detalles'].search([
-                    ('serie', '=', self.serie),
-                    ('numero', '=', self.numero),
-                    ('ruc', '=', self.ruc),
-                    ('id', '!=', self.id)
-                ])
-                if existing_records:
-                    raise ValidationError(
-                        f'El número de serie y proveedor ya existe en un registro anterior, verifique por favor. {count}')
+        # Verificar que el numero y serie y proveedor no se repita en registros anteriores
+        # if record.serie and record.numero and record.ruc:
+        #     count = self.search_count([('serie', '=', record.serie), ('numero', '=', record.numero),
+        #                                ('ruc', '=', record.ruc)])
+        #     if count >= 2:
+        #         raise ValidationError(
+        #             f'El número de serie y proveedor ya existe en un registro anterior, verifique por favor. {count}')
+        if self.serie and self.numero and self.ruc:
+
+            # Obtener todos los registros del modelo 'modelo.detalles' en la vista actual
+            all_details = self.env['tqc.detalle.liquidaciones'].search_read([
+                ('serie', '=', self.serie),
+                ('numero', '=', self.numero),
+                ('ruc', '=', self.ruc)
+            ], ['id', 'serie', 'numero', 'ruc'])
+
+            # Filtrar los registros ignorando el actual si es nuevo
+            existing_records = [
+                rec for rec in all_details if rec['id'] != 'NewId' and
+                                              (rec['serie'], rec['numero'], rec['ruc']) == (
+                                              self.serie, self.numero, self.ruc)
+            ]
+
+            if existing_records:
+                # Mostrar una advertencia si se encuentran duplicados
+                raise ValidationError(
+                    f'El número de serie {self.serie}, número {self.numero} y RUC {self.ruc} ya existen en un registro anterior con ID: {existing_records[0]["id"]}. Por favor, verifique.'
+                )
 
     @api.depends("moneda")
     def _compute_currency_id(self):
