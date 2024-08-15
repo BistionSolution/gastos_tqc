@@ -163,19 +163,20 @@ class detalleLiquidaciones(models.Model):
                 ('serie', '=', self.serie),
                 ('numero', '=', self.numero),
                 ('ruc', '=', self.ruc)
-            ], ['id', 'serie', 'numero', 'ruc'])
+            ], ['id', 'serie', 'numero', 'ruc', 'liquidacion_id'])
 
             # Filtrar los registros ignorando el actual si es nuevo
             existing_records = [
                 rec for rec in all_details if rec['id'] != 'NewId' and
                                               (rec['serie'], rec['numero'], rec['ruc']) == (
-                                              self.serie, self.numero, self.ruc)
+                                                  self.serie, self.numero, self.ruc)
             ]
 
             if existing_records:
+                print("EXISTING RECORDS: ", existing_records)
                 # Mostrar una advertencia si se encuentran duplicados
                 raise ValidationError(
-                    f'El número de serie {self.serie}, número {self.numero} y RUC {self.ruc} ya existen en un registro anterior con ID: {existing_records[0]["id"]}. Por favor, verifique.'
+                    f'El número de serie {self.serie}, número {self.numero} y RUC {self.ruc} ya existen en un registro anterior con ID: {existing_records[0]["id"]} en la liquidacion: {existing_records[0]["liquidacion_id"][1]}. Por favor, verifique.'
                 )
 
     @api.depends("moneda")

@@ -30,10 +30,11 @@
             <field name="name">view.form.detalles.liquidaciones</field>
             <field name="model">tqc.detalle.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Detalle de liquidaciones" create="1" edit="1">
+                <form string="Detalle de liquidaciones" create="1" edit="1" write="0">
                     <sheet>
                         <group>
                             <group>
+                                <field name="liquidacion_id"/>
                                 <field name="tipodocumento" string="Tipo doc."
                                        options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                 <field name="codetipo" invisible="1"/>
