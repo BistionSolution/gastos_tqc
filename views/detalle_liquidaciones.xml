@@ -6,6 +6,26 @@
             <field name="res_model">tqc.detalle.liquidaciones</field>
         </record>
 
+        <record id="view_tree_detalles_liquidaciones" model="ir.ui.view">
+            <field name="name">view.form.detalles.liquidaciones</field>
+            <field name="model">tqc.detalle.liquidaciones</field>
+            <field name="arch" type="xml">
+                <tree string="Detalle de liquidaciones" create="1" edit="1">
+                    <field name="id"/>
+                    <field name="tipodocumento" string="Tipo doc."
+                           options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                    <field name="codetipo" invisible="1"/>
+                    <field name="serie"
+                           attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"
+                           force_save="1"/>
+                    <!--                                     widget="many2many_binary"-->
+                    <field name="numero"
+                           attrs="{'readonly':[('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"
+                           force_save="1"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="view_form_detalles_liquidaciones" model="ir.ui.view">
             <field name="name">view.form.detalles.liquidaciones</field>
             <field name="model">tqc.detalle.liquidaciones</field>
@@ -96,6 +116,26 @@
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <!-- Vista search de detalle de liquidaciones -->
+        <record id="view_search_detalles_liquidaciones" model="ir.ui.view">
+            <field name="name">view.search.detalles.liquidaciones</field>
+            <field name="model">tqc.detalle.liquidaciones</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="id" string="ID"/>
+                    <field name="tipodocumento" string="Tipo doc."/>
+                    <field name="serie"/>
+                    <field name="numero"/>
+                    <field name="fechaemision" string="Fecha emisión"/>
+                    <field name="proveedor_razonsocial" string="Proveedor Razon social"/>
+                    <field name="cliente_razonsocial" string="Cliente razon social"/>
+                    <field name="totaldocumento" string="Total documento"/>
+                    <field name="total_neto" string="Total neto"/>
+                    <field name="cuenta_contable"/>
+                </search>
             </field>
         </record>
 
