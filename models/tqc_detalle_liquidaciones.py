@@ -165,18 +165,25 @@ class detalleLiquidaciones(models.Model):
                 ('ruc', '=', self.ruc)
             ], ['id', 'serie', 'numero', 'ruc', 'liquidacion_id'])
 
-            # Filtrar los registros ignorando el actual si es nuevo
-            existing_records = [
-                rec for rec in all_details if rec['id'] != 'NewId' and
-                                              (rec['serie'], rec['numero'], rec['ruc']) == (
-                                                  self.serie, self.numero, self.ruc)
-            ]
+            print("ALL self.id: ", self.id)
+            print("ALL DETAILS: ", all_details)
+            # Filtrar y revisar cada registro individualmente
+            for rec in all_details:
+                print("ID del registro:", rec['id'])  # Imprime el ID de cada registro encontrado
+                if 'NewId' in str(self.id):
+                    print("NEW RECORD: ", rec)
+                    id_string = str(self.id)
+                    parts = id_string.split("_")
+                    print("PARTS: ", parts[1])
+                    if len(parts) > 1 and parts[1].isdigit():
+                        temp_id = int(parts[1])  # Asegurarse de que es un número y convertirlo
+                        print("Temp ID:", temp_id)
 
-            if existing_records:
-                print("EXISTING RECORDS: ", existing_records)
-                # Mostrar una advertencia si se encuentran duplicados
+                        if rec['id'] == temp_id:
+                            continue
+                        # Mostrar una advertencia si se encuentran duplicados
                 raise ValidationError(
-                    f'El número de serie {self.serie}, número {self.numero} y RUC {self.ruc} ya existen en un registro anterior con ID: {existing_records[0]["id"]} en la liquidacion: {existing_records[0]["liquidacion_id"][1]}. Por favor, verifique.'
+                    f'El número de serie {self.serie}, número {self.numero} y RUC {self.ruc} ya existen en un registro anterior con ID: {rec["id"]} en la liquidacion: {rec["liquidacion_id"][1]}. Por favor, verifique.'
                 )
 
     @api.depends("moneda")
