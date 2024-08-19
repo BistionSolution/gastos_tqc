@@ -264,7 +264,8 @@ export class NewListRenderer extends X2ManyField {
 
   async restaurarRecord() {
     const self = this;
-
+    console.log("entro restaurarRecord");
+    
     self.rendererProps.list.model.load();
     // // Obtener valor de campo state del registro padre
     // const saveButton = document.querySelector('.o_form_button_save');
@@ -308,6 +309,7 @@ export class NewListRenderer extends X2ManyField {
         saveButton.click();
       }
     }
+    self.rendererProps.list.model.load();
   }
 
   _onClickClose() {
