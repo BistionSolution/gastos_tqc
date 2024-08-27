@@ -166,8 +166,8 @@ class Liquidaciones(models.Model):
             else:
                 record.current_user = 0
         _logger.info('All liquidados ----------> : %s' % get_all_habilitado)
-        # if get_all_habilitado:z
-        #     self._search_habilitado_record(get_all_habilitado)
+        if get_all_habilitado:
+            self._search_habilitado_record(get_all_habilitado)
 
     def _search_habilitado_record(self, get_all_habilitado):
         _logger.info('leego  ----------> : %s' % get_all_habilitado)
@@ -200,7 +200,7 @@ class Liquidaciones(models.Model):
                                  LIQUIDADO                                  
                                FROM
                                  {prefix_table}.ENTREGA_A_RENDIR
-                               WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
+                               WHERE ENTREGA_A_RENDIR IN ({placeholders}) AND LIQUIDADO = 'S'"""
         try:
             connection = pyodbc.connect(
                 'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -210,12 +210,12 @@ class Liquidaciones(models.Model):
             idusers = cursor.fetchall()
 
             for user in idusers:
-                if user[1] in get_all_habilitado:
-                    if user[8] == 'S':
-                        element_liquidated.append(user[1])
+                element_liquidated.append(user[1])
+
         except Exception as e:
             _logger.error('Error: %s' % str(e))
             raise UserError(_(e))
+
         self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
             {'habilitado_state': 'liquidado', 'state': 'liquidado'})
 
@@ -1016,14 +1016,14 @@ class Liquidaciones(models.Model):
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': f"Error sql :{e}"}])
                         continue
-
+                    print("RESULT -> : ", idusers)
                     # Si no hay error cambia estado a liquidado
                     if idusers[1]:
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'liquidado', 'message_error': ''}])
 
                     else:
-                        print("ERROR : ", idusers[2])
+
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': idusers[2]}])
 
