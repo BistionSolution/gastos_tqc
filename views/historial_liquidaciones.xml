@@ -45,19 +45,19 @@
             <field name="name">view.form.historial.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion" class="table-liquidacion">
+                <form string="Liquidacion" edit="0" class="table-liquidacion">
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
-                                                <button name="send_exactus" string="Volver a enviar" type="object"
-                                                        class="oe_highlight"/>
+                        <button name="send_exactus" string="Volver a enviar" type="object"
+                                class="oe_highlight"/>
 
                         <field name="habilitado_state" widget="statusbar"
                                statusbar_visible="habilitado,proceso,liquidado"/>
                     </header>
                     <group>
                         <field name="name" readonly="1" invisible="1"/>
-<!--                        <field name="state"/>-->od  -->
+                        <!--                        <field name="state"/>-->od -->
                         <field name="empleado_name" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="num_solicitud" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="fecha_entrega" class="oe_inline" readonly="1" invisible="1"/>
@@ -69,14 +69,14 @@
                         <field name="saldo" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="current_total" class="oe_inline" readonly="1" force_save="1"
                                string="current_total" invisible="1"/>
-                        <field name="fecha_contable" class="oe_inline" />
+                        <field name="fecha_contable" class="oe_inline" readonly="1"/>
                     </group>
                     <notebook>
                         <page string="Detalle Liquidaciones">
                             <field name="uid_create" invisible="1"/>
                             <field name="detalleliquidaciones_id"
                                    options="{'create':false ,'create_edit': false}"
-
+                                   readonly="1"
                             >
                                 <!--                                section_and_note_one2many-->
                                 <tree editable="bottom" decoration-success="revisado_state == 'aprobado'"
@@ -273,7 +273,7 @@
         (0, 0, {'view_mode': 'form', 'view_id': ref('gastos_tqc.view_form_historial_liquidaciones')})]"/>
             <field name="context">{'mode_view':'historial','search_default_group_by_employee':1}</field>
             <field name="domain">[('habilitado_state','!=','habilitado')]</field>
-<!--            ('fecha_generacion', '!=', False)-->
+            <!--            ('fecha_generacion', '!=', False)-->
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
