@@ -216,10 +216,10 @@ class Liquidaciones(models.Model):
                     element_liquidated.append(user[1])
 
             # Verifica si hay registros no encontrados
-            found_records = [user[1] for user in idusers]
-            for item in get_all_habilitado:
-                if item not in found_records:
-                    element_not_found.append(item)
+            # found_records = [user[1] for user in idusers]
+            # for item in get_all_habilitado:
+            #     if item not in found_records:
+            #         element_not_found.append(item)
 
         except Exception as e:
             _logger.error('Error: %s' % str(e))
@@ -228,10 +228,10 @@ class Liquidaciones(models.Model):
             self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
                 {'habilitado_state': 'liquidado', 'state': 'liquidado'})
 
-        if element_not_found:
-            _logger.info('Elementos no encontrados ----------> : %s' % element_not_found)
-            # Eliminar registros no encontrados
-            self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_not_found)]).unlink()
+        # if element_not_found:
+        #     _logger.info('Elementos no encontrados ----------> : %s' % element_not_found)
+        #     # Eliminar registros no encontrados
+        #     self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_not_found)]).unlink()
 
     # ni idea para que funciona, creo que para buscar registro no liquidados
     def search_liquid_record(self):
