@@ -159,7 +159,7 @@ class Liquidaciones(models.Model):
         get_all_habilitado = []
         for record in self:
             # capturar en get_all_liquidated todos los registros que esten liquidados
-            if record.habilitado_state == 'habilitado':
+            if record.habilitado_state != 'liquidado':
                 get_all_habilitado.append(record.num_solicitud)
             if self.env.uid in record.empleado_name.sudo().superior.mapped('user_id').mapped('id'):
                 record.current_user = 1
@@ -188,6 +188,8 @@ class Liquidaciones(models.Model):
         _logger.info('Password: %s' % pass_bd)
         _logger.info('Prefix Table: %s' % prefix_table)
         element_liquidated = []
+        element_not_found = []
+
         sql_prime_super = f"""SELECT
                                  ENTREGA_A_RENDIR AS external_id,
                                  ENTREGA_A_RENDIR AS num_solicitud,
@@ -200,7 +202,7 @@ class Liquidaciones(models.Model):
                                  LIQUIDADO                                  
                                FROM
                                  {prefix_table}.ENTREGA_A_RENDIR
-                               WHERE ENTREGA_A_RENDIR IN ({placeholders}) AND LIQUIDADO = 'S'"""
+                               WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
         try:
             connection = pyodbc.connect(
                 'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -210,16 +212,28 @@ class Liquidaciones(models.Model):
             idusers = cursor.fetchall()
 
             for user in idusers:
-                element_liquidated.append(user[1])
+                if user[8] == 'S':
+                    element_liquidated.append(user[1])
+
+            # Verifica si hay registros no encontrados
+            found_records = [user[1] for user in idusers]
+            for item in get_all_habilitado:
+                if item not in found_records:
+                    element_not_found.append(item)
 
         except Exception as e:
             _logger.error('Error: %s' % str(e))
             raise UserError(_(e))
+        if element_liquidated:
+            self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
+                {'habilitado_state': 'liquidado', 'state': 'liquidado'})
 
-        self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
-            {'habilitado_state': 'liquidado', 'state': 'liquidado'})
+        if element_not_found:
+            _logger.info('Elementos no encontrados ----------> : %s' % element_not_found)
+            # Eliminar registros no encontrados
+            self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_not_found)]).unlink()
 
-    # ni idea para que funciona, creo que para buscar registro no loquidados
+    # ni idea para que funciona, creo que para buscar registro no liquidados
     def search_liquid_record(self):
         get_all_liquidated = []
         record_liquideted = self.env['tqc.liquidaciones'].search([('habilitado_state', '=', 'liquidado')])
