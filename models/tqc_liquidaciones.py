@@ -40,7 +40,8 @@ class Liquidaciones(models.Model):
         ('contable', 'Sin visto Contable'),
         ('jefatura', 'Sin visto jefe'),
         ('pendiente', 'Pendiente a procesar'),
-        ('liquidado', 'Liquidado')
+        ('liquidado', 'Liquidado'),
+        ('eliminado', 'Eliminado')
     ],
         default='habilitado', string='Estado Solicitud')
 
@@ -216,10 +217,10 @@ class Liquidaciones(models.Model):
                     element_liquidated.append(user[1])
 
             # Verifica si hay registros no encontrados
-            # found_records = [user[1] for user in idusers]
-            # for item in get_all_habilitado:
-            #     if item not in found_records:
-            #         element_not_found.append(item)
+            found_records = [user[1] for user in idusers]
+            for item in get_all_habilitado:
+                if item not in found_records:
+                    element_not_found.append(item)
 
         except Exception as e:
             _logger.error('Error: %s' % str(e))
@@ -228,10 +229,11 @@ class Liquidaciones(models.Model):
             self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
                 {'habilitado_state': 'liquidado', 'state': 'liquidado'})
 
-        # if element_not_found:
-        #     _logger.info('Elementos no encontrados ----------> : %s' % element_not_found)
-        #     # Eliminar registros no encontrados
-        #     self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_not_found)]).unlink()
+        if element_not_found:
+            _logger.info('Elementos no encontrados ----------> : %s' % element_not_found)
+            # Eliminar registros no encontrados
+            self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_not_found)]).write(
+                {'state': 'eliminado'})
 
     # ni idea para que funciona, creo que para buscar registro no liquidados
     def search_liquid_record(self):
@@ -518,7 +520,7 @@ class Liquidaciones(models.Model):
             "target": "current",
             'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
                       (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
-            'domain': [('habilitado_state', '!=', 'liquidado')],
+            'domain': [('habilitado_state', '!=', 'liquidado'), ('state', '!=', 'eliminado')],
             "context": {'search_default_filtro_rendir': 1},
             'search_view_id': [self.env.ref("gastos_tqc.search_register_filter").id, 'search'],
             # 'clear_breadcrumb': True,
@@ -566,14 +568,15 @@ class Liquidaciones(models.Model):
         # Obtener id del usuario
         user_id = self.env.uid
 
-        domain = [('habilitado_state', 'in', ['proceso']), ('empleado_name.superior.user_id', 'in', [user_id])]
+        domain = [('habilitado_state', 'in', ['proceso']), ('empleado_name.superior.user_id', 'in', [user_id]),
+                  ('state', '!=', 'eliminado')]
         # records = self.env['tqc.liquidaciones'].search(domain)
         # print("Número de registros encontrados:", len(records))
         # si usuario pertenece a un grupo
         if self.env.user.has_group('gastos_tqc.res_groups_contador_gastos') or self.env.user.has_group(
                 'gastos_tqc.res_groups_administrator'):
             # agregar otra condicion al doamin
-            domain = [('habilitado_state', 'in', ['proceso'])]
+            domain = [('habilitado_state', 'in', ['proceso']), ('state', '!=', 'eliminado')]
 
         print("DOMAIN : ", domain)
         res = {
