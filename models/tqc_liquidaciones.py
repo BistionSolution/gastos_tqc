@@ -204,6 +204,7 @@ class Liquidaciones(models.Model):
                                FROM
                                  {prefix_table}.ENTREGA_A_RENDIR
                                WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
+
         try:
             connection = pyodbc.connect(
                 'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -251,18 +252,18 @@ class Liquidaciones(models.Model):
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
         sql_prime_super = f"""SELECT
-                                         ENTREGA_A_RENDIR AS external_id,
-                                         ENTREGA_A_RENDIR AS num_solicitud,
-                                         EMPLEADO AS empleado_name,
-                                         MONEDA AS moneda,
-                                         APLICACION AS glosa_entrega,
-                                         FECHA_ENTREGA AS fecha_entrega,
-                                         CONVERT(decimal(10,2),MONTO) AS monto_entrega,
-                                         CONVERT(decimal(10,2),SALDO) AS saldo,
-                                         LIQUIDADO                                  
-                                       FROM
-                                         {prefix_table}.ENTREGA_A_RENDIR
-                                       WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
+                                 ENTREGA_A_RENDIR AS external_id,
+                                 ENTREGA_A_RENDIR AS num_solicitud,
+                                 EMPLEADO AS empleado_name,
+                                 MONEDA AS moneda,
+                                 APLICACION AS glosa_entrega,
+                                 FECHA_ENTREGA AS fecha_entrega,
+                                 CONVERT(decimal(10,2),MONTO) AS monto_entrega,
+                                 CONVERT(decimal(10,2),SALDO) AS saldo,
+                                 LIQUIDADO                                  
+                               FROM
+                                 {prefix_table}.ENTREGA_A_RENDIR
+                               WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
         try:
             connection = pyodbc.connect(
                 'DRIVER={ODBC Driver ' + driver_version + ' for SQL Server}; SERVER=' + ip_conexion + ';DATABASE=' +
@@ -326,6 +327,17 @@ class Liquidaciones(models.Model):
     @api.model
     def default_get(self, default_fields):
         return super(Liquidaciones, self).default_get(default_fields)
+
+    def add_document(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Agregar Documento',
+            'res_model': 'tqc.detalle.liquidaciones',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+            'context': {'default_liquidacion_id': self.id, 'default_state': 'document'}
+        }
 
     def print_pdf(self):
         return self.env.ref('gastos_tqc.action_report_und_report_pendient').report_action(self)
@@ -1031,18 +1043,19 @@ class Liquidaciones(models.Model):
                     except Exception as e:
                         print("Error ", e)
                         vals['detalleliquidaciones_id'].append(
-                            [1, document.id, {'revisado_state': 'send_error', 'message_error': f"Error sql :{e}"}])
+                            [1, document.id, {'revisado_state': 'send_error', 'message_error': f"Error sql :{e}",
+                                              'state': 'historial'}])
                         continue
-                    print("RESULT -> : ", idusers)
                     # Si no hay error cambia estado a liquidado
                     if idusers[1]:
                         vals['detalleliquidaciones_id'].append(
-                            [1, document.id, {'revisado_state': 'liquidado', 'message_error': ''}])
+                            [1, document.id,
+                             {'revisado_state': 'liquidado', 'message_error': '', 'state': 'historial'}])
 
                     else:
-
                         vals['detalleliquidaciones_id'].append(
-                            [1, document.id, {'revisado_state': 'send_error', 'message_error': idusers[2]}])
+                            [1, document.id,
+                             {'revisado_state': 'send_error', 'message_error': idusers[2], 'state': 'historial'}])
 
             # Cambia estado de liquidacion
             vals['habilitado_state'] = 'liquidado'
@@ -1128,18 +1141,13 @@ class Liquidaciones(models.Model):
     @api.model
     def get_count_states(self, user_id):
         print("CORRE O NO CORRE")
-        result = {
-            'jefatura': 0,
-            'contable': 0,
-            'pendiente': 0
-        }
+        result = {'jefatura': self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+            [('state', 'in', ['jefatura']), ('habilitado_state', 'in', ['proceso'])]),
+            'contable': self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+                [('state', 'in', ['contable']), ('habilitado_state', 'in', ['proceso'])]),
+            'pendiente': self.env['tqc.liquidaciones'].with_user(user_id).search_count(
+                [('state', 'in', ['pendiente']), ('habilitado_state', 'in', ['proceso'])])}
         # public = self.env.ref('gastos_tqc.res_groups_aprobador_gastos')
-        result['jefatura'] = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
-            [('state', 'in', ['jefatura']), ('habilitado_state', 'in', ['proceso'])])
-        result['contable'] = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
-            [('state', 'in', ['contable']), ('habilitado_state', 'in', ['proceso'])])
-        result['pendiente'] = self.env['tqc.liquidaciones'].with_user(user_id).search_count(
-            [('state', 'in', ['pendiente']), ('habilitado_state', 'in', ['proceso'])])
 
         return result
 

@@ -10,6 +10,7 @@ import {evaluateExpr} from "@web/core/py_js/py";
 import {TestX2ManyField} from "./one2many_selectable";
 import rpc from "web.rpc";
 import {SplitViewRenderer} from "./split_view/list_renderer";
+import {onPatched, useEffect} from "@odoo/owl";
 
 const {onWillStart, onWillUpdateProps, useState} = owl;
 // const {Component, onWillStart, onRendered, onMounted} = owl;
@@ -52,7 +53,23 @@ export class TestListRenderer extends ListRenderer {
         // });
         this.showRemoveIcon = useState({value: false});
         onWillStart(() => this._loadPro());
+        useEffect(
+            (editedRecord) => {
+                console.log("editedRecord")
+                if (editedRecord) {
+                    console.log("editedRecord : ", editedRecord)
+                    this.keepColumnWidths = true;
+                }
+                // const saveButton = document.querySelector(".o_form_button_save");
+                // console.log("saveButton : ", saveButton)
+                // if (saveButton) {
+                //     saveButton.click();
+                // }
+            },
+            () => [this.props.list.editedRecord]
+        );
     }
+
 
     // Cambiar clase de tabla
     toggleRecordSelection(record) {
@@ -87,6 +104,17 @@ export class TestListRenderer extends ListRenderer {
         return this.props.allowSelectors && !this.env.isSmall;
     }
 
+    // overrode add line button
+    add(params) {
+        const saveButton = document.querySelector(".o_form_button_save");
+        if (saveButton) {
+            saveButton.click();
+        }
+        if (this.canCreate) {
+            this.props.onAdd(params);
+        }
+    }
+
     async _loadPro() {
         // const dataRecord = this.props.list.model.root.data
         // console.log("dataRecord state ", dataRecord.state)
@@ -106,6 +134,7 @@ export class TestListRenderer extends ListRenderer {
 
 // TestListRenderer.template = 'one2many_mass_select_delete.ListRenderer';
 TestListRenderer.recordRowTemplate = "owl_learn.ClickMe.RecordRow";
+TestListRenderer.rowsTemplate = "owl_learn.ListRenderer.Rows";
 
 
 export class NewListRenderer extends X2ManyField {
@@ -121,7 +150,6 @@ export class NewListRenderer extends X2ManyField {
 
     async _loadPro() {
         const dataRecord = this.props.record.data;
-        console.log("dataRecord state ", dataRecord.state);
         if (dataRecord.state === "jefatura") {
             this.showObservationButton.value = false;
         }
@@ -144,7 +172,6 @@ export class NewListRenderer extends X2ManyField {
 
     async _onClickAceptar() {
         const self = this;
-        console.log("entro nuevo eliminado x");
         // self.rendererProps.list.model.load();
         // // Obtener valor de campo state del registro padre
         // const saveButton = document.querySelector(".o_form_button_save");

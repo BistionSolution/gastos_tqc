@@ -418,7 +418,10 @@
 
                         <notebook>
                             <page string="Documentos">
+                                <button name="add_document" string="Agregar documento" type="object"
+                                        class="oe_highlight"/>
                                 <field name="detalleliquidaciones_id"
+                                       widget="icon_delete"
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}" mode="tree,form">
                                     <tree decoration-success="revisado_state == 'aprobado'"
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"

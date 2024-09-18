@@ -38,17 +38,13 @@ export class DomainSelectorTextField extends Component {
     _onSelectDateField(ev) {
         ev.stopPropagation();
         this.state.value = true
-        console.log("entro")
         if (this.input.el) {
             this.state.value = true
-        } else {
-            console.log("cerardo2")
         }
     }
 
     _onClearDateField(ev) {
         // ev.stopPropagation();
-        console.log("SALIO")
         setTimeout(() => {
             this.state.value = false
         }, 200);
