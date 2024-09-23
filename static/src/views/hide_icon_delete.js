@@ -53,21 +53,7 @@ export class TestListRenderer extends ListRenderer {
         // });
         this.showRemoveIcon = useState({value: false});
         onWillStart(() => this._loadPro());
-        useEffect(
-            (editedRecord) => {
-                console.log("editedRecord")
-                if (editedRecord) {
-                    console.log("editedRecord : ", editedRecord)
-                    this.keepColumnWidths = true;
-                }
-                // const saveButton = document.querySelector(".o_form_button_save");
-                // console.log("saveButton : ", saveButton)
-                // if (saveButton) {
-                //     saveButton.click();
-                // }
-            },
-            () => [this.props.list.editedRecord]
-        );
+
     }
 
 
@@ -134,7 +120,7 @@ export class TestListRenderer extends ListRenderer {
 
 // TestListRenderer.template = 'one2many_mass_select_delete.ListRenderer';
 TestListRenderer.recordRowTemplate = "owl_learn.ClickMe.RecordRow";
-TestListRenderer.rowsTemplate = "owl_learn.ListRenderer.Rows";
+// TestListRenderer.rowsTemplate = "owl_learn.ListRenderer.Rows";
 
 
 export class NewListRenderer extends X2ManyField {

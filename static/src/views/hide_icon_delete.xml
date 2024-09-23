@@ -113,35 +113,35 @@
        </xpath>
    </t>
 
-    <t t-name="owl_learn.ListRenderer.Rows" t-inherit="web.ListRenderer.Rows" owl="1">
-        <xpath expr="//td[hasclass('o_field_x2many_list_row_add')]" position="replace">
-           <td t-att-colspan="withHandleColumn ? nbCols - 1 : nbCols"
-               class="o_field_x2many_list_row_add"
-               t-on-keydown.synthetic="(ev) => this.onCellKeydown(ev, null)"
-           >
-               <t t-foreach="creates" t-as="create" t-key="create_index">
-                        <a
-                                t-if="create.type === 'create'"
-                                href="#"
-                                role="button"
-                                t-att-class="create_index !== 0 ? 'ml16' : ''"
-                                t-att-tabindex="props.list.editedRecord ? '-1' : '0'"
-                                t-on-click.stop.prevent="() => this.add({ context: create.context })"
-                        >
-                            <t t-esc="create.string"/>
-                        </a>
-                   <ViewButton
-                           t-if="create.type === 'button'"
-                           className="`${create.className} ${create_index !== 0 ? 'ml16' : ''}`"
-                           clickParams="create.clickParams"
-                           icon="create.icon"
-                           record="props.list"
-                           string="create.string"
-                           title="create.title"
-                           tabindex="props.list.editedRecord ? '-1' : '0'"
-                   />
-                    </t>
-           </td>
-        </xpath>
-     </t>
+<!--    <t t-name="owl_learn.ListRenderer.Rows" t-inherit="web.ListRenderer.Rows" owl="1">-->
+<!--        <xpath expr="//td[hasclass('o_field_x2many_list_row_add')]" position="replace">-->
+<!--           <td t-att-colspan="withHandleColumn ? nbCols - 1 : nbCols"-->
+<!--               class="o_field_x2many_list_row_add"-->
+<!--               t-on-keydown.synthetic="(ev) => this.onCellKeydown(ev, null)"-->
+<!--           >-->
+<!--               <t t-foreach="creates" t-as="create" t-key="create_index">-->
+<!--                        <a-->
+<!--                                t-if="create.type === 'create'"-->
+<!--                                href="#"-->
+<!--                                role="button"-->
+<!--                                t-att-class="create_index !== 0 ? 'ml16' : ''"-->
+<!--                                t-att-tabindex="props.list.editedRecord ? '-1' : '0'"-->
+<!--                                t-on-click.stop.prevent="() => this.add({ context: create.context })"-->
+<!--                        >-->
+<!--                            <t t-esc="create.string"/>-->
+<!--                        </a>-->
+<!--                   <ViewButton-->
+<!--                           t-if="create.type === 'button'"-->
+<!--                           className="`${create.className} ${create_index !== 0 ? 'ml16' : ''}`"-->
+<!--                           clickParams="create.clickParams"-->
+<!--                           icon="create.icon"-->
+<!--                           record="props.list"-->
+<!--                           string="create.string"-->
+<!--                           title="create.title"-->
+<!--                           tabindex="props.list.editedRecord ? '-1' : '0'"-->
+<!--                   />-->
+<!--                    </t>-->
+<!--           </td>-->
+<!--        </xpath>-->
+<!--     </t>-->
 </templates>
