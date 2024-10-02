@@ -4,6 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 import datetime
 
 import re, pyodbc
+from odoo.tools import float_compare, float_round
 
 no_server = True
 
@@ -328,36 +329,73 @@ class detalleLiquidaciones(models.Model):
     #         if record.total_neto <= 0:
     #             raise ValidationError("El monto debe ser mayor que cero.")
 
+    # def _get_price_total(self):
+    #     self.ensure_one()
+    #     res = {}
+    #
+    #     # Redondear los valores de base_afecta, impuesto1, etc.
+    #     base_afecta_rounded = round(self.base_afecta, 2)
+    #     impuesto1_rounded = round(self.impuesto.impuesto1, 2)
+    #     base_inafecta_rounded = round(self.base_inafecta, 2)
+    #     icbper_rounded = round(self.icbper, 2)
+    #     otros_tributos_rounded = round(self.otros_tributos, 2)
+    #
+    #     # Calcular el monto IGV redondeando el resultado
+    #     monto_igv = round((base_afecta_rounded * impuesto1_rounded) / 100, 2)
+    #
+    #     # Calcular el total del documento redondeando el resultado
+    #     totaldocumento = round(
+    #         monto_igv + base_afecta_rounded + base_inafecta_rounded + icbper_rounded + otros_tributos_rounded, 2)
+    #
+    #     res['montoigv'] = monto_igv
+    #     res['totaldocumento'] = totaldocumento
+    #
+    #     if self.tipocambio != 0:
+    #         if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
+    #             res['total_neto'] = round(totaldocumento / self.tipocambio, 2)
+    #         elif self.currency_liquidacion_id.name == 'PEN' and self.currency_id.name == 'USD':
+    #             res['total_neto'] = round(totaldocumento * self.tipocambio, 2)
+    #         else:
+    #             res['total_neto'] = totaldocumento
+    #     else:
+    #         res['total_neto'] = totaldocumento
+    #
+    #     # En caso de multi-moneda, redondear antes de usar para el cálculo de débito y crédito
+    #     return res
+
     def _get_price_total(self):
         self.ensure_one()
         res = {}
 
         # Redondear los valores de base_afecta, impuesto1, etc.
-        base_afecta_rounded = round(self.base_afecta, 2)
-        impuesto1_rounded = round(self.impuesto.impuesto1, 2)
-        base_inafecta_rounded = round(self.base_inafecta, 2)
-        icbper_rounded = round(self.icbper, 2)
-        otros_tributos_rounded = round(self.otros_tributos, 2)
+        base_afecta_rounded = self.base_afecta
+        impuesto1_rounded = self.impuesto.impuesto1
+        base_inafecta_rounded = self.base_inafecta
+        icbper_rounded = self.icbper
+        otros_tributos_rounded = self.otros_tributos
 
         # Calcular el monto IGV redondeando el resultado
-        monto_igv = round((base_afecta_rounded * impuesto1_rounded) / 100, 2)
+        monto_igv = (base_afecta_rounded * impuesto1_rounded) / 100
 
         # Calcular el total del documento redondeando el resultado
-        totaldocumento = round(
-            monto_igv + base_afecta_rounded + base_inafecta_rounded + icbper_rounded + otros_tributos_rounded, 2)
+        totaldocumento = monto_igv + base_afecta_rounded + base_inafecta_rounded + icbper_rounded + otros_tributos_rounded
 
-        res['montoigv'] = monto_igv
-        res['totaldocumento'] = totaldocumento
+        # Aplicar redondeo usando la precisión definida en Odoo para la moneda
+        monto_igv_rounded = float_round(monto_igv, precision_digits=self.currency_id.decimal_places)
+        totaldocumento_rounded = float_round(totaldocumento, precision_digits=self.currency_id.decimal_places)
+
+        res['montoigv'] = monto_igv_rounded
+        res['totaldocumento'] = totaldocumento_rounded
 
         if self.tipocambio != 0:
             if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
-                res['total_neto'] = round(totaldocumento / self.tipocambio, 2)
+                res['total_neto'] = float_round(totaldocumento_rounded / self.tipocambio, precision_digits=2)
             elif self.currency_liquidacion_id.name == 'PEN' and self.currency_id.name == 'USD':
-                res['total_neto'] = round(totaldocumento * self.tipocambio, 2)
+                res['total_neto'] = float_round(totaldocumento_rounded * self.tipocambio, precision_digits=2)
             else:
-                res['total_neto'] = totaldocumento
+                res['total_neto'] = totaldocumento_rounded
         else:
-            res['total_neto'] = totaldocumento
+            res['total_neto'] = totaldocumento_rounded
 
         # En caso de multi-moneda, redondear antes de usar para el cálculo de débito y crédito
         return res
