@@ -226,6 +226,7 @@ class Liquidaciones(models.Model):
         except Exception as e:
             _logger.error('Error: %s' % str(e))
             raise UserError(_(e))
+
         if element_liquidated:
             self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
                 {'habilitado_state': 'liquidado', 'state': 'liquidado'})
@@ -354,17 +355,6 @@ class Liquidaciones(models.Model):
         table_bd = "tqc.liquidaciones"
         table_relations = """empleado_name OF hr.employee"""
 
-        # sql_prime = """SELECT
-        #                   ENTREGA_A_RENDIR AS external_id,
-        #                   ENTREGA_A_RENDIR AS num_solicitud,
-        #                   EMPLEADO AS empleado_name,
-        #                   MONEDA AS moneda,
-        #                   APLICACION AS glosa_entrega,
-        #                   FECHA_ENTREGA AS fecha_entrega
-        #                 FROM
-        #                   tqc.ENTREGA_A_RENDIR
-        #                 WHERE LIQUIDADO != 'S'"""
-
         sql_prime_super = """SELECT
                                   ENTREGA_A_RENDIR AS external_id,
                                   ENTREGA_A_RENDIR AS num_solicitud,
@@ -405,78 +395,17 @@ class Liquidaciones(models.Model):
             # _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
             for user in idusers:
-                # user[6] = (user[6]) / 100
-                # user[7] = (user[7]) / 100
                 variJson = {}
-                # register = self.env.ref(sumNom)  # obtiene id de su respectivo modelo
-                # id_register = self.env.ref(sumNom).id
                 id_register = self.env["ir.model.data"].sudo().search(
                     [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
 
                 register = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
                 if id_register != 0:  # SI EXISTE ACTUALIZA
-                    if register.habilitado_state == 'liquidado':  # si ya se encuentra liquidado crea otra liquidacion
-                        cont = 0
-                        for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
-                            if i == 0:
-                                continue
-                            if i in posiUser:  # cambia los nombres por los id correspondientes
-                                if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
-                                    id_exField = False
-                                else:
-                                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
-                                    try:
-                                        # obtiene id de su respectivo modelo
-                                        id_exField = self.env.ref(searchId).id
-                                    except ValueError:
-                                        id_exField = False
-
-                                variJson['{}'.format(campList[i])] = id_exField
-                                cont += 1
-                                continue
-                            variJson['{}'.format(campList[i])] = user[i]
-
-                        employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
-                        if not employee:
-                            continue
-
-                        original_id = self.env[table_bd].create(variJson).id
-                        # Si funciona
-                        self.env["ir.model.data"].sudo().search(
-                            [('name', '=', register.num_solicitud), ('model', '=', 'tqc.liquidaciones')]).sudo().write(
-                            {'res_id': original_id})
-                        self.env.cr.commit()
-                        cont = 0
-                        for j in range(len(campList)):
-                            # SOLO para validar correo repetidos en TQC #
-                            if j == 0:
-                                continue
-                            # LLAVE FORANEA ENLACE
-                            if j in posiUser:  # cambia los nombres por los id correspondientes, # GUARDA CORRESPONDENCIA ONE2MANY
-                                if not user[j]:
-                                    id_exField = False
-                                else:
-                                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[j])
-                                    try:
-                                        # obtiene id de su respectivo modelo
-                                        id_exField = self.env.ref(searchId).id
-                                    except ValueError:
-                                        id_exField = False
-                                    #
-                                variJson['{}'.format(campList[j])] = id_exField
-                                cont += 1
-                                continue
-
-                            variJson['{}'.format(campList[j])] = user[j]
-
-                        self.env[table_bd].browse(id_register).sudo().write(variJson)
-                        self.env.cr.commit()
                     if register.habilitado_state == 'habilitado':
                         variJsonNew = {}
                         if user[8] == 'S':
                             variJsonNew['habilitado_state'] = 'liquidado'
-
                         variJsonNew['saldo'] = user[7]
                         employee = self.env['hr.employee'].sudo().search(
                             [('id_integrador', '=', user[2])])
@@ -509,9 +438,7 @@ class Liquidaciones(models.Model):
                             cont += 1
                             continue
                         variJson['{}'.format(campList[i])] = user[i]
-                    print("variJson: ", variJson)
                     original_id = self.env[table_bd].sudo().create(variJson).id
-                    print("ORIGINAL ID : ", original_id)
 
                     # Si funciona
                     self.env["ir.model.data"].sudo().create(

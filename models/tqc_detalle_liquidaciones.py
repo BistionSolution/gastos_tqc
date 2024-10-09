@@ -158,16 +158,22 @@ class detalleLiquidaciones(models.Model):
         #         raise ValidationError(
         #             f'El número de serie y proveedor ya existe en un registro anterior, verifique por favor. {count}')
         if self.serie and self.numero and self.ruc:
-
             # Obtener todos los registros del modelo 'modelo.detalles' en la vista actual
             all_details = self.env['tqc.detalle.liquidaciones'].search_read([
                 ('serie', '=', self.serie),
                 ('numero', '=', self.numero),
                 ('ruc', '=', self.ruc)
             ], ['id', 'serie', 'numero', 'ruc', 'liquidacion_id'])
-
             print("ALL self.id: ", self.id)
             print("ALL DETAILS: ", all_details)
+            print("ALL DETALLES: ", self.liquidacion_id.detalleliquidaciones_id)
+            for detalle in self.liquidacion_id.detalleliquidaciones_id:
+                # Verificar que no se compare el registro consigo mismo
+                if detalle != self and detalle.serie == self.serie and detalle.numero == self.numero and detalle.ruc == self.ruc:
+                    raise ValidationError(
+                        f'El número de serie {self.serie}, número {self.numero} y RUC {self.ruc} ya existen en un registro anterior. Por favor, verifique.'
+                    )
+
             # Filtrar y revisar cada registro individualmente
             for rec in all_details:
                 print("ID del registro:", rec['id'])  # Imprime el ID de cada registro encontrado
