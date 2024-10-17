@@ -20,11 +20,11 @@
             <field name="name">hr.employee.search.inherit.id.integrador</field>
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_filter"/> <!-- Ref al ID original de la vista -->
-            <field name="arch" type="xml">
+            <xpath name="arch" type="xml">
                 <!-- Agregar el campo id_integrador después del campo name en la vista de búsqueda -->
-                <field name="name" position="after">
+                <xpath expr="//field[@name='name']" position="after">
                     <field name="id_integrador" string="ID Integrador"/>
-                </field>
+                </xpath>
 
             </field>
         </record>
