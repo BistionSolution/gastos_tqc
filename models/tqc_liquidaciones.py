@@ -418,8 +418,8 @@ class Liquidaciones(models.Model):
                             _logger.info('EMPLEADO CASTAÑEDA ==> : %s' % employee)
                             # _logger.info('EMPLEADO castañeda id ==> : %s' % employee.id)
 
-                        if employee:
-                            variJsonNew['empleado_name'] = employee.id
+                        # if not employee:
+                        #     variJsonNew['empleado_name'] = employee.id
 
                         self.env[table_bd].browse(id_register).sudo().write(variJsonNew)
                         self.env.cr.commit()
