@@ -416,10 +416,10 @@ class Liquidaciones(models.Model):
 
                         print("EMPLEADO : ", employee)
 
-                        # if user[2] == '80605449':  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
-                        #     _logger.info('EMPLEADO CASTAÑEDA s ==> : %s' % user[2])
-                        #     _logger.info('EMPLEADO CASTAÑEDA s  ==> : %s' % employee)
-                        #     # _logger.info('EMPLEADO castañeda id ==> : %s' % employee.id)
+                        if user[2] == '80605449':  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
+                            _logger.info('EMPLEADO CASTAÑEDA s ==> : %s' % user[2])
+                            _logger.info('EMPLEADO CASTAÑEDA s  ==> : %s' % employee)
+                            # _logger.info('EMPLEADO castañeda id ==> : %s' % employee.id)
 
                         if not register.empleado_name:
                             variJsonNew['empleado_name'] = employee.id
