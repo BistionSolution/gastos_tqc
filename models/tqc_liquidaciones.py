@@ -410,7 +410,7 @@ class Liquidaciones(models.Model):
                         employee = self.env['hr.employee'].sudo().search(
                             [('id_integrador', '=', user[2])])
                         if not employee:
-                            variJsonNew['empleado_name'] = employee.id
+                            variJsonNew['empleado_name'] = employee[0].id
                         self.env[table_bd].browse(id_register).sudo().write(variJsonNew)
                         self.env.cr.commit()
 
