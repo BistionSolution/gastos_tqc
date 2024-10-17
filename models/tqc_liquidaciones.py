@@ -407,10 +407,16 @@ class Liquidaciones(models.Model):
                         if user[8] == 'S':
                             variJsonNew['habilitado_state'] = 'liquidado'
                         variJsonNew['saldo'] = user[7]
+
                         employee = self.env['hr.employee'].sudo().search(
                             [('id_integrador', '=', user[2])])
+                        if user[2] == '80605449':  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
+                            _logger.info('EMPLEADO CASTAÑEDA ==> : %s' % user[2])
+                            _logger.info('EMPLEADO CASTAÑEDA ==> : %s' % employee)
+
                         if not employee:
                             variJsonNew['empleado_name'] = employee[0].id
+
                         self.env[table_bd].browse(id_register).sudo().write(variJsonNew)
                         self.env.cr.commit()
 
