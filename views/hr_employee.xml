@@ -16,6 +16,18 @@
             </field>
         </record>
 
+        <record id="view_employee_filter_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.search.inherit.id.integrador</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/> <!-- Ref al ID original de la vista -->
+            <field name="arch" type="xml">
+                <!-- Agregar el campo id_integrador después del campo name en la vista de búsqueda -->
+                <field name="name" position="after">
+                    <field name="id_integrador" string="ID Integrador"/>
+                </field>
+
+            </field>
+        </record>
 <!--        <record id="inherited_gastos_employee_kanban" model="ir.ui.view">-->
 <!--            <field name="name">inherited.model.kanban.employee.gastos</field>-->
 <!--            <field name="model">hr.employee</field> &lt;!&ndash;MODULO NATIVO&ndash;&gt;-->
