@@ -17,14 +17,14 @@
         </record>
 
         <record id="view_employee_filter_inherit" model="ir.ui.view">
-            <field name="name">hr.employee.search.inherit.id.integrador</field>
+            <field name="name">hr.employee.search.inherit.integrador</field>
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_filter"/> <!-- Ref al ID original de la vista -->
-            <xpath name="arch" type="xml">
+            <field name="arch" type="xml">
                 <!-- Agregar el campo id_integrador después del campo name en la vista de búsqueda -->
-                <xpath expr="//field[@name='name']" position="after">
+                <field name="name" position="after">
                     <field name="id_integrador" string="ID Integrador"/>
-                </xpath>
+                </field>
 
             </field>
         </record>
