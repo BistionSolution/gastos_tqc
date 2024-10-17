@@ -411,6 +411,8 @@ class Liquidaciones(models.Model):
                         employee = self.env['hr.employee'].sudo().search(
                             [('id_integrador', '=', user[2])])
 
+                        print("EMPLEADO : ", employee)
+
                         if user[2] == '80605449':  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
                             _logger.info('EMPLEADO CASTAÑEDA ==> : %s' % user[2])
                             _logger.info('EMPLEADO CASTAÑEDA ==> : %s' % employee)
