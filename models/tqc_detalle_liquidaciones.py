@@ -541,6 +541,7 @@ class detalleLiquidaciones(models.Model):
                     for proveedor in proveedores:
                         result = proveedor[1]
                         if proveedor[2] != 'S':
+                            print(proveedor.errpo)
                             raise UserError(_('Proveedor no activo, no puede crear documento'))
                     rec.razonsocial_invisible = 'activo'
                     rec.proveedor_razonsocial = result
