@@ -45,7 +45,7 @@
             <field name="name">view.form.historial.liquidaciones</field>
             <field name="model">tqc.liquidaciones</field>
             <field name="arch" type="xml">
-                <form string="Liquidacion" edit="0" class="table-liquidacion">
+                <form string="Liquidacion" class="table-liquidacion">
                     <header>
                         <button name="print_pdf" string="Imprimir pdf" type="object"
                                 class="oe_highlight"/>
@@ -57,6 +57,8 @@
                     </header>
                     <group>
                         <field name="name" readonly="1" invisible="1"/>
+                        <field name="habilitado_state"/>
+                        <field name="state"/>
                         <!--                        <field name="state"/>-->od -->
                         <field name="empleado_name" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="num_solicitud" class="oe_inline" readonly="1" invisible="1"/>
