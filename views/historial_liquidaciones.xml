@@ -57,8 +57,8 @@
                     </header>
                     <group>
                         <field name="name" readonly="1" invisible="1"/>
-                        <field name="habilitado_state"/>
-                        <field name="state"/>
+<!--                        <field name="habilitado_state"/>-->
+<!--                        <field name="state"/>-->
                         <!--                        <field name="state"/>-->od -->
                         <field name="empleado_name" class="oe_inline" readonly="1" invisible="1"/>
                         <field name="num_solicitud" class="oe_inline" readonly="1" invisible="1"/>

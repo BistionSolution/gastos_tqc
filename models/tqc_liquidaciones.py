@@ -354,12 +354,14 @@ class Liquidaciones(models.Model):
                 id_register = self.env["ir.model.data"].sudo().search(
                     [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
 
-                register = self.env['tqc.liquidaciones'].sudo().browse(id_register)
+                register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
-                if id_register != 0:  # SI EXISTE ACTUALIZA
+                register = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])])
+
+                if register:  # SI EXISTE ACTUALIZA
                     if not user[2]:
                         continue
-                    if register.habilitado_state == 'habilitado':
+                    if register[0].habilitado_state == 'habilitado':
                         variJsonNew = {}
                         if user[8] == 'S':
                             variJsonNew['habilitado_state'] = 'liquidado'
@@ -371,15 +373,10 @@ class Liquidaciones(models.Model):
 
                         print("EMPLEADO : ", employee)
 
-                        if user[2] == '80605449':  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
-                            _logger.info('EMPLEADO CASTAÑEDA s ==> : %s' % user[2])
-                            _logger.info('EMPLEADO CASTAÑEDA s  ==> : %s' % employee)
-                            # _logger.info('EMPLEADO castañeda id ==> : %s' % employee.id)
-
-                        if not register.empleado_name:
+                        if not register[0].empleado_name:
                             variJsonNew['empleado_name'] = employee.id
 
-                        self.env[table_bd].browse(id_register).sudo().write(variJsonNew)
+                        self.env[table_bd].browse(register[0].id).sudo().write(variJsonNew)
                         self.env.cr.commit()
 
                 else:  # CREA NUEVO REGISTRO
@@ -409,9 +406,10 @@ class Liquidaciones(models.Model):
                     original_id = self.env[table_bd].sudo().create(variJson).id
 
                     # Si funciona
-                    self.env["ir.model.data"].sudo().create(
-                        {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
-                    self.env.cr.commit()
+                    # self.env["ir.model.data"].sudo().create(
+                    #     {'name': user[0], 'module': nom_module, 'model': table_bd, 'res_id': original_id})
+                    # self.env.cr.commit()
+
         except Exception as e:
             raise UserError(_(e))
 
