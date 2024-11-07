@@ -88,8 +88,18 @@
             <field name="code">action = model.get_account_contable()</field>
         </record>
 
+        <record id="action_unlink_cuentas" model="ir.actions.server">
+            <field name="name">action.server.cuenta.tqc</field>
+            <field name="model_id" ref="gastos_tqc.model_cuenta_gastos_default"/>
+            <field name="state">code</field>
+            <field name="code">action = model.account_contable_unlink()</field>
+        </record>
+
         <menuitem id="menu_cuenta_default_get" action="gastos_tqc.action_first_cuenta"
                   parent="gastos_tqc.menu_flujo_configuraciones" sequence="6"
                   name="Traer cuentas contables"/>
+        <menuitem id="menu_cuenta_unlink_accounts" action="gastos_tqc.action_unlink_cuentas"
+                  parent="gastos_tqc.menu_flujo_configuraciones" sequence="7"
+                  name="Elimnar masivo cuentas contables"/>
     </data>
 </odoo>

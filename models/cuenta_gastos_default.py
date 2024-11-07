@@ -129,3 +129,10 @@ And substring(cen.CENTRO_COSTO,1,2) in ('22','23','41','42','43','44','45','49',
                     })
 
                 self.env.cr.commit()
+
+    def account_contable_unlink(self):
+        ctas = self.env['tqc.detalle.liquidaciones'].search([('cuenta_contable', '!=', False)]).mapped(
+            'cuenta_contable').mapped('codigo')
+
+        # eliminar cuenta.gastos.default excepto los que estan en tqc.detalle.liquidacioness
+        self.env['cuenta.gastos.default'].search([('codigo', 'not in', ctas)]).unlink()

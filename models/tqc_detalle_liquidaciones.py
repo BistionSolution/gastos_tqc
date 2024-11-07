@@ -30,9 +30,9 @@ class detalleLiquidaciones(models.Model):
     tipocambio = fields.Float(required=1, digits=(12, 3))
     fechaemision = fields.Date(required=1)
 
-    base_afecta = fields.Monetary(currency_field='currency_id', digits=(12, 2), required=1)
-    base_inafecta = fields.Monetary(currency_field='currency_id', digits=(12, 2), required=1)
-    montoigv = fields.Monetary(currency_field='currency_id', required=1)
+    base_afecta = fields.Monetary(currency_field='currency_id', store=True, required=1)
+    base_inafecta = fields.Monetary(currency_field='currency_id', store=True, required=1)
+    montoigv = fields.Monetary(currency_field='currency_id', store=True, precompute=True, required=1)
     impuesto = fields.Many2one('tqc.impuestos', required=1)
     # Totales
     totaldocumento = fields.Monetary(currency_field='currency_id', required=1)
@@ -370,6 +370,44 @@ class detalleLiquidaciones(models.Model):
     #     return res
 
     def _get_price_total(self):
+        self.ensure_one()
+        res = {}
+
+        # Redondear los valores con la precisión de la moneda de la compañía
+        currency = self.currency_id
+        base_afecta_rounded = float_round(self.base_afecta, precision_digits=currency.decimal_places)
+        impuesto1_rounded = float_round(self.impuesto.impuesto1, precision_digits=currency.decimal_places)
+        base_inafecta_rounded = float_round(self.base_inafecta, precision_digits=currency.decimal_places)
+        icbper_rounded = float_round(self.icbper, precision_digits=currency.decimal_places)
+        otros_tributos_rounded = float_round(self.otros_tributos, precision_digits=currency.decimal_places)
+
+        # Calcular el monto IGV redondeando el resultado
+        monto_igv = base_afecta_rounded * impuesto1_rounded / 100
+        monto_igv_rounded = float_round(monto_igv, precision_digits=currency.decimal_places)
+
+        # Calcular el total del documento redondeando el resultado
+        totaldocumento = monto_igv_rounded + base_afecta_rounded + base_inafecta_rounded + icbper_rounded + otros_tributos_rounded
+        totaldocumento_rounded = float_round(totaldocumento, precision_digits=currency.decimal_places)
+
+        res['montoigv'] = monto_igv_rounded
+        res['totaldocumento'] = totaldocumento_rounded
+
+        # Calcular total neto según tipo de cambio y moneda
+        if self.tipocambio != 0:
+            if self.currency_liquidacion_id.name == 'USD' and self.currency_id.name == 'PEN':
+                res['total_neto'] = float_round(totaldocumento_rounded / self.tipocambio,
+                                                precision_digits=currency.decimal_places)
+            elif self.currency_liquidacion_id.name == 'PEN' and self.currency_id.name == 'USD':
+                res['total_neto'] = float_round(totaldocumento_rounded * self.tipocambio,
+                                                precision_digits=currency.decimal_places)
+            else:
+                res['total_neto'] = totaldocumento_rounded
+        else:
+            res['total_neto'] = totaldocumento_rounded
+
+        return res
+
+    def _get_price_total_beta(self):
         self.ensure_one()
         res = {}
 
