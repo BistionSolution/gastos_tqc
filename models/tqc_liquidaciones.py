@@ -382,7 +382,7 @@ class Liquidaciones(models.Model):
                         employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
                         if not employee:
                             continue
-                        self.env[table_bd].create(variJson)
+                        self.env[table_bd].sudo().create(variJson)
 
                     if register[0].habilitado_state == 'habilitado':
                         variJsonNew = {}
