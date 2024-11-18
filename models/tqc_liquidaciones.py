@@ -351,8 +351,6 @@ class Liquidaciones(models.Model):
 
             for user in idusers:
                 variJson = {}
-                id_register = self.env["ir.model.data"].sudo().search(
-                    [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
 
                 # register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
@@ -362,7 +360,7 @@ class Liquidaciones(models.Model):
                     if not user[2]:
                         continue
                     # si el registro esta liquidado se crea un nuevo registro y se actualiza el anterior con el saldo y estado liquidado
-                    if register.habilitado_state == 'liquidado' and user[7] >= 0 and user[8] != 'S':
+                    if register[0].habilitado_state == 'liquidado' and user[7] >= 0 and user[8] != 'S':
                         cont = 0
                         for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
                             if i == 0:
