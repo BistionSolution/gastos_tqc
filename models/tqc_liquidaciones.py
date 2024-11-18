@@ -354,24 +354,46 @@ class Liquidaciones(models.Model):
                 id_register = self.env["ir.model.data"].sudo().search(
                     [('name', '=', user[0]), ('model', '=', table_bd)]).res_id
 
-                register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
+                # register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
                 register = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])])
 
                 if register:  # SI EXISTE ACTUALIZA
                     if not user[2]:
                         continue
+                    # si el registro esta liquidado se crea un nuevo registro y se actualiza el anterior con el saldo y estado liquidado
+                    if register.habilitado_state == 'liquidado':
+                        cont = 0
+                        for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
+                            if i == 0:
+                                continue
+                            if i in posiUser:  # cambia los nombres por los id correspondientes
+                                if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
+                                    id_exField = False
+                                else:
+                                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
+                                    try:
+                                        # obtiene id de su respectivo modelo
+                                        id_exField = self.env.ref(searchId).id
+                                    except ValueError:
+                                        id_exField = False
+                                variJson['{}'.format(campList[i])] = id_exField
+                                cont += 1
+                                continue
+                            variJson['{}'.format(campList[i])] = user[i]
+                        employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
+                        if not employee:
+                            continue
+                        self.env[table_bd].create(variJson)
+
                     if register[0].habilitado_state == 'habilitado':
                         variJsonNew = {}
                         if user[8] == 'S':
                             variJsonNew['habilitado_state'] = 'liquidado'
                         variJsonNew['saldo'] = user[7]
 
-                        print("user[2] : ", user[2])
                         employee = self.env['hr.employee'].sudo().search(
                             [('id_integrador', '=', user[2])])
-
-                        print("EMPLEADO : ", employee)
 
                         if not register[0].empleado_name:
                             variJsonNew['empleado_name'] = employee.id
