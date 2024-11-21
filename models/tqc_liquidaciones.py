@@ -98,6 +98,9 @@ class Liquidaciones(models.Model):
     user_id = fields.Integer(compute='_get_user_id')
     current_total = fields.Float(string='Current Total')
 
+    # nuevo campo que verifica que se encuentra en esa liquidacion ahora
+    current_liquidacion = fields.Boolean(default=False)
+
     # Verificar el monto total de detalleliquidaciones_id
     # @api.depends('detalleliquidaciones_id')
     # def _compute_amount(self):
@@ -360,29 +363,29 @@ class Liquidaciones(models.Model):
                     if not user[2]:
                         continue
                     # si el registro esta liquidado se crea un nuevo registro y se actualiza el anterior con el saldo y estado liquidado
-                    if register[0].habilitado_state == 'liquidado' and user[7] >= 0 and user[8] != 'S':
-                        cont = 0
-                        for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
-                            if i == 0:
-                                continue
-                            if i in posiUser:  # cambia los nombres por los id correspondientes
-                                if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
-                                    id_exField = False
-                                else:
-                                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
-                                    try:
-                                        # obtiene id de su respectivo modelo
-                                        id_exField = self.env.ref(searchId).id
-                                    except ValueError:
-                                        id_exField = False
-                                variJson['{}'.format(campList[i])] = id_exField
-                                cont += 1
-                                continue
-                            variJson['{}'.format(campList[i])] = user[i]
-                        employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
-                        if not employee:
-                            continue
-                        self.env[table_bd].sudo().create(variJson)
+                    # if register[0].habilitado_state == 'liquidado' and user[7] >= 0 and user[8] != 'S':
+                    #     cont = 0
+                    #     for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
+                    #         if i == 0:
+                    #             continue
+                    #         if i in posiUser:  # cambia los nombres por los id correspondientes
+                    #             if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
+                    #                 id_exField = False
+                    #             else:
+                    #                 searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
+                    #                 try:
+                    #                     # obtiene id de su respectivo modelo
+                    #                     id_exField = self.env.ref(searchId).id
+                    #                 except ValueError:
+                    #                     id_exField = False
+                    #             variJson['{}'.format(campList[i])] = id_exField
+                    #             cont += 1
+                    #             continue
+                    #         variJson['{}'.format(campList[i])] = user[i]
+                    #     employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
+                    #     if not employee:
+                    #         continue
+                    #     self.env[table_bd].sudo().create(variJson)
 
                     if register[0].habilitado_state == 'habilitado':
                         variJsonNew = {}
@@ -432,6 +435,15 @@ class Liquidaciones(models.Model):
 
         except Exception as e:
             raise UserError(_(e))
+
+    # Elaborame una funcion que eliminar liquidaciones que fueron creadas desde Nov 18, 2024, que esten en estado habilitado y no tengan detalle de liquidaciones
+    def delete_liquidaciones(self):
+        # Eliminar liquidaciones que no tengan detalle de liquidaciones
+        liquidaciones = self.env['tqc.liquidaciones'].search([('create_date', '>=', '2024-11-18'),
+                                                              ('habilitado_state', '=', 'habilitado')])
+        for liquidacion in liquidaciones:
+            if not liquidacion.detalleliquidaciones_id:
+                liquidacion.unlink()
 
     @api.model
     def import_exactus_view(self):
