@@ -872,8 +872,8 @@
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Flujo aprobaciones" action="gastos_tqc.action_flujo_approve"/>
 
-        <menuitem id="menu_fix_deleted_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="8"
-                  name="Eliminar liquidaciones fix" action="gastos_tqc.fix_deleted_liquidaciones"/>
+<!--        <menuitem id="menu_fix_deleted_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="8"-->
+<!--                  name="Eliminar liquidaciones fix" action="gastos_tqc.fix_deleted_liquidaciones"/>-->
         <!-- menu categories -->
         <!--
             <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>
