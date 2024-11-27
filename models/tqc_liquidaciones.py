@@ -98,6 +98,9 @@ class Liquidaciones(models.Model):
     user_id = fields.Integer(compute='_get_user_id')
     current_total = fields.Float(string='Current Total')
 
+    # detetermina si una liquidacion de las que tienen el mismo codigo es la que esta pendiente
+    is_process = fields.Boolean(default=False)
+
     # Verificar el monto total de detalleliquidaciones_id
     # @api.depends('detalleliquidaciones_id')
     # def _compute_amount(self):
@@ -350,80 +353,47 @@ class Liquidaciones(models.Model):
             # _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
             for user in idusers:
-                variJson = {}
-
                 # register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
-                register = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])])
+                register = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])], limit=1)
 
                 if register:  # SI EXISTE ACTUALIZA
                     if not user[2]:
                         continue
                     # si el registro esta liquidado se crea un nuevo registro y se actualiza el anterior con el saldo y estado liquidado
-                    if register[0].habilitado_state == 'liquidado' and user[7] >= 0 and user[8] != 'S':
-                        cont = 0
-                        for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
-                            if i == 0:
-                                continue
-                            if i in posiUser:  # cambia los nombres por los id correspondientes
-                                if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
-                                    id_exField = False
-                                else:
-                                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
-                                    try:
-                                        # obtiene id de su respectivo modelo
-                                        id_exField = self.env.ref(searchId).id
-                                    except ValueError:
-                                        id_exField = False
-                                variJson['{}'.format(campList[i])] = id_exField
-                                cont += 1
-                                continue
-                            variJson['{}'.format(campList[i])] = user[i]
-                        employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
+                    if register.habilitado_state == 'liquidado' and user[7] >= 0 and user[
+                        8] != 'S' and not register.is_process:
+                        variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
+
+                        employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])], limit=1)
                         if not employee:
                             continue
+                        # Marcar el registro actual como procesado
+                        register.sudo().write({'is_process': True})
+                        variJson['is_process'] = False
                         self.env[table_bd].sudo().create(variJson)
 
-                    if register[0].habilitado_state == 'habilitado':
-                        variJsonNew = {}
-                        if user[8] == 'S':
-                            variJsonNew['habilitado_state'] = 'liquidado'
-                        variJsonNew['saldo'] = user[7]
+                    elif register.habilitado_state == 'habilitado':
+                        # Actualizar el estado y saldo del registro habilitado
+                        variJsonNew = {
+                            'saldo': user[7],
+                            'habilitado_state': 'liquidado' if user[8] == 'S' else register.habilitado_state,
+                        }
 
-                        employee = self.env['hr.employee'].sudo().search(
-                            [('id_integrador', '=', user[2])])
+                        if not register.empleado_name:
+                            employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])], limit=1)
+                            if employee:
+                                variJsonNew['empleado_name'] = employee.id
 
-                        if not register[0].empleado_name:
-                            variJsonNew['empleado_name'] = employee.id
-
-                        self.env[table_bd].browse(register[0].id).sudo().write(variJsonNew)
+                        register.sudo().write(variJsonNew)
                         self.env.cr.commit()
 
                 else:  # CREA NUEVO REGISTRO
                     employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
                     if not employee:
                         continue
-                    cont = 0
-                    for i in range(len(campList)):  # recorre y relaciona los campos y datos para trasladar datos
-                        if i == 0:
-                            continue
-                        if i in posiUser:  # cambia los nombres por los id correspondientes
-                            if not user[i]:  # SI EL CAMPO NO TIENE RELACION(NULL) GUARDA FALSE
-                                id_exField = False
-                            else:
-                                searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
-                                #
-                                try:
-                                    # obtiene id de su respectivo modelo
-                                    id_exField = self.env.ref(searchId).id
-                                except ValueError:
-                                    id_exField = False
-
-                            variJson['{}'.format(campList[i])] = id_exField
-                            cont += 1
-                            continue
-                        variJson['{}'.format(campList[i])] = user[i]
-                    original_id = self.env[table_bd].sudo().create(variJson).id
+                    variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
+                    self.env[table_bd].sudo().create(variJson)
 
                     # Si funciona
                     # self.env["ir.model.data"].sudo().create(
@@ -432,6 +402,36 @@ class Liquidaciones(models.Model):
 
         except Exception as e:
             raise UserError(_(e))
+
+    def _prepare_variJson(self, user, campList, posiUser, dataExternalSQL):
+        """
+        Prepara un diccionario `variJson` para un registro basado en los datos del usuario y configuraciones.
+        """
+        variJson = {}
+        cont = 0
+
+        for i in range(len(campList)):
+            if i == 0:  # Saltar el índice 0 (clave primaria u otra razón)
+                continue
+
+            if i in posiUser:  # Si el campo está relacionado con otro modelo
+                if not user[i]:  # Si no tiene un valor relacionado
+                    id_exField = False
+                else:
+                    searchId = "{}.{}".format(dataExternalSQL[1][cont], user[i])
+                    try:
+                        # Buscar el ID relacionado en el modelo correspondiente
+                        id_exField = self.env.ref(searchId).id
+                    except ValueError:
+                        id_exField = False
+
+                variJson[campList[i]] = id_exField
+                cont += 1
+            else:
+                # Asignar directamente el valor si no está relacionado
+                variJson[campList[i]] = user[i]
+
+        return variJson
 
     @api.model
     def import_exactus_view(self):
@@ -949,26 +949,37 @@ class Liquidaciones(models.Model):
                     try:
                         cursor = connection.cursor()
                         cursor.execute(sql, values)
-                        idusers = cursor.fetchone()
+                        result = cursor.fetchone()
                         cursor.commit()
                         # idusers = cursor.fetchval()
                         cursor.close()
+
+                        asiento, mensaje_error = result[1], result[2]
                     except Exception as e:
                         print("Error ", e)
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id, {'revisado_state': 'send_error', 'message_error': f"Error sql :{e}",
                                               'state': 'historial'}])
                         continue
+
                     # Si no hay error cambia estado a liquidado
-                    if idusers[1]:
-                        vals['detalleliquidaciones_id'].append(
-                            [1, document.id,
-                             {'revisado_state': 'liquidado', 'message_error': '', 'state': 'historial'}])
+                    if asiento:
+                        # Si hay un mensaje de error aunque el asiento exista
+                        if mensaje_error:
+                            vals['detalleliquidaciones_id'].append(
+                                [1, document.id, {'revisado_state': 'send_error', 'message_error': mensaje_error,
+                                                  'state': 'historial'}])
+                        else:
+                            # Si no hay mensaje de error y el asiento existe
+                            vals['detalleliquidaciones_id'].append(
+                                [1, document.id,
+                                 {'revisado_state': 'liquidado', 'message_error': '', 'state': 'historial'}])
 
                     else:
+                        # Si no existe asiento, siempre será un error
                         vals['detalleliquidaciones_id'].append(
                             [1, document.id,
-                             {'revisado_state': 'send_error', 'message_error': idusers[2], 'state': 'historial'}])
+                             {'revisado_state': 'send_error', 'message_error': mensaje_error, 'state': 'historial'}])
 
             # Cambia estado de liquidacion
             vals['habilitado_state'] = 'liquidado'
