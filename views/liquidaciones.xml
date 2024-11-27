@@ -853,6 +853,13 @@
             <field name="code">action = model.import_exactus_register()</field>
         </record>
 
+        <record id="fix_deleted_liquidaciones" model="ir.actions.server">
+            <field name="name">action.server.import.exactus</field>
+            <field name="model_id" ref="gastos_tqc.model_tqc_liquidaciones"/>
+            <field name="state">code</field>
+            <field name="code">action = model.delete_liquidaciones()</field>
+        </record>
+
         <!-- Top menu item -->
         <!--    <menuitem id="menu_main_liquidaciones" name="Liquidaciones" action="gastos_tqc.action_view_tree_liquidaciones"/>-->
         <!--    <menuitem id="menu_main_liquidaciones" name="Web de gastos" action="gastos_tqc.action_view_import_gastos"/>-->
@@ -863,7 +870,10 @@
                   groups="gastos_tqc.res_groups_administrator,res_groups_employee_gastos,res_groups_aprobador_gastos,res_groups_contador_gastos"/>
         <!--    <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="2" name="Flujo aprobaciones" action="gastos_tqc.action_view_import_gastos"/>-->
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
-                  name="Flujo aprobaciones" action="gastos_tqc.action_flujo_approve"/>loca
+                  name="Flujo aprobaciones" action="gastos_tqc.action_flujo_approve"/>
+
+        <menuitem id="menu_fix_deleted_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="8"
+                  name="Eliminar liquidaciones fix" action="gastos_tqc.fix_deleted_liquidaciones"/>
         <!-- menu categories -->
         <!--
             <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>

@@ -101,6 +101,7 @@ class Liquidaciones(models.Model):
     # detetermina si una liquidacion de las que tienen el mismo codigo es la que esta pendiente
     is_process = fields.Boolean(default=False)
 
+
     # Verificar el monto total de detalleliquidaciones_id
     # @api.depends('detalleliquidaciones_id')
     # def _compute_amount(self):
@@ -361,6 +362,7 @@ class Liquidaciones(models.Model):
                     if not user[2]:
                         continue
                     # si el registro esta liquidado se crea un nuevo registro y se actualiza el anterior con el saldo y estado liquidado
+
                     if register.habilitado_state == 'liquidado' and user[7] >= 0 and user[
                         8] != 'S' and not register.is_process:
                         variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
@@ -432,6 +434,16 @@ class Liquidaciones(models.Model):
                 variJson[campList[i]] = user[i]
 
         return variJson
+
+    # Elaborame una funcion que eliminar liquidaciones que fueron creadas desde Nov 18, 2024, que esten en estado habilitado y no tengan detalle de liquidaciones
+    def delete_liquidaciones(self):
+        # Eliminar liquidaciones que no tengan detalle de liquidaciones
+        liquidaciones = self.env['tqc.liquidaciones'].search([('create_date', '>=', '2024-11-18'),
+                                                              ('habilitado_state', '=', 'habilitado')])
+        for liquidacion in liquidaciones:
+            if not liquidacion.detalleliquidaciones_id:
+                liquidacion.unlink()
+
 
     @api.model
     def import_exactus_view(self):
