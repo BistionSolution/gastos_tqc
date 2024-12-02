@@ -444,7 +444,6 @@ class Liquidaciones(models.Model):
             if not liquidacion.detalleliquidaciones_id:
                 liquidacion.unlink()
 
-
     @api.model
     def import_exactus_view(self):
         self.importar_exactus()
