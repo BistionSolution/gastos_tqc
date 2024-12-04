@@ -9,6 +9,7 @@
                     <field name="habilitado_state" invisible="1"/>
                     <field name="current_total" invisible="1"/>
                     <field name="mode_view" force_save="1" invisible="1"/>
+                    <field name="is_process" />
 
                     <field name="num_solicitud" optional="show"/>
                     <field name="empleado_name" optional="show"/>
