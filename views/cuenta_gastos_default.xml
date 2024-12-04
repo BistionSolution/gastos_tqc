@@ -32,6 +32,19 @@
                 </form>
             </field>
         </record>
+        <!-- Vista search -->
+        <record id="view_search_cuenta_gastos_default" model="ir.ui.view">
+            <field name="name">view.search.cuenta.gastos.default</field>
+            <field name="model">cuenta.gastos.default</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="codigo"/>
+                    <field name="description"/>
+                    <field name="department_id"/>
+                    <field name="active"/>
+                </search>
+            </field>
+        </record>
 
         <!--Actiones-->
         <!--        <record id="action_view_tree_liquidaciones" model="ir.actions.act_window">-->
@@ -54,7 +67,9 @@
         <record id="action_view_cuenta_gastos_default" model="ir.actions.act_window">
             <field name="name">Cuentas Contables</field>
             <field name="res_model">cuenta.gastos.default</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,search</field>
+            <field name="view_id" ref="gastos_tqc.view_tree_cuenta_gastos_default"/>
+            <field name="search_view_id" ref="gastos_tqc.view_search_cuenta_gastos_default"/>
             <field name="target">main</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_empty_folder">
