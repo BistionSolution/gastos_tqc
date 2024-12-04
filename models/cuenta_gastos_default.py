@@ -16,15 +16,29 @@ class cuentaDefault(models.Model):
     department_id = fields.Many2one('hr.department')
     active = fields.Boolean(default=True)
 
-    def name_get(self):  # agrega nombre al many2one relacionado
+    # def name_get(self):  # agrega nombre al many2one relacionado
+    #     result = []
+    #     for rec in self:
+    #         if rec.description:
+    #             name = rec.description
+    #         else:
+    #             name = 'default description'
+    #         result.append((rec.id, name))
+    #     return result
+
+    def name_get(self):
         result = []
-        for rec in self:
-            if rec.description:
-                name = rec.description
-            else:
-                name = 'default description'
-            result.append((rec.id, name))
+        for record in self:
+            name = f"[{record.codigo}] {record.description}" if record.codigo else record.description
+            result.append((record.id, name))
         return result
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        args = args or []
+        domain = ['|', ('codigo', operator, name), ('description', operator, name)]
+        records = self.search(domain + args, limit=limit)
+        return records.name_get()
 
     def get_account_contable(self):
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')

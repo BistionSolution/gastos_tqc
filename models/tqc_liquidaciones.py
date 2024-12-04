@@ -377,17 +377,19 @@ class Liquidaciones(models.Model):
 
                     elif register.habilitado_state == 'habilitado':
                         # Actualizar el estado y saldo del registro habilitado
+                        variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
                         variJsonNew = {
                             'saldo': user[7],
                             'habilitado_state': 'liquidado' if user[8] == 'S' else register.habilitado_state,
                         }
+                        variJson.update(variJsonNew)
 
                         if not register.empleado_name:
                             employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])], limit=1)
                             if employee:
-                                variJsonNew['empleado_name'] = employee.id
+                                variJson['empleado_name'] = employee.id
 
-                        register.sudo().write(variJsonNew)
+                        register.sudo().write(variJson)
                         self.env.cr.commit()
 
                 else:  # CREA NUEVO REGISTRO
