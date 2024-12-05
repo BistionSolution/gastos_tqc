@@ -371,7 +371,7 @@ class Liquidaciones(models.Model):
                             if not employee:
                                 continue
 
-                            habilitado_register = registers.filtered(lambda r: r.habilitado_state == 'habilitado')
+                            habilitado_register = registers.filtered(lambda r: r.habilitado_state != 'liquidado')
 
                             if len(habilitado_register) > 1:
                                 print("HABILITADO user[7] ", user[0])
