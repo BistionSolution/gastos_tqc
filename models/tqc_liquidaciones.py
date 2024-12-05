@@ -101,7 +101,6 @@ class Liquidaciones(models.Model):
     # detetermina si una liquidacion de las que tienen el mismo codigo es la que esta pendiente
     is_process = fields.Boolean(default=False)
 
-
     # Verificar el monto total de detalleliquidaciones_id
     # @api.depends('detalleliquidaciones_id')
     # def _compute_amount(self):
@@ -353,53 +352,68 @@ class Liquidaciones(models.Model):
             # _logger.info('LENGUAJE extraAAAAAA')
             # _logger.info('LENGUAJE LOCAL : %s and %s' % (current_locale[0], current_locale[1]))
 
+
+            contRepet = 0
             for user in idusers:
                 # register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
-                register = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])], limit=1)
-                if user[0] == '000000022076':
-                    _logger.info(' first ----------> : %s' % register)
-                    _logger.info(' first ----------> : %s' % register.num_solicitud)
-                if register:  # SI EXISTE ACTUALIZA
+                registers = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])])
+
+                if registers:  # SI EXISTE ACTUALIZA
                     if not user[2]:
                         continue
-                    if user[0] == '000000022076':
-                        _logger.info('All liquidados ----------> : %s' % register)
-                        _logger.info('All liquidados ----------> : %s' % register.num_solicitud)
-                        _logger.info('All liquidados ----------> : %s' % register.saldo)
-                        _logger.info('All liquidados ----------> : %s' % register.state)
-                        _logger.info('All liquidados ----------> : %s' % register.habilitado_state)
-
-                    # si el registro esta liquidado se crea un nuevo registro y se actualiza el anterior con el saldo y estado liquidado
-
-                    if register.habilitado_state == 'liquidado' and user[7] >= 0 and user[
-                        8] != 'S' and not register.is_process:
-                        variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
-
-                        employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])], limit=1)
-                        if not employee:
-                            continue
-                        # Marcar el registro actual como procesado
-                        register.sudo().write({'is_process': True})
-                        variJson['is_process'] = False
-                        self.env[table_bd].sudo().create(variJson)
-
-                    if register.habilitado_state == 'habilitado':
-                        # Actualizar el estado y saldo del registro habilitado
-                        variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
-                        variJsonNew = {
-                            'saldo': user[7],
-                            'habilitado_state': 'liquidado' if user[8] == 'S' else register.habilitado_state,
-                        }
-                        variJson.update(variJsonNew)
-
-                        if not register.empleado_name:
+                    liquidado_registers = registers.filtered(lambda r: r.habilitado_state == 'liquidado')
+                    # Cambiar el estado de todas las liquidaciones filtradas
+                    if liquidado_registers:
+                        if user[7] >= 0 and user[8] != 'S':
+                            variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
                             employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])], limit=1)
-                            if employee:
-                                variJson['empleado_name'] = employee.id
+                            if not employee:
+                                continue
 
-                        register.sudo().write(variJson)
-                        self.env.cr.commit()
+                            habilitado_register = registers.filtered(lambda r: r.habilitado_state == 'habilitado')
+
+                            if len(habilitado_register) > 1:
+                                print("HABILITADO user[7] ", user[0])
+                                print("HABILITADO REGISTER ", len(habilitado_register))
+                                # Eliminar los registros que no son liquidados
+                                registros_a_eliminar = habilitado_register.filtered(
+                                    lambda r: not r.detalleliquidaciones_id)
+                                print("REGISTROS A ELIMINAR ", registros_a_eliminar)
+                                # Eliminar los registros filtrados
+                                # if registros_a_eliminar:
+                                #     registros_a_eliminar.unlink()
+                                #     # Commit si es necesario
+                                #     self.env.cr.commit()
+
+
+                            if habilitado_register:
+                                # Actualizar el estado y saldo del registro habilitado
+                                variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
+                                variJsonNew = {
+                                    'saldo': user[7],
+                                    'habilitado_state': 'liquidado' if user[8] == 'S' else habilitado_register[
+                                        0].habilitado_state,
+                                }
+                                variJson.update(variJsonNew)
+
+                                if not habilitado_register[0].empleado_name:
+                                    employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])],
+                                                                                     limit=1)
+                                    if employee:
+                                        variJson['empleado_name'] = employee.id
+
+                                habilitado_register[0].sudo().write(variJson)
+                                self.env.cr.commit()
+
+                                # Confirmar la transacción solo si es estrictamente necesario
+                                try:
+                                    self.env.cr.commit()
+                                except Exception as e:
+                                    _logger.error(f"Error al realizar commit: {e}")
+                            else:
+                                liquidado_registers.sudo().write({'is_process': True})
+                                self.env[table_bd].sudo().create(variJson)
 
                 else:  # CREA NUEVO REGISTRO
                     employee = self.env['hr.employee'].sudo().search([('id_integrador', '=', user[2])])
