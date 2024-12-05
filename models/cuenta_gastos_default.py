@@ -9,7 +9,7 @@ import re, pyodbc
 
 class cuentaDefault(models.Model):
     _name = 'cuenta.gastos.default'
-    _description = 'Tipo de Liquidaciones'
+    _description = 'Cuenta contables tqc'
 
     codigo = fields.Char()
     description = fields.Char()

@@ -346,7 +346,8 @@
                     <field name="empleado_name"
 
                            optional="show"/>
-                    <field name="is_process" />
+                    <field name="is_process" optional="hide"/>
+                    <field name="create_date" optional="hide"/>
 
                     <field name="num_solicitud" optional="show"/>
                     <field name="tipo_documento" optional="show"/>
