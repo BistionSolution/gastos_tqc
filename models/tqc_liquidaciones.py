@@ -357,10 +357,19 @@ class Liquidaciones(models.Model):
                 # register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
                 register = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])], limit=1)
-
+                if user[0] == '000000022076':
+                    _logger.info(' first ----------> : %s' % register)
+                    _logger.info(' first ----------> : %s' % register.num_solicitud)
                 if register:  # SI EXISTE ACTUALIZA
                     if not user[2]:
                         continue
+                    if user[0] == '000000022076':
+                        _logger.info('All liquidados ----------> : %s' % register)
+                        _logger.info('All liquidados ----------> : %s' % register.num_solicitud)
+                        _logger.info('All liquidados ----------> : %s' % register.saldo)
+                        _logger.info('All liquidados ----------> : %s' % register.state)
+                        _logger.info('All liquidados ----------> : %s' % register.habilitado_state)
+
                     # si el registro esta liquidado se crea un nuevo registro y se actualiza el anterior con el saldo y estado liquidado
 
                     if register.habilitado_state == 'liquidado' and user[7] >= 0 and user[
