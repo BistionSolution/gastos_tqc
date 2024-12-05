@@ -375,7 +375,7 @@ class Liquidaciones(models.Model):
                         variJson['is_process'] = False
                         self.env[table_bd].sudo().create(variJson)
 
-                    elif register.habilitado_state == 'habilitado':
+                    if register.habilitado_state == 'habilitado':
                         # Actualizar el estado y saldo del registro habilitado
                         variJson = self._prepare_variJson(user, campList, posiUser, dataExternalSQL)
                         variJsonNew = {
