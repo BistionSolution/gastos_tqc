@@ -10,7 +10,7 @@
                 <kanban position="attributes">
                     <attribute name="create">false</attribute>
                     <attribute name="delete">false</attribute>
-                    <attribute name="edit">false</attribute>
+                    <attribute name="edit">true</attribute>
                 </kanban>
             </field>
         </record>
@@ -43,8 +43,7 @@
                 <form position="attributes">
                     <attribute name="create">false</attribute>
                     <attribute name="delete">false</attribute>
-                    <attribute name="edit">false</attribute>
-
+                    <attribute name="edit">true</attribute>
                 </form>
             </field>
         </record>
