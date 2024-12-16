@@ -389,6 +389,7 @@
                         <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
                                 class="oe_highlight button-generar"
                                 attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"/>
+
                         <!--                        <button name="volver_enviar" string="Volver a enviar" type="object"-->
                         <!--                                class="oe_highlight"-->
                         <!--                                attrs="{'invisible': [('habilitado_state','not in',['corregir'])]}"/>-->
@@ -583,7 +584,7 @@
                                                        domain="[('department_id','=',department_id)]"
                                                        options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"
                                                 />
-                                                <field name="department_id"/>
+                                                <field name="department_id" invisible="1"/>
                                                 <!--                                    <field name="nocliente"/>-->
 
                                             </group>
@@ -875,8 +876,8 @@
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Flujo aprobaciones" action="gastos_tqc.action_flujo_approve"/>
 
-        <menuitem id="menu_fix_deleted_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="8"
-                  name="Eliminar liquidaciones fix" action="gastos_tqc.fix_deleted_liquidaciones"/>
+<!--        <menuitem id="menu_fix_deleted_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="8"-->
+<!--                  name="Eliminar liquidaciones fix" action="gastos_tqc.fix_deleted_liquidaciones"/>-->
         <!-- menu categories -->
         <!--
             <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>

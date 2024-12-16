@@ -29,7 +29,7 @@ class cuentaDefault(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            name = f"[{record.codigo}] {record.description}" if record.codigo else record.description
+            name = f"{record.description}" if record.description else ''
             result.append((record.id, name))
         return result
 
