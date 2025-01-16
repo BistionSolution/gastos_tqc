@@ -92,12 +92,15 @@ export class TestListRenderer extends ListRenderer {
 
     // overrode add line button
     add(params) {
-        const saveButton = document.querySelector(".o_form_button_save");
-        if (saveButton) {
-            saveButton.click();
-        }
         if (this.canCreate) {
+            // 1) Crea la línea en el One2many (en el "cache")
             this.props.onAdd(params);
+
+            // 2) Luego de crearla, forzamos el guardado
+            const saveButton = document.querySelector(".o_form_button_save");
+            if (saveButton) {
+                saveButton.click();
+            }
         }
     }
 
@@ -120,6 +123,7 @@ export class TestListRenderer extends ListRenderer {
 
 // TestListRenderer.template = 'one2many_mass_select_delete.ListRenderer';
 TestListRenderer.recordRowTemplate = "owl_learn.ClickMe.RecordRow";
+
 // TestListRenderer.rowsTemplate = "owl_learn.ListRenderer.Rows";
 
 

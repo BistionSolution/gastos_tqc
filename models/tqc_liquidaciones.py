@@ -174,9 +174,7 @@ class Liquidaciones(models.Model):
             self._search_habilitado_record(get_all_habilitado)
 
     def _search_habilitado_record(self, get_all_habilitado):
-        _logger.info('leego  ----------> : %s' % get_all_habilitado)
         placeholders = ', '.join(['?'] * len(get_all_habilitado))
-        _logger.info('placeholders  ----------> : %s' % placeholders)
         driver_version = self.env['ir.config_parameter'].sudo().get_param('total_integrator.version_drive')
         ip_conexion = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.ip_conexion')
         data_base = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.data_base_gastos')
@@ -185,12 +183,6 @@ class Liquidaciones(models.Model):
         prefix_table = self.env['ir.config_parameter'].sudo().get_param('gastos_tqc.prefix_table')
 
         # Logging para verificar los valores
-        _logger.info('Driver Version: %s' % driver_version)
-        _logger.info('IP Connection: %s' % ip_conexion)
-        _logger.info('Database: %s' % data_base)
-        _logger.info('User: %s' % user_bd)
-        _logger.info('Password: %s' % pass_bd)
-        _logger.info('Prefix Table: %s' % prefix_table)
         element_liquidated = []
         element_not_found = []
 
@@ -221,9 +213,9 @@ class Liquidaciones(models.Model):
                     element_liquidated.append(user[1])
 
             # Verifica si hay registros no encontrados
-            found_records = [user[1] for user in idusers]
+            found_records = [str(user[1]).strip() for user in idusers]
             for item in get_all_habilitado:
-                if item not in found_records:
+                if str(item).strip() not in found_records:
                     element_not_found.append(item)
 
         except Exception as e:

@@ -39,8 +39,8 @@
             <field name="arch" type="xml">
                 <form js_class="button_form_view" class="table-liquidacion">
                     <header>
-<!--                        <button name="prove_email" string="Enviar correo" type="object"-->
-<!--                                class="oe_highlight"/>-->
+                        <!--                        <button name="prove_email" string="Enviar correo" type="object"-->
+                        <!--                                class="oe_highlight"/>-->
 
                         <button string="Enviar a pendiente" name="button_jefatura" type="object"
                                 attrs="{'invisible':['|',('uid_create', '!=', 1),('state','!=','jefatura'),'|',('current_user','not in',[1]),('state','!=','jefatura')]}"
@@ -103,8 +103,8 @@
                                           decoration-warning="revisado_state in ['corregido','observado_contable']"
                                           decoration-danger="revisado_state in ['rechazado_jefatura','rechazado_contable']"
                                           limit="200" editable="bottom">
-<!--                                        <button string="fix_existing_attachments" name="fix_existing_attachments" type="object"-->
-<!--                                class="oe_highlight"/>-->
+                                        <!--                                        <button string="fix_existing_attachments" name="fix_existing_attachments" type="object"-->
+                                        <!--                                class="oe_highlight"/>-->
                                         <field name="create_date" invisible="1"/>
                                         <field name="empleado_id" invisible="1"/>
                                         <field name="liquidacion_id" invisible="1"/>
@@ -122,7 +122,8 @@
                                                optional="show"
                                                force_save="1"
                                                attrs="{'readonly':['|','|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),('codetipo','in',['Vale Otros Gastos'])],'required':[('codetipo','not in',['Vale Otros Gastos'])]}"/>
-                                        <field name="attachment" widget="many2many_binary" force_save="1" optional="show"
+                                        <field name="attachment" widget="many2many_binary" force_save="1"
+                                               optional="show"
                                                attrs="{'readonly':['|',('revisado_state', 'in', ['rechazado_jefatura','rechazado_contable']),'&amp;',('uid_create','=',3),('state_liqui', '=', 'jefatura'),]}"/>
                                         <field name="fechaemision" string="Fecha emisión"
                                                optional="show"
@@ -388,7 +389,8 @@
                         <field name="state" invisible="1"/>
                         <button name="generate_liquidacion" string="Generar Liquidacion" type="object"
                                 class="oe_highlight button-generar"
-                                attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"/>
+                                attrs="{'invisible': [('habilitado_state','!=','habilitado')]}"
+                                confirm="¿Estás seguro de que deseas generar la liquidación?"/>
 
                         <!--                        <button name="volver_enviar" string="Volver a enviar" type="object"-->
                         <!--                                class="oe_highlight"-->
@@ -417,13 +419,13 @@
                         <field name="current_total" class="oe_inline" invisible="1" force_save="1"
                                string="current_total"/>
                         <field name="fecha_contable" class="oe_inline" invisible="1"/>
-<!--                        <button name="prove_email" string="Enviar correo" type="object"-->
-<!--                                class="oe_highlight"/>-->
+                        <!--                        <button name="prove_email" string="Enviar correo" type="object"-->
+                        <!--                                class="oe_highlight"/>-->
 
                         <notebook>
                             <page string="Documentos">
-<!--                                <button name="add_document" string="Agregar documento" type="object"-->
-<!--                                        class="oe_highlight"/>-->
+                                <!--                                <button name="add_document" string="Agregar documento" type="object"-->
+                                <!--                                        class="oe_highlight"/>-->
                                 <field name="detalleliquidaciones_id"
                                        attrs="{'readonly':[('habilitado_state','in',['proceso'])]}" mode="tree,form">
                                     <tree decoration-success="revisado_state == 'aprobado'"
@@ -876,8 +878,8 @@
         <menuitem id="menu_flujo_aprobaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="3"
                   name="Flujo aprobaciones" action="gastos_tqc.action_flujo_approve"/>
 
-<!--        <menuitem id="menu_fix_deleted_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="8"-->
-<!--                  name="Eliminar liquidaciones fix" action="gastos_tqc.fix_deleted_liquidaciones"/>-->
+        <!--        <menuitem id="menu_fix_deleted_liquidaciones" parent="gastos_tqc.menu_main_liquidaciones" sequence="8"-->
+        <!--                  name="Eliminar liquidaciones fix" action="gastos_tqc.fix_deleted_liquidaciones"/>-->
         <!-- menu categories -->
         <!--
             <menuitem name="Menu 1" id="gastos_tqc.menu_1" parent="gastos_tqc.menu_root"/>
