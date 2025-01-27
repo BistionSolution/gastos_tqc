@@ -101,6 +101,8 @@ class Liquidaciones(models.Model):
     # detetermina si una liquidacion de las que tienen el mismo codigo es la que esta pendiente
     is_process = fields.Boolean(default=False)
 
+    changes_text = fields.Text()
+
     # Verificar el monto total de detalleliquidaciones_id
     # @api.depends('detalleliquidaciones_id')
     # def _compute_amount(self):
@@ -224,13 +226,13 @@ class Liquidaciones(models.Model):
 
         if element_liquidated:
             self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
-                {'habilitado_state': 'liquidado', 'state': 'liquidado'})
+                {'habilitado_state': 'liquidado', 'state': 'liquidado', 'changes_text': f'detectado y liquidado de schema {prefix_table}'})
 
         if element_not_found:
             _logger.info('Elementos no encontrados ----------> : %s' % element_not_found)
             # Eliminar registros no encontrados
             self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_not_found)]).write(
-                {'state': 'eliminado'})
+                {'state': 'eliminado', 'changes_text': f'no detectado en schema {prefix_table}'})
 
     @api.depends()
     def _get_user_id(self):
@@ -492,7 +494,7 @@ class Liquidaciones(models.Model):
         self.importar_exactus()
         uid = self.env.uid
         res = {
-            "name": "Web Gastos",
+            "name": "Mis Liquidaciones",
             "type": "ir.actions.act_window",
             "res_model": "tqc.liquidaciones",
             "view_type": "form",
@@ -500,7 +502,7 @@ class Liquidaciones(models.Model):
             "target": "current",
             'views': [(self.env.ref("gastos_tqc.view_tree_registro_gasto").id, 'tree'),
                       (self.env.ref("gastos_tqc.view_form_registro_gasto").id, 'form')],
-            'domain': [('empleado_name.user_id', '=', uid), ('habilitado_state', '!=', 'liquidado')],
+            'domain': [('empleado_name.user_id', '=', uid), ('habilitado_state', '!=', 'liquidado'), ('state', '!=', 'eliminado')],
             "context": {'search_default_filtro_rendir': 1, 'mode_view': 'registro'},
             'search_view_id': [self.env.ref("gastos_tqc.search_register_filter").id, 'search'],
             # 'clear_breadcrumb': True,
