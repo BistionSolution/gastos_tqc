@@ -197,7 +197,8 @@ class Liquidaciones(models.Model):
                                  FECHA_ENTREGA AS fecha_entrega,
                                  CONVERT(decimal(10,2),MONTO) AS monto_entrega,
                                  CONVERT(decimal(10,2),SALDO) AS saldo,
-                                 LIQUIDADO                                  
+                                 LIQUIDADO,
+                                 RecordDate                                  
                                FROM
                                  {prefix_table}.ENTREGA_A_RENDIR
                                WHERE ENTREGA_A_RENDIR IN ({placeholders})"""
@@ -212,7 +213,8 @@ class Liquidaciones(models.Model):
 
             for user in idusers:
                 if user[8] == 'S':
-                    element_liquidated.append(user[1])
+                    self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[1])]).write(
+                        {'habilitado_state': 'liquidado', 'state': 'liquidado', 'changes_text': f'detectado y liquidado de schema {prefix_table} el dia {user[9]}'})
 
             # Verifica si hay registros no encontrados
             found_records = [str(user[1]).strip() for user in idusers]
@@ -223,10 +225,6 @@ class Liquidaciones(models.Model):
         except Exception as e:
             _logger.error('Error: %s' % str(e))
             raise UserError(_(e))
-
-        if element_liquidated:
-            self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', 'in', element_liquidated)]).write(
-                {'habilitado_state': 'liquidado', 'state': 'liquidado', 'changes_text': f'detectado y liquidado de schema {prefix_table}'})
 
         if element_not_found:
             _logger.info('Elementos no encontrados ----------> : %s' % element_not_found)
@@ -316,7 +314,8 @@ class Liquidaciones(models.Model):
                                   FECHA_ENTREGA AS fecha_entrega,
                                   CONVERT(decimal(10,2),MONTO) AS monto_entrega,
                                   CONVERT(decimal(10,2),SALDO) AS saldo,
-                                  LIQUIDADO                                  
+                                  LIQUIDADO,
+                                  RecordDate                                  
                                 FROM
                                   """ + prefix_table + """.ENTREGA_A_RENDIR
                                 WHERE LIQUIDADO != 'S'"""
@@ -352,8 +351,7 @@ class Liquidaciones(models.Model):
                 # register_fa = self.env['tqc.liquidaciones'].sudo().browse(id_register)
 
                 registers = self.env['tqc.liquidaciones'].sudo().search([('num_solicitud', '=', user[0])])
-                if user[0] == '000000023674':
-                    print("registers ==========>", registers)
+
                 if registers:  # SI EXISTE ACTUALIZA
                     if not user[2]:
                         continue
